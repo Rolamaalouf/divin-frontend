@@ -1,4 +1,6 @@
 import "./globals.css";
+import { AuthProvider } from './context/AuthContext';
+
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -13,10 +15,17 @@ export const metadata = {
   // Remove any viewport-related entries from here
 }
 
+
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+      <AuthProvider>
+      {children}
+    </AuthProvider>
+      </body>
     </html>
-  )
+  );
 }
+

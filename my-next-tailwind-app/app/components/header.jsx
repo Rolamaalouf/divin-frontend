@@ -63,7 +63,10 @@ const Header = () => {
 
         {/* Icons */}
         <div className="flex items-center gap-4 text-[#E2C269]">
-          <User className="w-6 h-6 md:w-8 md:h-8" />
+        <Link href="/register" aria-label="Register">
+  <User className="w-6 h-6 md:w-8 md:h-8 hover:text-white transition-colors" />
+</Link>
+
           <ShoppingCart className="w-6 h-6 md:w-8 md:h-8" />
         </div>
       </div>
