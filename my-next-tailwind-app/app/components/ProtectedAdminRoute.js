@@ -1,10 +1,9 @@
-// components/ProtectedAdminRoute.js
 'use client';
-import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../context/AuthContext';
 
-export default function ProtectedAdminRoute({ children }) {
+const ProtectedAdminRoute = ({ children }) => {
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -14,7 +13,7 @@ export default function ProtectedAdminRoute({ children }) {
     }
   }, [user, loading, router]);
 
-  if (loading || !user) {
+  if (loading || !user || user.role !== 'admin') {
     return (
       <div className="flex items-center justify-center h-screen text-white bg-[#34434F]">
         Loading...
@@ -22,5 +21,7 @@ export default function ProtectedAdminRoute({ children }) {
     );
   }
 
-  return <>{children}</>;
-}
+  return children;
+};
+
+export default ProtectedAdminRoute;

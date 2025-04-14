@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -59,6 +60,12 @@ export default function LoginPage() {
         >
           Login
         </button>
+        <p className="text-center text-sm text-white">
+          Dont have an account?{' '}
+          <Link href="/register" className="text-[#E2C269] underline hover:text-yellow-300">
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );

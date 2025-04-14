@@ -9,12 +9,21 @@ export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && (!user || user.role !== 'admin')) {
-      router.push('/login');
+    // Only redirect when loading is false and user is not available or role is not admin
+    if (!loading) {
+      if (!user || user.role !== 'admin') {
+        router.push('/login');
+      }
     }
   }, [user, loading, router]);
 
-  if (loading || !user) return <div className="text-white">Loading...</div>;
+  if (loading) {
+    return <div className="text-white">Loading...</div>;
+  }
+
+  if (!user) {
+    return <div className="text-white">You must be logged in to access this page.</div>;
+  }
 
   return (
     <div className="text-white p-10">

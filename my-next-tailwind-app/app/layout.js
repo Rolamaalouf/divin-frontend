@@ -1,5 +1,5 @@
 import "./globals.css";
-import { AuthProvider } from './context/AuthContext';
+import AuthClientWrapper from './components/AuthClientWrapper';
 
 export const viewport = {
   width: 'device-width',
@@ -21,9 +21,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-      <AuthProvider>
-      {children}
-    </AuthProvider>
+      <AuthClientWrapper>
+          {children}
+        </AuthClientWrapper>
       </body>
     </html>
   );
