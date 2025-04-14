@@ -11,5 +11,7 @@ export const registerUser = (data) => API.post("/api/auth/register", data);
 export const getAllUsers = () => API.get("/api/auth");
 export const logoutUser = () => API.post("/api/auth/logout"); 
 export const getCurrentUser = () => API.get('/api/auth/me');
+export const editUser = (id, updatedData) => API.put(`/api/auth/${id}`, updatedData);
+export const deleteUser = (id) => API.delete(`/api/auth/${id}`);
 
 export default API;
