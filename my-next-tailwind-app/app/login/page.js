@@ -1,27 +1,37 @@
 'use client';
+
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter();
-  const { login } = useAuth(); // Get login function from context
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // Use login from AuthContext instead of directly using api.js
       await login({ email, password });
+      toast.success('Login successful!');
     } catch (error) {
+      toast.error('Invalid email or password');
       console.error('Login failed:', error);
-      // Optionally show error to user
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen text-[#E2C269] bg-[#34434F] bg-[url('/flow.jpg')] bg-cover bg-center">
+      <ToastContainer
+        position="top-left"
+        autoClose={4000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
       <form
         onSubmit={handleLogin}
         className="w-full max-w-md bg-[#1E2A33]/50 p-8 rounded-lg shadow-lg space-y-6"
@@ -33,6 +43,7 @@ export default function LoginPage() {
           className="w-full p-3 rounded bg-[#34434F] border border-[#E2C269] text-white placeholder:text-white/70"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <input
           type="password"
@@ -40,6 +51,7 @@ export default function LoginPage() {
           className="w-full p-3 rounded bg-[#34434F] border border-[#E2C269] text-white placeholder:text-white/70"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <button
           type="submit"

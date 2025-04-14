@@ -3,6 +3,8 @@
 import { createContext, useContext, useState } from 'react';
 import { loginUser, logoutUser } from '../lib/api';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { useEffect } from 'react';
 
 const AuthContext = createContext();
 
@@ -12,26 +14,26 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
 
   // Login function
-  const login = async (credentials) => {
-    setLoading(true);
-    try {
-      const res = await loginUser(credentials);
-      const loggedUser = res.data?.user;
-      setUser(loggedUser);
+const login = async (credentials) => {
+  setLoading(true);
+  try {
+    const res = await loginUser(credentials);
+    console.log('Login API response:', res); // 🔍 Add this
+    const loggedUser = res.data?.user;
+    setUser(loggedUser);
 
-      // Redirect based on role
-      if (loggedUser?.role === 'admin') {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-      // Handle error: Optionally set an error state or show a message to the user
-    } finally {
-      setLoading(false);
+    if (loggedUser?.role === 'admin') {
+      router.push('/admin');
+    } else {
+      router.push('/');
     }
-  };
+  } catch (error) {
+    console.error('Login failed:', error.response?.data || error.message || error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // Logout function
   const logout = async () => {
