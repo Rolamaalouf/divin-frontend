@@ -17,8 +17,7 @@ export const UsersProvider = ({ children }) => {
         console.log("Calling getAllUsers()...");
       const res = await getAllUsers();
       console.log('Fetched users:', res.data); // debug
-      setUsers(Array.isArray(res.data) ? res.data : []);
-
+      setUsers(res.data?.users || []);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast.error("Failed to fetch users");
