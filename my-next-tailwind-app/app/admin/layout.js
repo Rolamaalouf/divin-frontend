@@ -11,7 +11,7 @@ export default function AdminLayout({ children }) {
     <ProtectedAdminRoute>
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 p-6 bg-[#f5f5f5] min-h-screen">
+        <main className="flex-1 min-h-screen">
           <UsersProvider>
             <ProductProvider>
               <CategoryProvider>

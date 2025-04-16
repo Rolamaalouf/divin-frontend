@@ -180,11 +180,11 @@ const ProductForm = ({ selectedProduct, onSuccess }) => {
       </div>
 
       <button
-        type="submit"
-        className="bg-amber-700 text-white px-4 py-2 rounded hover:bg-amber-800 w-full"
-      >
-        {selectedProduct ? 'Update' : 'Create'}
-      </button>
+  type="submit"
+  className="bg-[#E2C269] text-[#33434F] px-4 py-2 rounded hover:brightness-105 w-full"
+>
+  {selectedProduct ? 'Update' : 'Create'}
+</button>
     </form>
   );
 };
