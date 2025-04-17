@@ -1,34 +1,80 @@
-  'use client';
+'use client';
 
-  import { useEffect } from 'react';
-  import { useRouter } from 'next/navigation';
-  import { useAuth } from '../../context/AuthContext'
+import { useState } from 'react';
+import {
+  useOrders,
+  useCreateOrder,
+  useUpdateOrder,
+  useDeleteOrder,
+} from '../../hooks/useOrderHooks';
+import {
+  useOrderItems,
+  useCreateOrderItem,
+  useUpdateOrderItem,
+  useDeleteOrderItem,
+} from '../../hooks/useOrderItemHooks';
 
-  export default function AdminPage() {
-    const { user, loading } = useAuth();
-    const router = useRouter();
+import OrderList from '../../components/orders/OrderList';
+import OrderForm from '../../components/orders/OrderForm';
+import OrderItemList from '../../components/orders/OrderItemList';
+import OrderItemForm from '../../components/orders/OrderItemForm';
 
-    useEffect(() => {
-      // Only redirect when loading is false and user is not available or role is not admin
-      if (!loading) {
-        if (!user || user.role !== 'admin') {
-          router.push('/login');
-        }
-      }
-    }, [user, loading, router]);
+const AdminOrdersPage = () => {
+  const [editingOrder, setEditingOrder] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
 
-    if (loading) {
-      return <div className="text-white">Loading...</div>;
+  const { data: orders = [] } = useOrders();
+  const { data: orderItems = [] } = useOrderItems();
+
+  const createOrder = useCreateOrder();
+  const updateOrder = useUpdateOrder();
+  const deleteOrder = useDeleteOrder();
+
+  const createItem = useCreateOrderItem();
+  const updateItem = useUpdateOrderItem();
+  const deleteItem = useDeleteOrderItem();
+
+  const handleOrderSubmit = (data) => {
+    if (editingOrder) {
+      updateOrder.mutate({ id: editingOrder.id, data });
+    } else {
+      createOrder.mutate(data);
     }
+    setEditingOrder(null);
+  };
 
-    if (!user) {
-      return <div className="text-white">You must be logged in to access this page.</div>;
+  const handleItemSubmit = (data) => {
+    if (editingItem) {
+      updateItem.mutate({ id: editingItem.id, data });
+    } else {
+      createItem.mutate(data);
     }
+    setEditingItem(null);
+  };
 
-    return (
-      <div className="text-black p-10">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <p className="mt-4">Welcome, {user.email} 👋</p>
-      </div>
-    );
-  }
+  return (
+    <div className="space-y-8 p-6">
+      <section>
+        <h1 className="text-2xl font-bold">Orders</h1>
+        <OrderForm initialData={editingOrder} onSubmit={handleOrderSubmit} onCancel={() => setEditingOrder(null)} />
+        <OrderList
+          orders={orders}
+          onEdit={setEditingOrder}
+          onDelete={deleteOrder.mutate}
+        />
+      </section>
+
+      <section>
+        <h2 className="text-xl font-bold">Order Items</h2>
+        <OrderItemForm initialData={editingItem} onSubmit={handleItemSubmit} onCancel={() => setEditingItem(null)} />
+        <OrderItemList
+          orderItems={orderItems}
+          onEdit={setEditingItem}
+          onDelete={deleteItem.mutate}
+        />
+      </section>
+    </div>
+  );
+};
+
+export default AdminOrdersPage;

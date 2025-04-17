@@ -72,7 +72,7 @@ const ProductList = ({ onEdit }) => {
               className="w-full h-40 object-cover rounded"
             />
 
-            <h2 className="text-lg font-semibold mt-2 text-[#33434F]">{product.name}</h2>
+            <h2 className="text-lg font-semibold mt-2 text-[#1B2930]">{product.name}</h2>
             <p className="text-sm text-gray-600">${product.price}</p>
             <p className="text-sm text-gray-600 mt-1">{product.description}</p>
             <p className="text-sm text-gray-600 mt-1">Stock: {product.stock}</p>
@@ -80,7 +80,7 @@ const ProductList = ({ onEdit }) => {
             <div className="flex justify-end gap-4 mt-4">
               <button
                 onClick={() => handleEdit(product)}
-                className="text-[#33434F] hover:scale-110 transition"
+                className="text-[#1B2930] hover:scale-110 transition"
                 title="Edit"
               >
                 <Pencil size={20} />
@@ -88,7 +88,7 @@ const ProductList = ({ onEdit }) => {
 
               <button
                 onClick={() => handleDelete(product.id)}
-                className="text-[#33434F] hover:scale-110 transition"
+                className="text-[#1B2930] hover:scale-110 transition"
                 title="Delete"
               >
                 <Trash2 size={20} />
@@ -103,7 +103,7 @@ const ProductList = ({ onEdit }) => {
                         : product.image
                     )
                   }
-                  className="text-[#33434F] hover:scale-110 transition"
+                  className="text-[#1B2930] hover:scale-110 transition"
                   title="Preview"
                 >
                   <Eye size={20} />

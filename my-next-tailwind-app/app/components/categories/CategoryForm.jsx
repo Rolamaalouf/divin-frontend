@@ -57,7 +57,7 @@ const CategoryForm = ({ selectedCategory, onSuccess }) => {
         className="w-full p-2 mb-3 border rounded"
         required
       />
-      <button type="submit" className="bg-[#E2C269] text-[#33434F] px-4 py-2 rounded w-full">
+      <button type="submit" className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded w-full">
         {id ? 'Update' : 'Create'}
       </button>
     </form>

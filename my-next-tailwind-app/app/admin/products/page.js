@@ -19,16 +19,16 @@ const AdminItemsPage = () => {
       onClick={() => setTab("products")}
       className={`px-4 py-2 rounded ${
         tab === "products"
-          ? "bg-[#E2C269] text-[#33434F]"
-          : "bg-gray-200 text-[#33434F]"
+          ? "bg-[#E2C269] text-[#1B2930]"
+          : "bg-gray-200 text-[#1B2930]"
       }`}
     >
      Products
         </button>
         <button
           onClick={() => setTab("categories")}
-          className={`px-4 py-2 rounded ${tab === "categories" ? "bg-[#E2C269] text-[#33434F]"
-          : "bg-gray-200 text-[#33434F]"}`}
+          className={`px-4 py-2 rounded ${tab === "categories" ? "bg-[#E2C269] text-[#1B2930]"
+          : "bg-gray-200 text-[#1B2930]"}`}
         >
           Categories
         </button>

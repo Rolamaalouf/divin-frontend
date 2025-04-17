@@ -19,7 +19,7 @@ export default function Home() {
         className="w-full h-full object-cover  object-top translate-y-[-100px]"
         priority
       />
-      <div className="absolute inset-0 bg-[#34434F] object-top translate-y-[-100px] opacity-70" />
+      <div className="absolute inset-0 bg-[#1B2930] object-top translate-y-[-100px] opacity-70" />
     </div>
   </div>
 
@@ -47,7 +47,7 @@ export default function Home() {
         {/* CTA Button */}
         <Link
           href="/products"
-          className="absolute top-[540px] left-[1059px] w-[279px] h-[88px] flex items-center justify-center bg-[#34434F] text-[#E2C269] border border-[#E2C269] text-lg font-semibold hover:opacity-90 transition rounded"
+          className="absolute top-[540px] left-[1059px] w-[279px] h-[88px] flex items-center justify-center bg-[#1B2930] text-[#E2C269] border border-[#E2C269] text-lg font-semibold hover:opacity-90 transition rounded"
         >
           click to shop
         </Link>

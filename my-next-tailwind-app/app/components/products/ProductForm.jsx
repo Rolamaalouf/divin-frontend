@@ -181,7 +181,7 @@ const ProductForm = ({ selectedProduct, onSuccess }) => {
 
       <button
   type="submit"
-  className="bg-[#E2C269] text-[#33434F] px-4 py-2 rounded hover:brightness-105 w-full"
+  className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded hover:brightness-105 w-full"
 >
   {selectedProduct ? 'Update' : 'Create'}
 </button>
