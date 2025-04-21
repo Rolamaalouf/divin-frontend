@@ -1,6 +1,9 @@
 import React from 'react';
 import { toast } from 'react-toastify';
 import { useCategoryQuery, useDeleteCategory, useUpdateCategory } from '../../hooks/useCategoryHooks';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
 
 
 const CategoryList = ({ onEdit }) => {
@@ -8,16 +11,30 @@ const CategoryList = ({ onEdit }) => {
   const { mutate: deleteCategory } = useDeleteCategory();
   const { mutate: updateCategory } = useUpdateCategory();
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this category?")) return;
-
-    try {
-      await deleteCategory(id);
-      toast.success("Category deleted");
-    } catch (err) {
-      toast.error("Delete failed");
-    }
+  const handleDelete = (id) => {
+    confirmAlert({
+      title: 'Confirm Deletion',
+      message: 'Are you sure you want to delete this category?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            try {
+              await deleteCategory(id);
+              toast.success("Category deleted");
+            } catch (err) {
+              toast.error("Delete failed");
+            }
+          }
+        },
+        {
+          label: 'No',
+          // onClick: () => {} // No action needed for cancel
+        }
+      ]
+    });
   };
+  
 
   const handleUpdate = async (category) => {
     // Here you'd pass the selected category to the onEdit function.

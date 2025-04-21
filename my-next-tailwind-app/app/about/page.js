@@ -114,7 +114,7 @@ export default function AboutPage() {
             priority
           />
         </div>
-        <Header className="bg-[#34434F] bg-opacity-90 shadow-md" />
+        <Header className="bg-[#1B2930] bg-opacity-90 shadow-md" />
         <motion.div
           className="absolute top-[60%] right-[10%] transform -translate-y-1/2 text-right"
           initial={{ opacity: 0, y: 40 }}

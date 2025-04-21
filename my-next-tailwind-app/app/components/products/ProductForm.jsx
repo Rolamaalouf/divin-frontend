@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useCreateProduct, useUpdateProduct } from '../../hooks/useProductHooks';
-import { useCategories } from '../../context/CategoryContext';
+import { useCategoryQuery } from '../../hooks/useCategoryHooks'; // Use React Query for categories
 import { toast } from 'react-toastify';
 
 const ProductForm = ({ selectedProduct, onSuccess }) => {
-  const { categories } = useCategories();
+  const { data: categories, isLoading: categoriesLoading, isError: categoriesError } = useCategoryQuery();
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
 
@@ -40,6 +40,7 @@ const ProductForm = ({ selectedProduct, onSuccess }) => {
     } else {
       resetForm();
     }
+    // eslint-disable-next-line
   }, [selectedProduct]);
 
   const resetForm = () => {
@@ -97,6 +98,9 @@ const ProductForm = ({ selectedProduct, onSuccess }) => {
       console.error('Submit error:', err);
     }
   };
+
+  if (categoriesLoading) return <p>Loading categories...</p>;
+  if (categoriesError) return <p>Error loading categories.</p>;
 
   return (
     <form
@@ -180,11 +184,11 @@ const ProductForm = ({ selectedProduct, onSuccess }) => {
       </div>
 
       <button
-  type="submit"
-  className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded hover:brightness-105 w-full"
->
-  {selectedProduct ? 'Update' : 'Create'}
-</button>
+        type="submit"
+        className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded hover:brightness-105 w-full"
+      >
+        {selectedProduct ? 'Update' : 'Create'}
+      </button>
     </form>
   );
 };
