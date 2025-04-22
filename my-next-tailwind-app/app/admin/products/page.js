@@ -12,14 +12,18 @@ const AdminItemsPage = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const { data: products, isLoading } = useProducts();
 
-  const { data: products, isLoading: productsLoading } = useProducts();
+
 
   // Filter products based on selectedCategory
   const filteredProducts = selectedCategory
     ? products?.filter(p => String(p.category_id) === String(selectedCategory))
     : products;
-
+    const handleEdit = (product) => {
+      setEditingProduct(product);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
   return (
     <div className="p-1">
       {/* Tabs */}
@@ -53,13 +57,15 @@ const AdminItemsPage = () => {
             selectedProduct={editingProduct}
             onSuccess={() => setEditingProduct(null)}
           />
-          <ProductList
-            onEdit={(prod) => setEditingProduct(prod)}
-            products={filteredProducts}
-            isLoading={productsLoading}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
+<ProductList
+  onEdit={handleEdit}
+  products={filteredProducts}
+  isLoading={isLoading}
+  selectedCategory={selectedCategory}
+  setSelectedCategory={setSelectedCategory}
+  showCategoryFilter={true}
+/>
+
         </div>
       )}
 
@@ -73,6 +79,7 @@ const AdminItemsPage = () => {
           <CategoryList onEdit={(cat) => setEditingCategory(cat)} />
         </div>
       )}
+      
     </div>
   );
 };

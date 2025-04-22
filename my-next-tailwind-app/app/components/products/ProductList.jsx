@@ -1,15 +1,26 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useCategoryQuery } from '../../hooks/useCategoryHooks'; // React Query hook for categories
+import { useCategoryQuery } from '../../hooks/useCategoryHooks';
 import { useDeleteProduct } from '../../hooks/useProductHooks';
 import { toast } from 'react-toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import ProductActions from '../ProductActions';
 
-const ProductList = ({ onEdit, products, isLoading, selectedCategory, setSelectedCategory }) => {
+
+
+const ProductList = ({
+  onEdit,
+  products,
+  isLoading,
+  selectedCategory,
+  setSelectedCategory,
+  showCategoryFilter = false, 
+  showActions = false, 
+}) => {
   const { data: categories, isLoading: categoriesLoading, isError: categoriesError } = useCategoryQuery();
   const deleteProduct = useDeleteProduct();
   const queryClient = useQueryClient();
@@ -23,22 +34,23 @@ const ProductList = ({ onEdit, products, isLoading, selectedCategory, setSelecte
       buttons: [
         {
           label: 'Yes',
-          onClick: () =>
-            deleteProduct.mutate(id, {
-              onSuccess: () => {
-                toast.success('Product deleted');
-                queryClient.invalidateQueries(['products']); // Invalidate products query to refetch fresh data
-              },
-              onError: () => toast.error('Delete failed'),
-            }),
+          onClick: async () => {
+            try {
+              await deleteProduct.mutateAsync(id);
+              toast.success('Product deleted');
+              queryClient.invalidateQueries(['products']);
+            } catch (error) {
+              toast.error('Delete failed');
+            }
+          },
         },
         { label: 'Cancel' },
       ],
     });
   };
-
+  
   const handleEdit = (product) => {
-    onEdit(product);
+    onEdit?.(product);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -63,21 +75,23 @@ const ProductList = ({ onEdit, products, isLoading, selectedCategory, setSelecte
         </div>
       )}
 
-      {/* Category Filter */}
-      <div className="mb-6">
-        <select
-          className="px-4 py-2 border rounded w-full max-w-xs text-[#1B2930] bg-white"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          <option value="">All Categories</option>
-          {(categories || []).map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      {/* 🔥 CONDITIONAL CATEGORY FILTER */}
+      {showCategoryFilter && (
+        <div className="mb-6">
+          <select
+            className="px-4 py-2 border rounded w-full max-w-xs text-[#1B2930] bg-white"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            {(categories || []).map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Product Grid */}
       {(!products || products.length === 0) ? (
@@ -98,9 +112,11 @@ const ProductList = ({ onEdit, products, isLoading, selectedCategory, setSelecte
               </div>
 
               <h2 className="text-lg font-semibold mt-2 text-[#1B2930]">{product.name}</h2>
-              <p className="text-sm text-gray-600">${product.price}</p>
-              <p className="text-sm text-gray-600 mt-1">{product.description}</p>
-              <p className="text-sm text-gray-600 mt-1">Stock: {product.stock}</p>
+<p className="text-sm text-gray-600">${product.price}</p>
+<p className="text-sm text-gray-600 mt-1">{product.description}</p>
+<p className="text-sm text-gray-600 mt-1">Stock: {product.stock}</p>
+
+{showActions && <ProductActions product={product} />}
 
               <div className="flex justify-end gap-4 mt-4">
                 <button

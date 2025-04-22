@@ -56,7 +56,7 @@ export default function WinesPage() {
           <ProductList 
             products={filteredProducts} 
             isLoading={isLoading} 
-            selectedCategory={selectedCategory} 
+            showActions
           />
         </div>
       </div>

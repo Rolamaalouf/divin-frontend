@@ -52,5 +52,26 @@ export const deleteOrderItem = (id) => API.delete(`/api/order-items/${id}`).then
 export const createGuestOrderItem = (data) => API.post("/api/order-items/guest", data).then((res) => res.data);
 export const getMyOrderItems = () => API.get("/api/order-items/my-orders").then((res) => res.data);
 
+export const createCartItem = (data) => API.post("/api/cart-items", data);
+export const getCartItems = () => API.get("/api/cart-items").then((res) => res.data);
+export const getCartItemById = (id) => API.get(`/api/cart-items/${id}`).then((res) => res.data);
+export const updateCartItem = (id, data) => API.put(`/api/cart-items/${id}`, data);
+export const deleteCartItem = (id) => API.delete(`/api/cart-items/${id}`);
+
+export const createCart = (data) => API.post("/api/carts", data);
+export const getCarts = () => API.get("/api/carts").then((res) => res.data);
+export const getCartById = (id) => API.get(`/api/carts/${id}`).then((res) => res.data);
+export const updateCart = (id, data) => API.put(`/api/carts/${id}`, data);
+export const deleteCart = (id) => API.delete(`/api/carts/${id}`);
+
+
+
+export const createWishlistItem = (data) => API.post("/api/wishlists", data);
+export const getWishlist = () => API.get("/api/wishlists").then((res) => res.data);
+export const getWishlistItemById = (id) => API.get(`/api/wishlists/${id}`).then((res) => res.data);
+export const updateWishlistItem = (id, data) => API.put(`/api/wishlists/${id}`, data);
+export const deleteWishlistItem = (id) => API.delete(`/api/wishlists/${id}`);
+
+
 export default API;
 
