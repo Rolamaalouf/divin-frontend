@@ -12,3 +12,8 @@ export function getOrCreateGuestId() {
   }
   return guestId;
 }
+export function clearGuestId() {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(GUEST_ID_KEY);
+}
+

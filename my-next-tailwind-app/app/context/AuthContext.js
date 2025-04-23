@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { loginUser, logoutUser, getCurrentUser, registerUser } from '../lib/api';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { clearGuestId } from '../utils/guestId'
 
 const AuthContext = createContext();
 
@@ -49,6 +50,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await logoutUser();
+      clearGuestId(); 
       setUser(null);
       router.push('/login');
     } catch (error) {

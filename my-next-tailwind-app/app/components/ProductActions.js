@@ -42,18 +42,23 @@ const ProductActions = ({ product, currentUser }) => {
     )
   }
 
-  const handleAddToWishlist = () => {
-    addToWishlist(
-      { product_id: product.id },
-      {
-        onSuccess: () => toast.success("Added to wishlist!"),
-        onError: (err) => {
-          console.error("Add to wishlist error:", err)
-          toast.error(err.response?.data?.message || "Failed to add to wishlist")
-        },
+// components/ProductActions.js
+const handleAddToWishlist = () => {
+  addToWishlist(
+    { 
+      product_id: product.id,
+      // No need to pass guest_id here - handled in the mutationFn
+    },
+    {
+      onSuccess: () => toast.success("Added to wishlist!"),
+      onError: (err) => {
+        console.error("Add to wishlist error:", err);
+        toast.error(err.response?.data?.message || "Failed to add to wishlist");
       },
-    )
-  }
+    },
+  )
+};
+
 
   return (
     <div className="flex flex-col gap-4 mt-4">

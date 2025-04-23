@@ -1,5 +1,7 @@
 // lib/api.js
 import axios from "axios";
+import {getOrCreateGuestId} from '../utils/guestId'
+
 
 const API = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -64,10 +66,21 @@ export const getCartById = (id) => API.get(`/api/carts/${id}`).then((res) => res
 export const updateCart = (id, data) => API.put(`/api/carts/${id}`, data);
 export const deleteCart = (id) => API.delete(`/api/carts/${id}`);
 
-
-
-export const createWishlistItem = (data) => API.post("/api/wishlists", data);
-export const getWishlist = () => API.get("/api/wishlists").then((res) => res.data);
+export const createWishlistItem = async (data) => {
+  const guest_id = getOrCreateGuestId();
+  const payload = { ...data, guest_id };
+  console.log('[Wishlist] Sending payload:', payload); // 🧩 Check payload being sent
+  const res = await API.post("/api/wishlists", payload);
+  console.log('[Wishlist] Response:', res.data); // 🧩 Check server response
+  return res.data;
+};
+export const getWishlist = async () => {
+  const guest_id = getOrCreateGuestId();
+  const res = await API.get("/api/wishlists", {
+    params: { guest_id },
+  });
+  return res.data;
+};
 export const getWishlistItemById = (id) => API.get(`/api/wishlists/${id}`).then((res) => res.data);
 export const updateWishlistItem = (id, data) => API.put(`/api/wishlists/${id}`, data);
 export const deleteWishlistItem = (id) => API.delete(`/api/wishlists/${id}`);

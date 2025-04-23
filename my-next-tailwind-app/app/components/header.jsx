@@ -3,8 +3,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingCart, User, Menu, X } from 'lucide-react';
-import { useAuth } from '../context/AuthContext'; // Make sure this path is correct
+import { ShoppingCart, Heart, User, Menu, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext'; 
+import IconPopup from './IconPopup';
+import CartItemList from './CartItemList';
+import WishlistItemList from './WishlistItemList';
+import { useCartItems, useRemoveCartItem } from '../hooks/useCartHooks'; // Updated imports
+import { useWishlist, useRemoveFromWishlist } from '../hooks/useWishlistHooks'; // Updated imports
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -20,6 +25,32 @@ const Header = () => {
   const dropdownRef = useRef();
   const { user, logout } = useAuth();
 
+  // Fetch cart items and wishlist items
+  const {
+    data: cartItems = [],
+    isLoading: cartLoading,
+    error: cartError,
+  } = useCartItems();
+
+  const {
+    data: wishlistItems = [],
+    isLoading: wishlistLoading,
+    error: wishlistError,
+  } = useWishlist();
+
+  // Mutations to remove items
+  const removeCartItemMutation = useRemoveCartItem();
+  const removeWishlistItemMutation = useRemoveFromWishlist();
+
+  // Handlers for removing items
+  const handleRemoveCartItem = (id) => {
+    removeCartItemMutation.mutate(id);
+  };
+
+  const handleRemoveWishlistItem = (id) => {
+    removeWishlistItemMutation.mutate(id);
+  };
+
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
@@ -32,6 +63,7 @@ const Header = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Handle scroll background change
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
@@ -133,7 +165,22 @@ const Header = () => {
           )}
 
           {/* Cart icon */}
-          <ShoppingCart className="w-6 h-6 md:w-8 md:h-8" />
+          <IconPopup icon={ShoppingCart}>
+            {cartLoading && <p>Loading cart...</p>}
+            {cartError && <p>Error loading cart</p>}
+            {!cartLoading && !cartError && (
+              <CartItemList items={cartItems} onDelete={handleRemoveCartItem} />
+            )}
+          </IconPopup>
+
+          {/* Wishlist icon */}
+          <IconPopup icon={Heart}>
+            {wishlistLoading && <p>Loading wishlist...</p>}
+            {wishlistError && <p>Error loading wishlist</p>}
+            {!wishlistLoading && !wishlistError && (
+              <WishlistItemList items={wishlistItems} onDelete={handleRemoveWishlistItem} />
+            )}
+          </IconPopup>
         </div>
       </div>
 
