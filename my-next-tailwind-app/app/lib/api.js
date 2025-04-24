@@ -59,6 +59,11 @@ export const getCartItems = () => API.get("/api/cart-items").then((res) => res.d
 export const getCartItemById = (id) => API.get(`/api/cart-items/${id}`).then((res) => res.data);
 export const updateCartItem = (id, data) => API.put(`/api/cart-items/${id}`, data);
 export const deleteCartItem = (id) => API.delete(`/api/cart-items/${id}`);
+export const getMyCartItems = async () => {
+  const guest_id = getOrCreateGuestId();
+  const res = await API.get("/api/cart-items/my-cart", { params: { guest_id } });
+  return res.data;
+};
 
 export const createCart = (data) => API.post("/api/carts", data);
 export const getCarts = () => API.get("/api/carts").then((res) => res.data);

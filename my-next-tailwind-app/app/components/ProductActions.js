@@ -1,14 +1,14 @@
-"use client"
-
 import { useState } from "react"
 import { toast } from "react-toastify"
 import { useAddToCart } from "../hooks/useCartHooks"
 import { useAddToWishlist } from "../hooks/useWishlistHooks"
+import { useUpdateCartItem } from "../hooks/useCartHooks"
 
 const ProductActions = ({ product, currentUser }) => {
   const [quantity, setQuantity] = useState(1)
   const { mutate: addToCart, isPending: addingToCart } = useAddToCart()
   const { mutate: addToWishlist, isPending: addingToWishlist } = useAddToWishlist()
+  const { mutate: updateCartItem, isPending: updatingCartItem } = useUpdateCartItem()
 
   const handleAddToCart = () => {
     if (!product || !product.id) {
@@ -38,27 +38,42 @@ const ProductActions = ({ product, currentUser }) => {
           console.error("Add to cart error:", err)
           toast.error(err.response?.data?.message || "Failed to add to cart")
         },
-      },
+      }
     )
   }
 
-// components/ProductActions.js
-const handleAddToWishlist = () => {
-  addToWishlist(
-    { 
-      product_id: product.id,
-      // No need to pass guest_id here - handled in the mutationFn
-    },
-    {
-      onSuccess: () => toast.success("Added to wishlist!"),
-      onError: (err) => {
-        console.error("Add to wishlist error:", err);
-        toast.error(err.response?.data?.message || "Failed to add to wishlist");
-      },
-    },
-  )
-};
+  const handleUpdateQuantity = (cartItemId) => {
+    if (quantity < 1) {
+      toast.error("Quantity must be greater than 0")
+      return
+    }
 
+    updateCartItem(
+      { id: cartItemId, quantity },
+      {
+        onSuccess: () => toast.success("Cart item updated!"),
+        onError: (err) => {
+          console.error("Update cart item error:", err)
+          toast.error(err.response?.data?.message || "Failed to update cart item")
+        },
+      }
+    )
+  }
+
+  const handleAddToWishlist = () => {
+    addToWishlist(
+      { 
+        product_id: product.id,
+      },
+      {
+        onSuccess: () => toast.success("Added to wishlist!"),
+        onError: (err) => {
+          console.error("Add to wishlist error:", err);
+          toast.error(err.response?.data?.message || "Failed to add to wishlist");
+        },
+      },
+    )
+  };
 
   return (
     <div className="flex flex-col gap-4 mt-4">
