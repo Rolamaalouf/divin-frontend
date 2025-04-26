@@ -1,21 +1,23 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ShoppingCart, Heart, User, Menu, X } from 'lucide-react';
-import { useAuth } from '../context/AuthContext'; 
-import IconPopup from './IconPopup';
-import CartItemList from './CartItemList';
-import WishlistItemList from './WishlistItemList';
-import { useCartItems, useRemoveCartItem } from '../hooks/useCartHooks'; // Updated imports
-import { useWishlist, useRemoveFromWishlist } from '../hooks/useWishlistHooks'; // Updated imports
+import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { ShoppingCart, Heart, User, Menu, X } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import IconPopup from "./IconPopup";
+import CartItemList from "./CartItemList";
+import WishlistItemList from "./WishlistItemList";
+import { useCartItems, useRemoveCartItem } from "../hooks/useCartHooks";
+import { useWishlist, useRemoveFromWishlist } from "../hooks/useWishlistHooks";
+import { deleteCart } from "../lib/api";
+import {toast} from "react-toastify";
 
 const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
-  { name: 'Wines', href: '/wines' },
-  { name: 'Contact', href: '/contact' },
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Wines", href: "/wines" },
+  { name: "Contact", href: "/contact" },
 ];
 
 const Header = () => {
@@ -25,58 +27,79 @@ const Header = () => {
   const dropdownRef = useRef();
   const { user, logout } = useAuth();
 
-  // Fetch cart items and wishlist items
   const {
     data: cartItems = [],
     isLoading: cartLoading,
     error: cartError,
+    refetch: refetchCart,
   } = useCartItems();
 
   const {
     data: wishlistItems = [],
     isLoading: wishlistLoading,
     error: wishlistError,
+    refetch: refetchWishlist,
   } = useWishlist();
 
-  // Mutations to remove items
   const removeCartItemMutation = useRemoveCartItem();
   const removeWishlistItemMutation = useRemoveFromWishlist();
 
-  // Handlers for removing items
   const handleRemoveCartItem = (id) => {
-    removeCartItemMutation.mutate(id);
+    removeCartItemMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success("Item removed from cart");
+        refetchCart();
+      },
+      onError: () => toast.error("Failed to remove item"),
+    });
+  };
+
+  const handleClearCart = async () => {
+    if (!cartItems.length) return;
+    try {
+      const cartId = cartItems[0].cart_id;
+      await deleteCart(cartId);
+      toast.success("Cart cleared!");
+      refetchCart();
+    } catch (error) {
+      toast.error("Failed to clear cart");
+    }
   };
 
   const handleRemoveWishlistItem = (id) => {
-    removeWishlistItemMutation.mutate(id);
+    removeWishlistItemMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success("Item removed from wishlist");
+        refetchWishlist();
+      },
+      onError: () => toast.error("Failed to remove item"),
+    });
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
-    function handleClickOutside(e) {
+    const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false);
       }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Handle scroll background change
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 0);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const totalCartQty = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalWishlist = wishlistItems.length;
 
   return (
     <header
       className={`w-full px-4 py-3 shadow-sm sticky top-0 z-50 transition-colors duration-300 ${
-        isScrolled ? 'bg-[#1B2930]' : 'bg-transparent'
+        isScrolled ? "bg-[#1B2930]" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -123,7 +146,7 @@ const Header = () => {
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 text-gray-800">
                   <ul className="py-2 text-sm">
-                    {user.role === 'admin' && (
+                    {user.role === "admin" && (
                       <li>
                         <Link
                           href="/admin"
@@ -165,20 +188,27 @@ const Header = () => {
           )}
 
           {/* Cart icon */}
-          <IconPopup icon={ShoppingCart}>
+          <IconPopup icon={ShoppingCart} count={totalCartQty}>
             {cartLoading && <p>Loading cart...</p>}
             {cartError && <p>Error loading cart</p>}
             {!cartLoading && !cartError && (
-              <CartItemList items={cartItems} onDelete={handleRemoveCartItem} />
+              <CartItemList
+                items={cartItems}
+                onDelete={handleRemoveCartItem}
+                onClearCart={handleClearCart}
+              />
             )}
           </IconPopup>
 
           {/* Wishlist icon */}
-          <IconPopup icon={Heart}>
+          <IconPopup icon={Heart} count={totalWishlist}>
             {wishlistLoading && <p>Loading wishlist...</p>}
             {wishlistError && <p>Error loading wishlist</p>}
             {!wishlistLoading && !wishlistError && (
-              <WishlistItemList items={wishlistItems} onDelete={handleRemoveWishlistItem} />
+              <WishlistItemList
+                items={wishlistItems}
+                onDelete={handleRemoveWishlistItem}
+              />
             )}
           </IconPopup>
         </div>

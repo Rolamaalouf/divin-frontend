@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useCategoryQuery } from '../hooks/useCategoryHooks';
 
-const GlassFilterSection = ({ selectedCategory, setSelectedCategory }) => {
+const GlassFilterSection = ({ selectedCategory, setSelectedCategory, sortOrder, setSortOrder }) => {
   const { data: categories, isLoading, isError } = useCategoryQuery();
   const [dynamicText, setDynamicText] = useState('All our wines will leave you craving for more.');
 
@@ -18,10 +18,10 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory }) => {
         text = 'Our white wines promise to delight your senses and leave you wanting more.';
         break;
       case '2':
-        text = 'Our red wines are bold, rich, and full of flavor. Lorem ipsum.';
+        text = 'Our red wines are bold, rich, and full of flavor.';
         break;
       case '3':
-        text = 'Our rosé wines are the perfect balance of flavor and finesse. Lorem ipsum.';
+        text = 'Our rosé wines are the perfect balance of flavor and finesse.';
         break;
       default:
         text = 'All our wines will leave you craving for more.';
@@ -34,6 +34,10 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory }) => {
     const selected = e.target.value;
     setSelectedCategory(selected);
     updateDynamicText(selected);
+  };
+
+  const handleSortChange = (e) => {
+    setSortOrder(e.target.value);
   };
 
   const getGlassImage = () => {
@@ -53,23 +57,29 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory }) => {
   if (isError) return <p>Error loading categories.</p>;
 
   return (
-    <div className="relative w-full md:w-[1540px] h-[300px] bg-[#1B2930] mb-10 mt-10 flex items-center px-10 box-border">
+    <div className="relative w-full md:w-[1540px] h-[300px] bg-[#1B2930] mb-10 mt-10 flex items-center px-4 md:px-10 box-border gap-6">
       {/* Text on the left */}
-      <div className="text-[#E2C269] font-bold text-xl w-1/3 text-left">
+      <div className="text-[#E2C269] font-bold text-lg md:text-xl w-1/3 text-left">
         {dynamicText}
       </div>
 
       {/* Glass image centered */}
       <div className="flex justify-center flex-1">
-        <img src={getGlassImage()} alt="Wine Glass" className="w-[150px] h-auto" />
+        <div className="w-[150px] h-[300px] md:w-[180px] md:h-[360px] flex items-center justify-center overflow-hidden">
+          <img
+            src={getGlassImage()}
+            alt="Wine Glass"
+            className="max-h-full max-w-full object-contain"
+          />
+        </div>
       </div>
 
       {/* Buttons on the right */}
-      <div className="flex gap-4 w-1/3 justify-end">
+      <div className="flex gap-4 w-1/3 justify-end flex-wrap">
         <select
           value={selectedCategory}
           onChange={handleCategoryChange}
-          className="w-[203px] h-[76px] bg-[#1B2930] border border-[#E2C269] text-[#E2C269] px-4 py-2"
+          className="w-[150px] md:w-[203px] h-[56px] md:h-[76px] bg-[#1B2930] border border-[#E2C269] text-[#E2C269] px-4 py-2 text-sm md:text-base"
         >
           <option value="">All Wines</option>
           {categories?.map((cat) => (
@@ -79,10 +89,14 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory }) => {
           ))}
         </select>
 
-        <select className="w-[203px] h-[76px] bg-[#1B2930] border border-[#E2C269] text-[#E2C269] px-4 py-2">
-          <option>Sort</option>
-          <option>Price: Low to High</option>
-          <option>Price: High to Low</option>
+        <select
+          value={sortOrder}
+          onChange={handleSortChange}
+          className="w-[150px] md:w-[203px] h-[56px] md:h-[76px] bg-[#1B2930] border border-[#E2C269] text-[#E2C269] px-4 py-2 text-sm md:text-base"
+        >
+          <option value="">Sort</option>
+          <option value="low-to-high">Price: Low to High</option>
+          <option value="high-to-low">Price: High to Low</option>
         </select>
       </div>
     </div>

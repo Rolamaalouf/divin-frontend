@@ -1,56 +1,113 @@
-import React from 'react';
-import { useRemoveCartItem, useUpdateCartItem } from '../hooks/useCartHooks';
+'use client';
 
-const CartItemList = ({ items = [], onDelete }) => {
+import { useUpdateCartItem } from "../hooks/useCartHooks";
+import { toast } from "react-toastify";
+import { Trash2 } from "lucide-react"; // <-- import Trash2 from lucide-react
+
+const CartItemList = ({ items = [], onDelete, onClearCart }) => {
   const { mutate: updateCartItem } = useUpdateCartItem();
-  const { mutate: deleteCartItem } = useRemoveCartItem();
 
   const handleUpdateQuantity = (cartItemId, quantity) => {
-    if (quantity < 1) {
-      toast.error("Quantity must be greater than 0")
-      return
-    }
+    if (quantity < 1) return toast.error("Quantity must be greater than 0");
 
     updateCartItem(
       { id: cartItemId, quantity },
       {
         onSuccess: () => toast.success("Cart item updated!"),
-        onError: (err) => {
-          console.error("Update cart item error:", err)
-          toast.error(err.response?.data?.message || "Failed to update cart item")
-        },
+        onError: (err) =>
+          toast.error(err.response?.data?.message || "Failed to update cart item"),
       }
     );
-  }
+  };
+
+  const totalPrice = items.reduce(
+    (acc, item) => acc + item.quantity * (item.Product?.price || 0),
+    0
+  );
 
   return (
-    <div>
+    <div className="relative">
+      {/* Trash Icon Clear Cart Top Right */}
+      {items.length > 0 && (
+        <button
+          onClick={onClearCart}
+          className="absolute top-2 right-2 text-red-600 hover:text-red-800"
+          aria-label="Clear Cart"
+        >
+          <Trash2 className="w-5 h-5" />
+        </button>
+      )}
+
       {items.length === 0 ? (
         <p className="text-sm text-gray-600">Cart is empty.</p>
       ) : (
-        items.map((item) => (
-          <div key={item.id} className="flex justify-between items-center mb-2">
-            <div>
-              <p className="font-medium">{item.product?.name}</p>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) => handleUpdateQuantity(item.id, Number(e.target.value))}
-                  className="w-16 px-2 py-1 border rounded"
-                  min={1}
-                />
-                <span className="text-sm text-gray-500">Qty: {item.quantity}</span>
+        <>
+          <div className="space-y-4">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center gap-4 border-b pb-4"
+              >
+                {/* Product Image */}
+                <div className="w-[80px] h-[80px] flex items-center justify-center overflow-hidden bg-white rounded border">
+                  <div className="w-full h-full p-2">
+                    <img
+                      src={
+                        item.Product?.image && item.Product.image.length > 0
+                          ? item.Product.image[0]
+                          : "/placeholder.jpg"
+                      }
+                      alt={item.Product?.name || "Product image"}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
+
+                {/* Product Details */}
+                <div className="flex-1 flex flex-col justify-center">
+                  <p className="font-medium mb-1">{item.Product?.name || "Unnamed Product"}</p>
+                  <p className="text-sm text-gray-600 mb-1">
+                    ${item.Product?.price?.toFixed(2) || "0.00"} × {item.quantity}
+                  </p>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleUpdateQuantity(item.id, Number(e.target.value))
+                    }
+                    className="w-16 mt-1 px-2 py-1 border rounded text-sm"
+                    min={1}
+                  />
+                </div>
+
+                {/* Remove single item */}
+                <button
+                  onClick={() => onDelete(item.id)}
+                  className="text-red-600 text-sm hover:underline ml-auto"
+                >
+                  Remove
+                </button>
               </div>
-            </div>
+            ))}
+          </div>
+
+          {/* Total, View Cart, Checkout */}
+          <div className="mt-6 space-y-2">
+            <p className="font-semibold">Total: ${totalPrice.toFixed(2)}</p>
             <button
-              onClick={() => onDelete(item.id)}
-              className="text-red-600 text-sm hover:underline"
+              className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-900 text-sm"
+              onClick={() => window.location.href = '/cart'}
             >
-              Remove
+              View Cart
+            </button>
+            <button
+              className="w-full bg-[#E2C269] text-black py-2 rounded hover:bg-[#d1a72f] text-sm"
+              onClick={() => window.location.href = '/checkout'}
+            >
+              Checkout
             </button>
           </div>
-        ))
+        </>
       )}
     </div>
   );

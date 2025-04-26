@@ -1,86 +1,38 @@
-import { useState } from "react"
-import { toast } from "react-toastify"
-import { useAddToCart } from "../hooks/useCartHooks"
-import { useAddToWishlist } from "../hooks/useWishlistHooks"
-import { useUpdateCartItem } from "../hooks/useCartHooks"
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { useAddToCart, useUpdateCartItem } from "../hooks/useCartHooks";
+import { useAddToWishlist } from "../hooks/useWishlistHooks";
+
 
 const ProductActions = ({ product, currentUser }) => {
-  const [quantity, setQuantity] = useState(1)
-  const { mutate: addToCart, isPending: addingToCart } = useAddToCart()
-  const { mutate: addToWishlist, isPending: addingToWishlist } = useAddToWishlist()
-  const { mutate: updateCartItem, isPending: updatingCartItem } = useUpdateCartItem()
+  const [quantity, setQuantity] = useState(1);
+  const { mutate: addToCart, isPending: addingToCart } = useAddToCart();
+  const { mutate: addToWishlist, isPending: addingToWishlist } = useAddToWishlist();
+  const { mutate: updateCartItem, isPending: updatingCartItem } = useUpdateCartItem();
 
   const handleAddToCart = () => {
-    if (!product || !product.id) {
-      toast.error("Invalid product data")
-      return
-    }
+    if (!product?.id) return toast.error("Invalid product data");
+    if (quantity < 1) return toast.error("Select a valid quantity");
+    if (product.stock < quantity) return toast.error(`Only ${product.stock} in stock`);
 
-    if (quantity < 1) {
-      toast.error("Please select a valid quantity")
-      return
-    }
-
-    if (product.stock < quantity) {
-      toast.error(`Only ${product.stock} items available in stock`)
-      return
-    }
-
-    addToCart(
-      {
-        product_id: product.id,
-        quantity: quantity,
-        user_id: currentUser?.id || null,
-      },
-      {
-        onSuccess: () => toast.success("Added to cart!"),
-        onError: (err) => {
-          console.error("Add to cart error:", err)
-          toast.error(err.response?.data?.message || "Failed to add to cart")
-        },
-      }
-    )
-  }
-
-  const handleUpdateQuantity = (cartItemId) => {
-    if (quantity < 1) {
-      toast.error("Quantity must be greater than 0")
-      return
-    }
-
-    updateCartItem(
-      { id: cartItemId, quantity },
-      {
-        onSuccess: () => toast.success("Cart item updated!"),
-        onError: (err) => {
-          console.error("Update cart item error:", err)
-          toast.error(err.response?.data?.message || "Failed to update cart item")
-        },
-      }
-    )
-  }
+    addToCart({ product_id: product.id, quantity });
+  };
 
   const handleAddToWishlist = () => {
     addToWishlist(
-      { 
-        product_id: product.id,
-      },
+      { product_id: product.id },
       {
         onSuccess: () => toast.success("Added to wishlist!"),
-        onError: (err) => {
-          console.error("Add to wishlist error:", err);
-          toast.error(err.response?.data?.message || "Failed to add to wishlist");
-        },
-      },
-    )
+        onError: (err) =>
+          toast.error(err.response?.data?.message || "Failed to add to wishlist"),
+      }
+    );
   };
 
   return (
     <div className="flex flex-col gap-4 mt-4">
       <div className="flex items-center gap-2">
-        <label htmlFor="quantity" className="text-sm">
-          Quantity:
-        </label>
+        <label htmlFor="quantity" className="text-sm">Quantity:</label>
         <input
           id="quantity"
           type="number"
@@ -110,7 +62,7 @@ const ProductActions = ({ product, currentUser }) => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductActions
+export default ProductActions;

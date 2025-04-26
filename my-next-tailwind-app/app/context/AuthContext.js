@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import { loginUser, logoutUser, getCurrentUser, registerUser } from '../lib/api';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { clearGuestId } from '../utils/guestId'
+import { useQueryClient } from '@tanstack/react-query';
 
 const AuthContext = createContext();
 
@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -34,6 +35,7 @@ export const AuthProvider = ({ children }) => {
       const res = await loginUser(credentials);
       const loggedUser = res.data?.user;
       setUser(loggedUser);
+      queryClient.invalidateQueries({ queryKey: ['cart-items'] }); // Guest cart replaced
 
       if (loggedUser?.role === 'admin') {
         router.push('/admin');
@@ -50,8 +52,8 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await logoutUser();
-      clearGuestId(); 
       setUser(null);
+      queryClient.invalidateQueries({ queryKey: ['cart-items'] }); // Clear user cart
       router.push('/login');
     } catch (error) {
       toast.error('Logout failed');
@@ -63,25 +65,25 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await registerUser(formData);
       toast.success('Registered successfully!');
-  
-      // Try logging in after registration
+
+      // Auto login after registration
       const loginRes = await loginUser({ email: formData.email, password: formData.password });
       const loggedUser = loginRes.data?.user;
       setUser(loggedUser);
-  
+      queryClient.invalidateQueries({ queryKey: ['cart-items'] }); // Sync new user cart
+
       if (loggedUser?.role === 'admin') {
         router.push('/admin');
       } else {
-        router.push('/'); // or router.push('/login') if you want that
+        router.push('/');
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Registration or auto-login failed');
-      throw error; // Let RegisterPage catch this too
+      toast.error(error?.response?.data?.message || 'Registration or login failed');
+      throw error;
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <AuthContext.Provider value={{ user, login, logout, register, loading }}>

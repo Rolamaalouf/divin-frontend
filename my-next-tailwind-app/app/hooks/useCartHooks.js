@@ -1,72 +1,112 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { createCart, getMyCartItems, getCarts, createCartItem, getCartItems, deleteCartItem, updateCartItem } from "../lib/api"
-import { getOrCreateGuestId } from "../utils/cartUtils"
+import { useAuth } from "../context/AuthContext";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createCart,
+  getCarts,
+  createCartItem,
+  deleteCartItem,
+  updateCartItem,
+  getMyCartItems,
+} from "../lib/api";
+import { useGuestId } from "../utils/guestId";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
-export const useCartItems = () =>
-  useQuery({
-    queryKey: ["cart-items"],
-    queryFn: getMyCartItems,
-  })
+// Helper to generate the query key based on user or guest
+const getCartKey = (user, guestId) => ["cart-items", user?.id ?? guestId];
 
+// GET my cart items
+export const useCartItems = () => {
+  const { user, loading } = useAuth();
+  const guestId = useGuestId();
+  const enabled = !loading && (!!user || !!guestId);
+  const key = getCartKey(user, guestId);
+
+  return useQuery({
+    queryKey: key,
+    queryFn: () => getMyCartItems(user?.id ?? null, guestId),
+    enabled,
+  });
+};
+
+// ADD to cart
 export const useAddToCart = () => {
-  const queryClient = useQueryClient()
-
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const guestId = useGuestId();
+  const key = getCartKey(user, guestId);
   return useMutation({
-    mutationFn: async ({ product_id, quantity, user_id }) => {
-      try {
-        // Step 1: Try to fetch existing carts
-        const carts = await getCarts()
-        const guest_id = getOrCreateGuestId()
+    mutationFn: async ({ product_id, quantity }) => {
+      const user_id = user?.id ?? null;
+      const carts = await getCarts();
 
-        let cart = carts.find((c) => (user_id ? c.user_id === user_id : c.guest_id === guest_id))
+      let cart = carts.find(c =>
+        user_id ? c.user_id === user_id : c.guest_id === guestId
+      );
 
-        // Step 2: If no cart exists, create one
-        if (!cart) {
-          const response = await createCart({ user_id, guest_id })
-          cart = response.data || response // Handle different response formats
-        }
-
-        if (!cart || !cart.id) {
-          throw new Error("Failed to create or find cart")
-        }
-
-        // Step 3: Add item to the found or created cart
-        const response = await createCartItem({
-          cart_id: cart.id,
-          product_id,
-          quantity,
-        })
-
-        return response.data || response // Handle different response formats
-      } catch (error) {
-        console.error("Add to cart error:", error)
-        throw error
+      if (!cart) {
+        cart = await createCart({ user_id, guest_id: guestId });
+        cart = cart.data || cart;
       }
+
+      if (!cart?.id) throw new Error("Failed to find or create cart");
+
+      const response = await createCartItem({
+        cart_id: cart.id,
+        product_id,
+        quantity,
+      });
+
+      return response.data || response;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart-items"] })
+      queryClient.invalidateQueries({ queryKey: key });
+      toast.success("Added to cart!"); // 🔥 Move toast here
     },
-  })
-}
-
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to add to cart");
+    },
+  });
+};
+// REMOVE from cart
 export const useRemoveCartItem = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const guestId = useGuestId();
+  const key = getCartKey(user, guestId);
+
   return useMutation({
     mutationFn: deleteCartItem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart-items"] })
+      queryClient.invalidateQueries({ queryKey: key });
     },
-  })
-}
+  });
+};
+
+// UPDATE cart item quantity
 export const useUpdateCartItem = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const guestId = useGuestId();
+  const key = getCartKey(user, guestId);
 
   return useMutation({
     mutationFn: async ({ id, quantity }) => {
-      return await updateCartItem(id, { quantity })
+      return await updateCartItem(id, { quantity });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart-items"] })
+      queryClient.invalidateQueries({ queryKey: key });
     },
-  })
-}
+  });
+};
+
+// Invalidate cart when auth changes
+export const useSyncCartOnAuthChange = () => {
+  const { user } = useAuth();
+  const guestId = useGuestId();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: getCartKey(user, guestId) });
+  }, [user, guestId, queryClient]);
+};

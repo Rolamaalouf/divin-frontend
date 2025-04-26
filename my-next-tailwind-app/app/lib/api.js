@@ -1,6 +1,6 @@
 // lib/api.js
 import axios from "axios";
-import {getOrCreateGuestId} from '../utils/guestId'
+
 
 
 const API = axios.create({
@@ -59,11 +59,15 @@ export const getCartItems = () => API.get("/api/cart-items").then((res) => res.d
 export const getCartItemById = (id) => API.get(`/api/cart-items/${id}`).then((res) => res.data);
 export const updateCartItem = (id, data) => API.put(`/api/cart-items/${id}`, data);
 export const deleteCartItem = (id) => API.delete(`/api/cart-items/${id}`);
-export const getMyCartItems = async () => {
-  const guest_id = getOrCreateGuestId();
-  const res = await API.get("/api/cart-items/my-cart", { params: { guest_id } });
+export const getMyCartItems = async (user_id = null, guest_id = null) => {
+  const params = {};
+  if (user_id) params.user_id = user_id;
+  if (guest_id) params.guest_id = guest_id;
+
+  const res = await API.get("/api/cart-items/my-cart", { params });
   return res.data;
 };
+
 
 export const createCart = (data) => API.post("/api/carts", data);
 export const getCarts = () => API.get("/api/carts").then((res) => res.data);
@@ -72,20 +76,22 @@ export const updateCart = (id, data) => API.put(`/api/carts/${id}`, data);
 export const deleteCart = (id) => API.delete(`/api/carts/${id}`);
 
 export const createWishlistItem = async (data) => {
-  const guest_id = getOrCreateGuestId();
-  const payload = { ...data, guest_id };
-  console.log('[Wishlist] Sending payload:', payload); // 🧩 Check payload being sent
-  const res = await API.post("/api/wishlists", payload);
-  console.log('[Wishlist] Response:', res.data); // 🧩 Check server response
+  // `guest_id` and/or `user_id` should now be passed in from the hook/component
+  console.log('[Wishlist] Sending payload:', data);
+  const res = await API.post("/api/wishlists", data);
+  console.log('[Wishlist] Response:', res.data);
   return res.data;
 };
-export const getWishlist = async () => {
-  const guest_id = getOrCreateGuestId();
-  const res = await API.get("/api/wishlists", {
-    params: { guest_id },
-  });
+
+export const getWishlist = async (user_id = null, guest_id = null) => {
+  const params = {};
+  if (user_id) params.user_id = user_id;
+  if (guest_id) params.guest_id = guest_id;
+
+  const res = await API.get("/api/wishlists", { params });
   return res.data;
 };
+
 export const getWishlistItemById = (id) => API.get(`/api/wishlists/${id}`).then((res) => res.data);
 export const updateWishlistItem = (id, data) => API.put(`/api/wishlists/${id}`, data);
 export const deleteWishlistItem = (id) => API.delete(`/api/wishlists/${id}`);

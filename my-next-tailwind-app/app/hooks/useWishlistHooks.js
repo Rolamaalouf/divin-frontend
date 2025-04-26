@@ -1,37 +1,55 @@
+'use client';
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createWishlistItem,
   getWishlist,
   deleteWishlistItem,
 } from '../lib/api';
-import { getOrCreateGuestId } from '../utils/guestId';
-export const useWishlist = () =>
-  useQuery({
-    queryKey: ['wishlist'],
-    queryFn: getWishlist,
+import { useAuth } from '../context/AuthContext';
+import { useGuestId } from "../utils/guestId"
+
+// GET wishlist with user or guest_id
+export const useWishlist = () => {
+  const { user, loading } = useAuth();
+  const guestId = useGuestId();
+
+  const enabled = !loading && (!!user || !!guestId);
+
+  return useQuery({
+    queryKey: ['wishlist', user?.id ?? guestId],
+    queryFn: () => getWishlist(user?.id ?? null, guestId),
+    enabled,
   });
+};
 
-// hooks/useWishlistHooks.js
+// ADD to wishlist
 export const useAddToWishlist = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: (data) => {
-        const guest_id = getOrCreateGuestId(); // Get guest ID here
-        return createWishlistItem({ ...data, guest_id });
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['wishlist'] });
-      },
-    });
-  };
-  
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const guestId = useGuestId();
 
+  return useMutation({
+    mutationFn: async (data) => {
+      const user_id = user?.id ?? null;
+      return await createWishlistItem({ ...data, user_id, guest_id: guestId });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['wishlist', user?.id ?? guestId] });
+    },
+  });
+};
+
+// REMOVE from wishlist
 export const useRemoveFromWishlist = () => {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const guestId = useGuestId();
+
   return useMutation({
     mutationFn: deleteWishlistItem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+      queryClient.invalidateQueries({ queryKey: ['wishlist', user?.id ?? guestId] });
     },
   });
 };

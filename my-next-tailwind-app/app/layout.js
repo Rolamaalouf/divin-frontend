@@ -22,14 +22,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+      <ReactQueryProvider>
         <AuthClientWrapper>
-          <ReactQueryProvider>
           <GuestIdProvider>
           <main>{children}</main>
           <ToastContainer position="top-right" autoClose={3000} />
           </GuestIdProvider>
-          </ReactQueryProvider>
         </AuthClientWrapper>
+        </ReactQueryProvider>
       </body>
     </html>
   );

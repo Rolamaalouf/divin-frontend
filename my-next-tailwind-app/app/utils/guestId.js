@@ -1,19 +1,19 @@
-import { v4 as uuidv4 } from 'uuid';
+import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
-const GUEST_ID_KEY = 'guest_id';
+export const useGuestId = () => {
+  const [guestId, setGuestId] = useState(null);
 
-export function getOrCreateGuestId() {
-  if (typeof window === 'undefined') return null;
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let id = localStorage.getItem("guest_id");
+      if (!id) {
+        id = uuidv4();
+        localStorage.setItem("guest_id", id);
+      }
+      setGuestId(id);
+    }
+  }, []);
 
-  let guestId = localStorage.getItem(GUEST_ID_KEY);
-  if (!guestId) {
-    guestId = uuidv4();
-    localStorage.setItem(GUEST_ID_KEY, guestId);
-  }
   return guestId;
-}
-export function clearGuestId() {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem(GUEST_ID_KEY);
-}
-
+};
