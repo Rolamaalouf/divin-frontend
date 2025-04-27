@@ -1,4 +1,4 @@
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext"; 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createCart,
@@ -7,6 +7,7 @@ import {
   deleteCartItem,
   updateCartItem,
   getMyCartItems,
+  deleteCart
 } from "../lib/api";
 import { useGuestId } from "../utils/guestId";
 import { useEffect } from "react";
@@ -61,13 +62,13 @@ export const useAddToCart = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: key });
-      toast.success("Added to cart!"); // 🔥 Move toast here
     },
     onError: (err) => {
       toast.error(err.response?.data?.message || "Failed to add to cart");
     },
   });
 };
+
 // REMOVE from cart
 export const useRemoveCartItem = () => {
   const queryClient = useQueryClient();
@@ -80,7 +81,39 @@ export const useRemoveCartItem = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: key });
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to remove cart item");
+    },
   });
+};
+
+// DELETE the entire cart
+export const useDeleteCart = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const guestId = useGuestId();
+  const key = getCartKey(user, guestId);
+
+  return useMutation({
+    mutationFn: (cartId) => deleteCart(cartId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: key });
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to clear the cart");
+    },
+  });
+};
+
+// Invalidate cart when auth changes
+export const useSyncCartOnAuthChange = () => {
+  const { user } = useAuth();
+  const guestId = useGuestId();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: getCartKey(user, guestId) });
+  }, [user, guestId, queryClient]);
 };
 
 // UPDATE cart item quantity
@@ -97,16 +130,8 @@ export const useUpdateCartItem = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: key });
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to update cart item");
+    },
   });
-};
-
-// Invalidate cart when auth changes
-export const useSyncCartOnAuthChange = () => {
-  const { user } = useAuth();
-  const guestId = useGuestId();
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: getCartKey(user, guestId) });
-  }, [user, guestId, queryClient]);
 };
