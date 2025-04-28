@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useAddToCart, useUpdateCartItem } from "../hooks/useCartHooks";
+import { useAddToCart} from "../hooks/useCartHooks";
 import { useAddToWishlist } from "../hooks/useWishlistHooks";
 
 
@@ -8,7 +8,7 @@ const ProductActions = ({ product, currentUser }) => {
   const [quantity, setQuantity] = useState(1);
   const { mutate: addToCart, isPending: addingToCart } = useAddToCart();
   const { mutate: addToWishlist, isPending: addingToWishlist } = useAddToWishlist();
-  const { mutate: updateCartItem, isPending: updatingCartItem } = useUpdateCartItem();
+
 
   const handleAddToCart = () => {
     if (!product?.id) return toast.error("Invalid product data");

@@ -11,7 +11,7 @@ import WishlistItemList from "./WishlistItemList";
 import { useCartItems, useRemoveCartItem } from "../hooks/useCartHooks";
 import { useWishlist, useRemoveFromWishlist } from "../hooks/useWishlistHooks";
 import { deleteCart } from "../lib/api";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -24,7 +24,9 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [cartPopupOpen, setCartPopupOpen] = useState(false);
   const dropdownRef = useRef();
+  const popupRef = useRef();  
   const { user, logout } = useAuth();
 
   const {
@@ -78,8 +80,11 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
+        setCartPopupOpen(false);
+      }
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false);
+        setDropdownOpen(false); 
       }
     };
 
@@ -96,6 +101,24 @@ const Header = () => {
   const totalCartQty = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalWishlist = wishlistItems.length;
 
+  // Open the popup briefly when cartItems change
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      setCartPopupOpen(true);
+      const timer = setTimeout(() => setCartPopupOpen(false), 60000); 
+      return () => clearTimeout(timer);
+    }
+  }, [cartItems]);
+
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      const timer = setTimeout(() => {
+        setCartPopupOpen(false);
+      }, 1500); // 1.5 seconds delay
+      return () => clearTimeout(timer);
+    }
+  }, [cartItems]);
+
   return (
     <header
       className={`w-full px-4 py-3 shadow-sm sticky top-0 z-50 transition-colors duration-300 ${
@@ -103,12 +126,11 @@ const Header = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Logo + Burger */}
+        {/* Logo and Mobile Menu */}
         <div className="flex items-center gap-2">
           <Link href="/">
             <Image src="/logo.png" alt="Logo" width={100} height={40} />
           </Link>
-
           <button
             className="md:hidden ml-2 text-[#E2C269]"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -118,7 +140,7 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Desktop nav */}
+        {/* Desktop Nav */}
         <nav className="hidden md:flex gap-10">
           {navLinks.map((link) => (
             <Link
@@ -133,18 +155,17 @@ const Header = () => {
 
         {/* Icons */}
         <div className="flex items-center gap-4 text-[#E2C269] relative">
-          {/* User icon with dropdown */}
+          {/* User */}
           {user ? (
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 aria-label="User menu"
               >
-                <User className="w-6 h-6 md:w-8 md:h-8 hover:text-white transition-colors" />
+                <User className="w-6 h-6  md:w-8 md:h-8 hover:text-white transition-colors" />
               </button>
-
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 text-gray-800">
+                <div className="absolute  bg-white right-0 mt-2 w-48 rounded-md  z-50 text-gray-800">
                   <ul className="py-2 text-sm">
                     {user.role === "admin" && (
                       <li>
@@ -187,20 +208,31 @@ const Header = () => {
             </Link>
           )}
 
-          {/* Cart icon */}
-          <IconPopup icon={ShoppingCart} count={totalCartQty}>
+          <IconPopup
+            icon={ShoppingCart}
+            count={totalCartQty}
+            open={cartPopupOpen}
+            setOpen={setCartPopupOpen}
+            ref={popupRef} 
+          >
             {cartLoading && <p>Loading cart...</p>}
             {cartError && <p>Error loading cart</p>}
             {!cartLoading && !cartError && (
-              <CartItemList
-                items={cartItems}
-                onDelete={handleRemoveCartItem}
-                onClearCart={handleClearCart}
-              />
+              <div className="fixed top-20 right-0 w-96 bg-white shadow-lg rounded-lg p-6 z-50 max-h-[600px] overflow-y-auto">
+                {cartItems.length === 0 ? (
+                  <p>Your cart is empty</p>
+                ) : (
+                  <CartItemList
+                    items={cartItems}
+                    onDelete={handleRemoveCartItem}
+                    onClearCart={handleClearCart}
+                  />
+                )}
+              </div>
             )}
           </IconPopup>
 
-          {/* Wishlist icon */}
+          {/* Wishlist */}
           <IconPopup icon={Heart} count={totalWishlist}>
             {wishlistLoading && <p>Loading wishlist...</p>}
             {wishlistError && <p>Error loading wishlist</p>}
@@ -214,15 +246,14 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile nav */}
+      {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden mt-2 flex flex-col gap-3 px-4">
+        <div className="md:hidden mt-2 flex flex-col gap-4">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className="text-[#E2C269] text-[20px] font-medium hover:underline"
+              className="text-[#E2C269] font-semibold text-lg hover:text-white"
             >
               {link.name}
             </Link>

@@ -1,37 +1,34 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
 
-const IconPopup = ({ icon: Icon, children, count = 0 }) => {
-  const [open, setOpen] = useState(false);
-  const popupRef = useRef();
+import React, { forwardRef } from "react";
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (popupRef.current && !popupRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
+const IconPopup = forwardRef(({ 
+  icon: Icon, 
+  count, 
+  children, 
+  open, 
+  setOpen 
+}, ref) => {
   return (
-    <div className="relative" ref={popupRef}>
-      <button onClick={() => setOpen(!open)} aria-label="Toggle popup" className="relative">
+    <div className="relative" ref={ref}>
+      <button onClick={() => setOpen(!open)} aria-label="Toggle popup">
         <Icon className="w-6 h-6 md:w-8 md:h-8 hover:text-white transition-colors" />
         {count > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
             {count}
           </span>
         )}
       </button>
+
       {open && (
-        <div className="absolute right-0 mt-2 w-72 bg-white shadow-lg rounded-md z-50 p-3 text-black max-h-96 overflow-y-auto">
+        <div className="fixed top-20 right-0 w-96 text-gray-600 bg-white shadow-lg rounded-lg p-6 z-50 max-h-[600px] overflow-y-auto">
           {children}
         </div>
       )}
     </div>
   );
-};
+});
+
+IconPopup.displayName = "IconPopup"; // Critical fix
 
 export default IconPopup;

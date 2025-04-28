@@ -1,19 +1,24 @@
 "use client";
 
+import { useCreateOrder } from "../hooks/useOrderHooks";
 import { useDeleteCart, useUpdateCartItem } from "../hooks/useCartHooks";
 import { Trash2 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { useGuestId } from "../utils/guestId";
+import { toast } from "react-toastify";
 
-
-const CartItemList = ({ items = [], onDelete, onClearCart }) => {
+const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
+  shippingAddressInput = "Not specified", 
+  selectedShippingFee = 0,
+  promoInput = null }) => {
   const { mutate: updateCartItem } = useUpdateCartItem();
-  const { mutate: clearCart } = useDeleteCart();  // Using the deleteCart mutation
-
+  const { mutate: clearCart } = useDeleteCart();
+  const { mutate: createOrder, isLoading } = useCreateOrder();
+  const { user } = useAuth();
+  const guestId = useGuestId();
 
   const handleUpdateQuantity = (cartItemId, quantity) => {
-    if (quantity < 1) {
-      return; // silently ignore invalid quantity
-    }
-
+    if (quantity < 1) return;
     updateCartItem({ id: cartItemId, quantity });
   };
 
@@ -23,21 +28,73 @@ const CartItemList = ({ items = [], onDelete, onClearCart }) => {
   );
 
   const handleClearCart = () => {
-    // Prefer cartId from items, fallback to null (do NOT use guestId here)
     const cartId = items[0]?.cartId || null;
-
-    if (cartId) {
-      clearCart(cartId);
-    }
-    // silently ignore if no cartId found
+    if (cartId) clearCart(cartId);
   };
+
+  const handleCheckout = () => {
+    if (items.length === 0 || totalPrice === 0) {
+      toast.error("Your cart is empty. Cannot checkout.");
+      return;
+    }
+  
+    const mappedItems = items.map(item => ({
+      product_id: item.productId ?? null,  // <-- fixed: productId (your actual field)
+      quantity: item.quantity ?? 1,
+      price: item.price ?? 0,
+    }));
+  
+    console.log("Mapped order items:", mappedItems);
+  
+    const hasInvalidItem = mappedItems.some(
+      (item) => !item.product_id || item.quantity < 1
+    );
+    if (hasInvalidItem) {
+      toast.error("One or more cart items are missing product details.");
+      return;
+    }
+  
+    const orderData = {
+      user_id: user?.id || null,
+      guest_id: user?.id ? null : guestId || null,
+      status: "pending",
+      address: shippingAddressInput,
+      shipping_fees: Number(selectedShippingFee),
+      promocode: promoInput,
+      items: mappedItems
+    };
+  
+    createOrder(orderData, {
+      onSuccess: (response) => {
+        const orderId = response?.order?.id;
+        if (!orderId) {
+          toast.error("Order creation failed. No order ID received.");
+          return;
+        }
+        toast.success("Order placed successfully!");
+        handleClearCart();
+        if (onCheckout) onCheckout(orderId);
+        window.location.href = `/checkout?id=${orderId}`;
+      },
+      onError: (error) => {
+        toast.error(
+          error?.response?.data?.error ||
+          error.message ||
+          "Checkout failed. Please try again."
+        );
+      },
+    });
+  };
+  
+  
+  
 
   return (
     <div className="relative">
       {/* Clear Cart Button */}
       {items.length > 0 && (
         <button
-          onClick={handleClearCart}  // Clear the entire cart
+          onClick={handleClearCart}
           className="absolute top-2 right-2 text-red-600 hover:text-red-800"
           aria-label="Clear Cart"
         >
@@ -55,7 +112,7 @@ const CartItemList = ({ items = [], onDelete, onClearCart }) => {
               return (
                 <div key={key} className="flex items-center gap-4 border-b pb-4">
                   {/* Product Image */}
-                  <div className="w-[80px] h-[80px] flex items-center justify-center overflow-hidden bg-white rounded border">
+                  <div className="w-[80px] h-[80px] flex items-center justify-center overflow-hidden bg-transparent rounded border">
                     <div className="w-full h-full p-2">
                       <img
                         src={item.image?.[0] || "/placeholder.jpg"}
@@ -82,10 +139,10 @@ const CartItemList = ({ items = [], onDelete, onClearCart }) => {
                     />
                   </div>
 
-                  {/* Remove single item */}
+                  {/* Remove Single Item */}
                   <button
                     onClick={() => onDelete(item.cartItemId)}
-                    className="text-red-600 text-sm hover:underline ml-auto"
+                    className="text-gray-800 text-sm hover:underline ml-auto"
                   >
                     Remove
                   </button>
@@ -104,10 +161,11 @@ const CartItemList = ({ items = [], onDelete, onClearCart }) => {
               View Cart
             </button>
             <button
-              className="w-full bg-[#E2C269] text-black py-2 rounded hover:bg-[#d1a72f] text-sm"
-              onClick={() => (window.location.href = "/checkout")}
+              disabled={isLoading}
+              className="w-full bg-[#E2C269] text-black py-2 rounded hover:bg-[#d1a72f] text-sm disabled:opacity-50"
+              onClick={handleCheckout}
             >
-              Checkout
+              {isLoading ? "Processing..." : "Checkout"}
             </button>
           </div>
         </>
