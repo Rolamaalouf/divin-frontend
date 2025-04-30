@@ -44,8 +44,6 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
       price: item.price ?? 0,
     }));
   
-    console.log("Mapped order items:", mappedItems);
-  
     const hasInvalidItem = mappedItems.some(
       (item) => !item.product_id || item.quantity < 1
     );
@@ -56,7 +54,7 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
   
     const orderData = {
       user_id: user?.id || null,
-      guest_id: user?.id ? null : guestId || null,
+      guest_id: !user?.id && guestId ? guestId : null,
       status: "pending",
       address: shippingAddressInput,
       shipping_fees: Number(selectedShippingFee),

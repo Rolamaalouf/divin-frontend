@@ -53,6 +53,9 @@ export const updateOrderItem = (id, data) => API.put(`/api/order-items/${id}`, d
 export const deleteOrderItem = (id) => API.delete(`/api/order-items/${id}`).then((res) => res.data);
 export const createGuestOrderItem = (data) => API.post("/api/order-items/guest", data).then((res) => res.data);
 export const getMyOrderItems = () => API.get("/api/order-items/my-orders").then((res) => res.data);
+export const getOrderItemsByOrderId = (orderId) =>
+  API.get(`/api/order-items/by-order/${orderId}`).then((res) => res.data);
+
 
 export const createCartItem = (data) => API.post("/api/cart-items", data);
 export const getCartItems = () => API.get("/api/cart-items").then((res) => res.data);

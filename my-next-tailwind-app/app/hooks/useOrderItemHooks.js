@@ -5,6 +5,8 @@ import {
   createOrderItem,
   updateOrderItem,
   deleteOrderItem,
+  getMyOrderItems,
+  getOrderItemsByOrderId
 } from '../lib/api';
 
 export const useOrderItems = () =>
@@ -13,11 +15,11 @@ export const useOrderItems = () =>
     queryFn: getOrderItems,
   });
 
-export const useOrderItem = (id) =>
+export const useOrderItem =(orderId) =>
   useQuery({
-    queryKey: ['orderItem', id],
-    queryFn: () => getOrderItemById(id),
-    enabled: !!id,
+    queryKey: ['orderItems', orderId],
+    queryFn: () => getOrderItemById(orderId),
+    enabled: !!orderId,
   });
 
 export const useCreateOrderItem = () => {
@@ -43,3 +45,15 @@ export const useDeleteOrderItem = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['orderItems'] }),
   });
 };
+export const useMyOrderItems = () =>
+  useQuery({
+    queryKey: ['myOrderItems'],
+    queryFn: getMyOrderItems,
+  });
+export const useOrderItemsByOrderId = (orderId) =>
+    useQuery({
+      queryKey: ['orderItemsByOrderId', orderId],
+      queryFn: () => getOrderItemsByOrderId(orderId),
+      enabled: !!orderId, // only run if orderId exists
+    });
+  
