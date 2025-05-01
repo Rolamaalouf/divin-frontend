@@ -29,6 +29,6 @@ const IconPopup = forwardRef(({
   );
 });
 
-IconPopup.displayName = "IconPopup"; // Critical fix
+IconPopup.displayName = "IconPopup";
 
 export default IconPopup;

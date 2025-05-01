@@ -4,10 +4,11 @@ import { useAddToCart} from "../hooks/useCartHooks";
 import { useAddToWishlist } from "../hooks/useWishlistHooks";
 
 
-const ProductActions = ({ product, currentUser }) => {
+const ProductActions = ({ product, currentUser , showStock = true, hideWishlist = false,  }) => {
   const [quantity, setQuantity] = useState(1);
   const { mutate: addToCart, isPending: addingToCart } = useAddToCart();
   const { mutate: addToWishlist, isPending: addingToWishlist } = useAddToWishlist();
+
 
 
   const handleAddToCart = () => {
@@ -42,7 +43,7 @@ const ProductActions = ({ product, currentUser }) => {
           onChange={(e) => setQuantity(Number(e.target.value))}
           className="w-16 px-2 py-1 border rounded"
         />
-        <span className="text-xs text-gray-500">In stock: {product.stock}</span>
+
       </div>
 
       <div className="flex gap-4">
@@ -53,13 +54,15 @@ const ProductActions = ({ product, currentUser }) => {
         >
           {addingToCart ? "Adding..." : product.stock < 1 ? "Out of Stock" : "Add to Cart"}
         </button>
-        <button
-          onClick={handleAddToWishlist}
-          disabled={addingToWishlist}
-          className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded hover:brightness-110 disabled:opacity-50"
-        >
-          {addingToWishlist ? "Adding..." : "Add to Wishlist"}
-        </button>
+        {!hideWishlist && (
+  <button
+    onClick={handleAddToWishlist}
+    disabled={addingToWishlist}
+    className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded hover:brightness-110 disabled:opacity-50"
+  >
+    {addingToWishlist ? "Adding..." : "Add to Wishlist"}
+  </button>
+)}
       </div>
     </div>
   );

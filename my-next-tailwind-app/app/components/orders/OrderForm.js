@@ -15,7 +15,7 @@ const defaultAddress = {
   floor: '',
 };
 
-const OrderForm = ({ initialData, onSubmit, onCancel }) => {
+const OrderForm = ({ initialData, initialOrderItems = [], onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     user_id: '',
     guest_id: '',
@@ -24,6 +24,8 @@ const OrderForm = ({ initialData, onSubmit, onCancel }) => {
     status: '',
     promocode: '',
   });
+
+  const [orderItems, setOrderItems] = useState([]);
 
   useEffect(() => {
     if (initialData) {
@@ -42,7 +44,11 @@ const OrderForm = ({ initialData, onSubmit, onCancel }) => {
         promocode: initialData.promocode ?? '',
       });
     }
-  }, [initialData]);
+
+    if (initialOrderItems?.length) {
+      setOrderItems(initialOrderItems);
+    }
+  }, [JSON.stringify(initialData), JSON.stringify(initialOrderItems)]); // Prevent infinite loop
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,7 +68,7 @@ const OrderForm = ({ initialData, onSubmit, onCancel }) => {
     }
 
     notify('success', 'Order submitted successfully');
-    onSubmit(formData);
+    onSubmit({ ...formData, orderItems });
   };
 
   const handleCancelConfirm = () => {
@@ -102,7 +108,7 @@ const OrderForm = ({ initialData, onSubmit, onCancel }) => {
         className="w-full border p-2 rounded"
       />
 
-      <AddressForm address={formData.address} onChange={handleAddressChange} /> {/* Ensure onChange is correctly passed */}
+      <AddressForm address={formData.address} onChange={handleAddressChange} />
 
       <input
         name="shipping_fees"

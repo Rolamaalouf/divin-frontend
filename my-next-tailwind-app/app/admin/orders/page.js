@@ -1,38 +1,40 @@
-'use client';
-
-import { useState } from 'react';
-import {
-  useOrders,
-  useCreateOrder,
-  useUpdateOrder,
-  useDeleteOrder,
-} from '../../hooks/useOrderHooks';
-import {
-  useOrderItems,
-  useCreateOrderItem,
-  useUpdateOrderItem,
-  useDeleteOrderItem,
-} from '../../hooks/useOrderItemHooks';
-
-import OrderList from '../../components/orders/OrderList';
-import OrderForm from '../../components/orders/OrderForm';
-import OrderItemList from '../../components/orders/OrderItemList';
-import OrderItemForm from '../../components/orders/OrderItemForm';
+'use client'
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { useOrders } from "../../hooks/useOrderHooks";
+import { useCreateOrder } from "../../hooks/useOrderHooks";
+import { useUpdateOrder } from "../../hooks/useOrderHooks";
+import { useDeleteOrder } from "../../hooks/useOrderHooks";
+import { useOrderItems } from "../../hooks/useOrderItemHooks";
+import OrderList from "../../components/orders/OrderList";
+import OrderForm from "../../components/orders/OrderForm";
 
 const AdminOrdersPage = () => {
   const [editingOrder, setEditingOrder] = useState(null);
-  const [editingItem, setEditingItem] = useState(null);
+  const [showOrderForm, setShowOrderForm] = useState(false);
+  
+  const {
+    data: orders = [],
+    isLoading,
+    isError,
+  } = useOrders();
 
-  const { data: orders = [] } = useOrders();
-  const { data: orderItems = [] } = useOrderItems();
+  const { data: orderItems = [] } = useOrderItems(); // assuming it returns all items
 
-  const createOrder = useCreateOrder();
-  const updateOrder = useUpdateOrder();
-  const deleteOrder = useDeleteOrder();
+  const createOrder = useCreateOrder({
+    onSuccess: () => toast.success("Order created successfully"),
+    onError: () => toast.error("Failed to create order"),
+  });
 
-  const createItem = useCreateOrderItem();
-  const updateItem = useUpdateOrderItem();
-  const deleteItem = useDeleteOrderItem();
+  const updateOrder = useUpdateOrder({
+    onSuccess: () => toast.success("Order updated successfully"),
+    onError: () => toast.error("Failed to update order"),
+  });
+
+  const deleteOrder = useDeleteOrder({
+    onSuccess: () => toast.success("Order deleted successfully"),
+    onError: () => toast.error("Failed to delete order"),
+  });
 
   const handleOrderSubmit = (data) => {
     if (editingOrder) {
@@ -41,39 +43,46 @@ const AdminOrdersPage = () => {
       createOrder.mutate(data);
     }
     setEditingOrder(null);
+    setShowOrderForm(false);
   };
 
-  const handleItemSubmit = (data) => {
-    if (editingItem) {
-      updateItem.mutate({ id: editingItem.id, data });
-    } else {
-      createItem.mutate(data);
-    }
-    setEditingItem(null);
+  const handleAddOrder = () => {
+    setEditingOrder(null);
+    setShowOrderForm(true);
   };
 
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error loading orders.</p>;
+  console.log("All Order Items:", orderItems);
   return (
-    <div className="space-y-8 p-6">
-      <section>
-        <h1 className="text-2xl font-bold">Orders</h1>
-        <OrderForm initialData={editingOrder} onSubmit={handleOrderSubmit} onCancel={() => setEditingOrder(null)} />
-        <OrderList
-          orders={orders}
-          onEdit={setEditingOrder}
-          onDelete={deleteOrder.mutate}
-        />
-      </section>
+    <section>
+      <h1 className="text-2xl font-bold mb-4">Orders</h1>
 
-      <section>
-        <h2 className="text-xl font-bold">Order Items</h2>
-        <OrderItemForm initialData={editingItem} onSubmit={handleItemSubmit} onCancel={() => setEditingItem(null)} />
-        <OrderItemList
-          orderItems={orderItems}
-          onEdit={setEditingItem}
-          onDelete={deleteItem.mutate}
+      <button
+        onClick={handleAddOrder}
+        className="mb-4 bg-green-600 text-white px-4 py-2 rounded"
+      >
+        + Add Order
+      </button>
+
+      {showOrderForm && (
+        <OrderForm
+          initialData={editingOrder}
+          onSubmit={handleOrderSubmit}
+          onCancel={() => setShowOrderForm(false)}
         />
-      </section>
-    </div>
+      )}
+
+      <OrderList
+        orders={orders}
+        orderItems={orderItems}
+        onEdit={(order) => {
+          setEditingOrder(order);
+          setShowOrderForm(true);
+        }}
+        onDelete={deleteOrder.mutate}
+      />
+    </section>
   );
 };
 

@@ -72,6 +72,10 @@ export default function WinesPage() {
             products={sortedProducts} 
             isLoading={isLoading} 
             showActions
+            showDescription={false}     
+            showControls={false} 
+            showStock={false}
+            showPopupOnClick={true}
           />
         </div>
       </div>

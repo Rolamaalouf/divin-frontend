@@ -9,8 +9,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import ProductActions from '../ProductActions';
-
-
+import { useRouter } from 'next/navigation';
 
 const ProductList = ({
   onEdit,
@@ -18,15 +17,21 @@ const ProductList = ({
   isLoading,
   selectedCategory,
   setSelectedCategory,
-  showCategoryFilter = false, 
-  showActions = false, 
+  showCategoryFilter = false,
+  showActions = false,
+  showDescription = true,
+  showControls = true,
+  showStock = true,
+  showPopupOnClick = false, 
 }) => {
   const { data: categories, isLoading: categoriesLoading, isError: categoriesError } = useCategoryQuery();
   const deleteProduct = useDeleteProduct();
   const queryClient = useQueryClient();
 
   const [previewImage, setPreviewImage] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null); 
 
+  const router = useRouter (); 
   const handleDelete = (id) => {
     confirmAlert({
       title: 'Confirm Deletion',
@@ -48,7 +53,7 @@ const ProductList = ({
       ],
     });
   };
-  
+
   const handleEdit = (product) => {
     onEdit?.(product);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -75,7 +80,7 @@ const ProductList = ({
         </div>
       )}
 
-      {/* 🔥 CONDITIONAL CATEGORY FILTER */}
+      {/* Category Filter */}
       {showCategoryFilter && (
         <div className="mb-6">
           <select
@@ -99,58 +104,75 @@ const ProductList = ({
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {products.map((product) => (
-            <div key={product.id} className="bg-white p-4 shadow rounded relative">
-              <div className="w-[400px] h-[800px] flex items-center justify-center overflow-hidden bg-white">
-                <div className="w-full h-full px-0 py-26">
-                  <img
-                    src={Array.isArray(product.image) ? product.image[0] : product.image}
-                    alt={product.name}
-                    className="w-full h-full object-contain"
-                    style={{ backgroundColor: 'transparent' }}
-                  />
-                </div>
+            <div
+            key={product.id}
+            className="bg-white p-4 shadow rounded relative cursor-pointer"
+            onClick={() => showPopupOnClick && setSelectedProduct(product)}
+          >
+              <div
+  className="w-[400px] h-[800px] flex items-center justify-center overflow-hidden bg-white cursor-pointer"
+  onClick={() => router.push(`/product/${product.id}`)}
+>
+              <div className="w-full h-full px-0 py-26">
+
+    <img
+      src={Array.isArray(product.image) ? product.image[0] : product.image}
+      alt={product.name}
+      className="w-full h-full object-contain"
+      style={{ backgroundColor: 'transparent' }}
+    />
+  
+</div>
               </div>
 
               <h2 className="text-lg font-semibold mt-2 text-[#1B2930]">{product.name}</h2>
-<p className="text-sm text-gray-600">${product.price}</p>
-<p className="text-sm text-gray-600 mt-1">{product.description}</p>
-<p className="text-sm text-gray-600 mt-1">Stock: {product.stock}</p>
+              <p className="text-sm text-gray-600">${product.price}</p>
 
-{showActions && <ProductActions product={product} />}
+              {showDescription && (
+                <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+              )}
+              
+              {showStock && (
+                <p className="text-sm text-gray-600 mt-1">Stock: {product.stock}</p>
+              )}
 
-              <div className="flex justify-end gap-4 mt-4">
-                <button
-                  onClick={() => handleEdit(product)}
-                  className="text-[#1B2930] hover:scale-110 transition"
-                  title="Edit"
-                >
-                  <Pencil size={20} />
-                </button>
+              {showActions && <ProductActions product={product}  showStock={false}/>}
 
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  className="text-[#1B2930] hover:scale-110 transition"
-                  title="Delete"
-                >
-                  <Trash2 size={20} />
-                </button>
-
-                {product.image && (
+              {showControls && (
+                <div className="flex justify-end gap-4 mt-4">
                   <button
-                    onClick={() =>
-                      setPreviewImage(
-                        Array.isArray(product.image)
-                          ? product.image[0]
-                          : product.image
-                      )
-                    }
+                    onClick={() => handleEdit(product)}
                     className="text-[#1B2930] hover:scale-110 transition"
-                    title="Preview"
+                    title="Edit"
                   >
-                    <Eye size={20} />
+                    <Pencil size={20} />
                   </button>
-                )}
-              </div>
+
+                  <button
+                    onClick={() => handleDelete(product.id)}
+                    className="text-[#1B2930] hover:scale-110 transition"
+                    title="Delete"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+
+                  {product.image && (
+                    <button
+                      onClick={() =>
+                        setPreviewImage(
+                          Array.isArray(product.image)
+                            ? product.image[0]
+                            : product.image
+                        )
+                      }
+                      className="text-[#1B2930] hover:scale-110 transition"
+                      title="Preview"
+                    >
+                      <Eye size={20} />
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>

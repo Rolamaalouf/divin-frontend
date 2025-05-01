@@ -21,7 +21,10 @@ export const getAllProducts = async () => {
   console.log('[API] Products response:', res.data);
   return res.data; 
 };
-export const getProductById = (id) => API.get(`/api/products/${id}`);
+export const getProductById = async (id) => {
+  const res = await API.get(`/api/products/${id}`);
+  return res.data;
+};
 export const createProduct = (data) => API.post("/api/products", data);
 export const updateProduct = (id, data) => API.put(`/api/products/${id}`, data);
 export const deleteProduct = (id) => API.delete(`/api/products/${id}`);
@@ -41,7 +44,6 @@ export const deleteCategory = (id) => API.delete(`/api/categories/${id}`);
 export const getOrders = () => API.get("/api/orders").then((res) => res.data);
 export const getOrderById = (id) => API.get(`/api/orders/${id}`).then((res) => res.data);
 export const createOrder = (data) => API.post("/api/orders", data).then((res) => res.data);
-export const createGuestOrder = (data) => API.post("/api/orders/guest", data).then((res) => res.data);
 export const updateOrder = (id, data) => API.put(`/api/orders/${id}`, data).then((res) => res.data);
 export const deleteOrder = (id) => API.delete(`/api/orders/${id}`).then((res) => res.data);
 
