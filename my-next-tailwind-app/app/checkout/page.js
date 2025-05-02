@@ -1,5 +1,4 @@
-"use client";
-
+'use client'
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
@@ -7,6 +6,8 @@ import AddressForm from "../components/AddressForm";
 import { validateAddress, validatePayment } from "../components/validation";
 import OrderItemList from "../components/OrderItemList";
 import { useAuth } from "../context/AuthContext";
+import { useUpdateOrder } from "../hooks/useOrderHooks";
+import { useGuestId } from "../utils/guestId"; // Import useGuestId hook
 
 export default function OrdersPage() {
   const [step, setStep] = useState(1);
@@ -17,6 +18,9 @@ export default function OrdersPage() {
 
   const { user } = useAuth();
   const router = useRouter();
+  
+  // Get guest ID using the useGuestId hook
+  const guestId = useGuestId();
 
   // Prefill user address if logged in
   const [address, setAddress] = useState({
@@ -56,14 +60,46 @@ export default function OrdersPage() {
     setStep((prev) => prev + 1);
   };
 
+  const updateOrderMutation = useUpdateOrder();
+
   const handleSubmitOrder = async () => {
+    if (!orderId) {
+      toast.error("Order ID is missing.");
+      return;
+    }
+
     try {
       setLoading(true);
-      await new Promise((res) => setTimeout(res, 2000));
+
+      const updatedData = {
+        address,
+        shippingFee: selectedShippingFee,
+        paymentMethod,
+        payment: paymentMethod === "card" ? payment : null,
+        status: "PLACED",
+      };
+
+      // If the user is authenticated, use the user ID
+      if (user) {
+        updatedData.userId = user.id;  // Associate the order with the logged-in user
+      } else {
+        // For guest users, use the guest ID
+        if (guestId) {
+          updatedData.guestId = guestId;  // Associate the order with the guest ID
+        } else {
+          toast.error("Guest ID is missing. Please try again.");
+          return;
+        }
+      }
+
+      // Update the order
+      await updateOrderMutation.mutateAsync({ id: orderId, data: updatedData });
+
       toast.success("Order placed successfully!");
       setStep(4);
     } catch (err) {
-      toast.error("Something went wrong.");
+      console.error(err);
+      toast.error("Failed to place order.");
     } finally {
       setLoading(false);
     }
@@ -117,9 +153,7 @@ export default function OrdersPage() {
             {["card", "cod", "wish"].map((method) => (
               <button
                 key={method}
-                className={`border px-4 py-2 rounded ${
-                  paymentMethod === method ? "bg-[#A68F7B] text-white" : ""
-                }`}
+                className={`border px-4 py-2 rounded ${paymentMethod === method ? "bg-[#A68F7B] text-white" : ""}`}
                 onClick={() => setPaymentMethod(method)}
               >
                 {method === "card" && "Credit Card"}

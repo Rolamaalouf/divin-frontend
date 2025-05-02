@@ -44,7 +44,12 @@ export const deleteCategory = (id) => API.delete(`/api/categories/${id}`);
 export const getOrders = () => API.get("/api/orders").then((res) => res.data);
 export const getOrderById = (id) => API.get(`/api/orders/${id}`).then((res) => res.data);
 export const createOrder = (data) => API.post("/api/orders", data).then((res) => res.data);
-export const updateOrder = (id, data) => API.put(`/api/orders/${id}`, data).then((res) => res.data);
+export const updateOrder = (id, data) => {
+  // Send data with either userId or guestId
+  return API.put(`/api/orders/${id}`, data).then((res) => res.data);
+};
+
+
 export const deleteOrder = (id) => API.delete(`/api/orders/${id}`).then((res) => res.data);
 
 // Order Items
