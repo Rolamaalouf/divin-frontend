@@ -4,21 +4,25 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createWishlistItem,
   getWishlist,
-  deleteWishlistItem,
+  getMyWishlist,
+  deleteWishlistItem
 } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
-import { useGuestId } from "../utils/guestId"
+import { useGuestId } from "../utils/guestId";
 
-// GET wishlist with user or guest_id
-export const useWishlist = () => {
+// GET wishlist (choose between getWishlist and getMyWishlist based on `useMyEndpoint`)
+export const useWishlist = ({ useMyEndpoint = false } = {}) => {
   const { user, loading } = useAuth();
   const guestId = useGuestId();
 
   const enabled = !loading && (!!user || !!guestId);
 
   return useQuery({
-    queryKey: ['wishlist', user?.id ?? guestId],
-    queryFn: () => getWishlist(user?.id ?? null, guestId),
+    queryKey: ['wishlist', useMyEndpoint ? 'my' : (user?.id ?? guestId)],
+    queryFn: () =>
+      useMyEndpoint
+        ? getMyWishlist(user?.id ?? null, guestId)
+        : getWishlist(user?.id ?? null, guestId),
     enabled,
   });
 };
@@ -36,6 +40,7 @@ export const useAddToWishlist = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['wishlist', user?.id ?? guestId] });
+      queryClient.invalidateQueries({ queryKey: ['wishlist', 'my'] });
     },
   });
 };
@@ -50,6 +55,7 @@ export const useRemoveFromWishlist = () => {
     mutationFn: deleteWishlistItem,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['wishlist', user?.id ?? guestId] });
+      queryClient.invalidateQueries({ queryKey: ['wishlist', 'my'] });
     },
   });
 };

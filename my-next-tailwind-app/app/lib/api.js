@@ -105,6 +105,14 @@ export const getWishlist = async (user_id = null, guest_id = null) => {
 export const getWishlistItemById = (id) => API.get(`/api/wishlists/${id}`).then((res) => res.data);
 export const updateWishlistItem = (id, data) => API.put(`/api/wishlists/${id}`, data);
 export const deleteWishlistItem = (id) => API.delete(`/api/wishlists/${id}`);
+export const getMyWishlist = async (user_id = null, guest_id = null) => {
+  const params = {};
+  if (guest_id) params.guest_id = guest_id;
+
+  const res = await API.get("/api/wishlists/mywishlist", { params });
+  return res.data;
+};
+
 
 
 export default API;

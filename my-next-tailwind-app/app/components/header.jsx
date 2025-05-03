@@ -27,7 +27,9 @@ const Header = () => {
   const [cartPopupOpen, setCartPopupOpen] = useState(false);
   const dropdownRef = useRef();
   const popupRef = useRef();  
+  const wishlistPopupRef = useRef();
   const { user, logout } = useAuth();
+  const [wishlistPopupOpen, setWishlistPopupOpen] = useState(false);
 
   const {
     data: cartItems = [],
@@ -41,7 +43,8 @@ const Header = () => {
     isLoading: wishlistLoading,
     error: wishlistError,
     refetch: refetchWishlist,
-  } = useWishlist();
+  } = useWishlist({ useMyEndpoint: true });
+  
 
   const removeCartItemMutation = useRemoveCartItem();
   const removeWishlistItemMutation = useRemoveFromWishlist();
@@ -83,8 +86,11 @@ const Header = () => {
       if (popupRef.current && !popupRef.current.contains(e.target)) {
         setCartPopupOpen(false);
       }
+      if (wishlistPopupRef.current && !wishlistPopupRef.current.contains(e.target)) {
+        setWishlistPopupOpen(false);
+      }
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false); 
+        setDropdownOpen(false);
       }
     };
 
@@ -233,16 +239,23 @@ const Header = () => {
           </IconPopup>
 
           {/* Wishlist */}
-          <IconPopup icon={Heart} count={totalWishlist}>
-            {wishlistLoading && <p>Loading wishlist...</p>}
-            {wishlistError && <p>Error loading wishlist</p>}
-            {!wishlistLoading && !wishlistError && (
-              <WishlistItemList
-                items={wishlistItems}
-                onDelete={handleRemoveWishlistItem}
-              />
-            )}
-          </IconPopup>
+          <IconPopup
+  icon={Heart}
+  count={totalWishlist}
+  open={wishlistPopupOpen}
+  setOpen={setWishlistPopupOpen}
+  ref={wishlistPopupRef}
+>
+  {wishlistLoading && <p>Loading wishlist...</p>}
+  {wishlistError && <p>Error loading wishlist</p>}
+  {!wishlistLoading && !wishlistError && (
+    <WishlistItemList
+      items={wishlistItems}
+      onDelete={handleRemoveWishlistItem}
+    />
+  )}
+</IconPopup>
+
         </div>
       </div>
 
