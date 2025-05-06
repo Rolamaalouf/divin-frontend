@@ -6,7 +6,7 @@ export default function OrderItemList({ orderId }) {
 
   if (isLoading) return <p>Loading items...</p>;
   if (isError || !orderItems || orderItems.length === 0)
-    return <p>No items in your order.</p>;
+    return <p>No bottles in your order.</p>;
 
   return (
     <div className="border-t mt-4 pt-4">

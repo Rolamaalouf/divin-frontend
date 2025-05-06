@@ -84,6 +84,10 @@ export const getCarts = () => API.get("/api/carts").then((res) => res.data);
 export const getCartById = (id) => API.get(`/api/carts/${id}`).then((res) => res.data);
 export const updateCart = (id, data) => API.put(`/api/carts/${id}`, data);
 export const deleteCart = (id) => API.delete(`/api/carts/${id}`);
+export const transferGuestCartToUser = async (guest_id) => {
+  const res = await API.post('/api/cart-transfer/transfer', { guest_id });
+  return res.data;
+};
 
 export const createWishlistItem = async (data) => {
   // `guest_id` and/or `user_id` should now be passed in from the hook/component

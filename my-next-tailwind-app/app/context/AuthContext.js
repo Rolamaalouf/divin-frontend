@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { loginUser, logoutUser, getCurrentUser, registerUser } from '../lib/api';
+import { transferGuestCartToUser } from '../lib/api'; // ⬅️ Import the transfer function
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { useQueryClient } from '@tanstack/react-query';
@@ -29,13 +30,32 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+  const handleCartTransfer = async () => {
+    const guestId = localStorage.getItem('guest_id');
+    if (!guestId) return;
+  
+    try {
+      await transferGuestCartToUser(guestId);
+    } catch (err) {
+      if (err.response?.status === 404) {
+        console.warn('No guest cart to transfer (likely empty).');
+      } else {
+        console.error('Guest cart transfer failed:', err);
+      }
+    } finally {
+      localStorage.removeItem('guest_id');
+      queryClient.invalidateQueries({ queryKey: ['cart-items'] });
+    }
+  };
+  
   const login = async (credentials) => {
     setLoading(true);
     try {
       const res = await loginUser(credentials);
       const loggedUser = res.data?.user;
       setUser(loggedUser);
-      queryClient.invalidateQueries({ queryKey: ['cart-items'] }); // Guest cart replaced
+
+      await handleCartTransfer(); // ⬅️ Transfer guest cart on login
 
       if (loggedUser?.role === 'admin') {
         router.push('/admin');
@@ -70,7 +90,8 @@ export const AuthProvider = ({ children }) => {
       const loginRes = await loginUser({ email: formData.email, password: formData.password });
       const loggedUser = loginRes.data?.user;
       setUser(loggedUser);
-      queryClient.invalidateQueries({ queryKey: ['cart-items'] }); // Sync new user cart
+
+      await handleCartTransfer(); // ⬅️ Transfer guest cart on register
 
       if (loggedUser?.role === 'admin') {
         router.push('/admin');

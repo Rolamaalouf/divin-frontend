@@ -16,6 +16,7 @@ export default function AddressStep({
       {isGuest && (
         <div className="grid gap-4 mb-4">
           <input
+            suppressHydrationWarning
             type="text"
             placeholder="Name"
             value={guestInfo.name}
@@ -23,6 +24,7 @@ export default function AddressStep({
             className="border p-2 rounded"
           />
           <input
+            suppressHydrationWarning
             type="email"
             placeholder="Email"
             value={guestInfo.email}
@@ -37,6 +39,7 @@ export default function AddressStep({
       <div className="mt-4">
         <label className="block mb-1 text-sm font-medium">Shipping Method</label>
         <select
+          suppressHydrationWarning
           onChange={(e) => setSelectedShippingFee(Number(e.target.value))}
           className="w-full border p-2 rounded"
           value={selectedShippingFee}
@@ -46,7 +49,11 @@ export default function AddressStep({
         </select>
       </div>
 
-      <button onClick={onNext} className="mt-8 bg-[#A68F7B] text-white p-3 w-full rounded">
+      <button
+        suppressHydrationWarning
+        onClick={onNext}
+        className="mt-8 bg-[#A68F7B] text-white p-3 w-full rounded"
+      >
         Continue to Payment
       </button>
     </>

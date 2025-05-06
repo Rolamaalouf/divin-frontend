@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useCreateOrder } from "../hooks/useOrderHooks";
 import { useDeleteCart, useUpdateCartItem } from "../hooks/useCartHooks";
 import { Trash2 } from "lucide-react";
@@ -7,15 +8,22 @@ import { useAuth } from "../context/AuthContext";
 import { useGuestId } from "../utils/guestId";
 import { toast } from "react-toastify";
 
-const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
-  shippingAddressInput = "Not specified", 
+const CartItemList = ({
+  items = [],
+  onDelete,
+  onClearCart,
+  onCheckout,
+  shippingAddressInput = "Not specified",
   selectedShippingFee = 0,
-  promoInput = null }) => {
+  promoInput = null,
+}) => {
   const { mutate: updateCartItem } = useUpdateCartItem();
   const { mutate: clearCart } = useDeleteCart();
   const { mutate: createOrder, isLoading } = useCreateOrder();
   const { user } = useAuth();
   const guestId = useGuestId();
+
+  const [showGuestPrompt, setShowGuestPrompt] = useState(false);
 
   const handleUpdateQuantity = (cartItemId, quantity) => {
     if (quantity < 1) return;
@@ -37,13 +45,13 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
       toast.error("Your cart is empty. Cannot checkout.");
       return;
     }
-  
-    const mappedItems = items.map(item => ({
-      product_id: item.productId ?? null,  // <-- fixed: productId (your actual field)
+
+    const mappedItems = items.map((item) => ({
+      product_id: item.productId ?? null,
       quantity: item.quantity ?? 1,
       price: item.price ?? 0,
     }));
-  
+
     const hasInvalidItem = mappedItems.some(
       (item) => !item.product_id || item.quantity < 1
     );
@@ -51,7 +59,7 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
       toast.error("One or more cart items are missing product details.");
       return;
     }
-  
+
     const orderData = {
       user_id: user?.id || null,
       guest_id: !user?.id && guestId ? guestId : null,
@@ -59,9 +67,9 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
       address: shippingAddressInput,
       shipping_fees: Number(selectedShippingFee),
       promocode: promoInput,
-      items: mappedItems
+      items: mappedItems,
     };
-  
+
     createOrder(orderData, {
       onSuccess: (response) => {
         const orderId = response?.order?.id;
@@ -77,19 +85,15 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
       onError: (error) => {
         toast.error(
           error?.response?.data?.error ||
-          error.message ||
-          "Checkout failed. Please try again."
+            error.message ||
+            "Checkout failed. Please try again."
         );
       },
     });
   };
-  
-  
-  
 
   return (
     <div className="relative">
-      {/* Clear Cart Button */}
       {items.length > 0 && (
         <button
           onClick={handleClearCart}
@@ -108,8 +112,10 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
             {items.map((item, index) => {
               const key = item.cartItemId ?? `cart-item-${index}`;
               return (
-                <div key={key} className="flex items-center gap-4 border-b pb-4">
-                  {/* Product Image */}
+                <div
+                  key={key}
+                  className="flex items-center gap-4 border-b pb-4"
+                >
                   <div className="w-[80px] h-[80px] flex items-center justify-center overflow-hidden bg-transparent rounded border">
                     <div className="w-full h-full p-2">
                       <img
@@ -120,9 +126,10 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
                     </div>
                   </div>
 
-                  {/* Product Details */}
                   <div className="flex-1 flex flex-col justify-center">
-                    <p className="font-medium mb-1">{item.name || "Unnamed Product"}</p>
+                    <p className="font-medium mb-1">
+                      {item.name || "Unnamed Product"}
+                    </p>
                     <p className="text-sm text-gray-600 mb-1">
                       ${item.price?.toFixed(2) || "0.00"} × {item.quantity}
                     </p>
@@ -131,13 +138,15 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
                       value={item.quantity}
                       min={1}
                       onChange={(e) =>
-                        handleUpdateQuantity(item.cartItemId, Number(e.target.value))
+                        handleUpdateQuantity(
+                          item.cartItemId,
+                          Number(e.target.value)
+                        )
                       }
                       className="w-16 mt-1 px-2 py-1 border rounded text-sm"
                     />
                   </div>
 
-                  {/* Remove Single Item */}
                   <button
                     onClick={() => onDelete(item.cartItemId)}
                     className="text-gray-800 text-sm hover:underline ml-auto"
@@ -149,7 +158,6 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
             })}
           </div>
 
-          {/* Total and Actions */}
           <div className="mt-6 space-y-2">
             <p className="font-semibold">Total: ${totalPrice.toFixed(2)}</p>
             <button
@@ -161,12 +169,48 @@ const CartItemList = ({ items = [], onDelete, onClearCart, onCheckout,
             <button
               disabled={isLoading}
               className="w-full bg-[#E2C269] text-black py-2 rounded hover:bg-[#d1a72f] text-sm disabled:opacity-50"
-              onClick={handleCheckout}
+              onClick={() => {
+                if (!user) {
+                  setShowGuestPrompt(true);
+                } else {
+                  handleCheckout();
+                }
+              }}
             >
               {isLoading ? "Processing..." : "Checkout"}
             </button>
           </div>
         </>
+      )}
+
+      {showGuestPrompt && (
+        <div className="fixed inset-0  flex items-center justify-center z-50" style={{ backdropFilter: "blur(6px)" }}>
+          <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
+            <h3 className="text-lg font-semibold mb-4">Continue as Guest?</h3>
+            <p className="text-sm mb-6">
+              Would you like to continue as a guest or log in to your account?
+            </p>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => {
+                  setShowGuestPrompt(false);
+                  handleCheckout();
+                }}
+                className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm"
+              >
+                Continue as Guest
+              </button>
+              <button
+                onClick={() => {
+                  window.location.href = "/login";
+                }}
+                className="px-4 py-2 bg-[#E2C269] text-black rounded hover:bg-[#d1a72f] text-sm"
+              >
+                Login
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -26,9 +26,9 @@ const ProductPage = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFFFF]">
-      <div className="bg-[#1B2930]">
-        <Header />
-      </div>
+<div className="bg-[#1B2930] sticky top-0 z-50">
+  <Header />
+</div>
       <div className="max-w-4xl mx-auto p-6 flex gap-8">
         <div className="w-1/2">
           <Zoom>
@@ -40,7 +40,7 @@ const ProductPage = () => {
           </Zoom>
         </div>
         <div className="w-1/2">
-          <h1 className="text-3xl font-semibold text-[#1B2930]">{product.name}</h1>
+          <h1 className="text-3xl font-semibold text-[#34434F]">{product.name}</h1>
           <p className="mt-2 text-lg text-gray-700">${product.price}</p>
           <p className="mt-4 text-gray-600">{product.description}</p>
 
@@ -53,7 +53,7 @@ const ProductPage = () => {
 {/* Related Products Section */}
 {relatedProducts?.length > 0 && (
   <div className="mt-12 px-6">
-    <h2 className="text-2xl font-semibold text-gold mb-4 text-center">Related Products</h2>
+    <h2 className="text-2xl font-semibold text-gold text-[#34434F] mb-4 text-center">Related Products</h2>
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 ">
       {relatedProducts.map((rp) => (
         <Link key={rp.id} href={`/product/${rp.id}`} className="bg-[#FFFFFF] p-4 rounded text-center">
