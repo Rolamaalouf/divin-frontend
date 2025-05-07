@@ -23,6 +23,9 @@ export default function UsersPage() {
   const {
     formData,
     isEdit,
+    showForm,
+    setShowForm,
+    handleAddClick,
     handleInputChange,
     updateAddress,
     handleSubmit,
@@ -36,26 +39,36 @@ export default function UsersPage() {
     fetchUsers();
   }, []);
 
-  console.log('Rendering UsersPage. Users:', users); // Debug
-
   return (
     <div className="p-4 md:p-6 text-[#001f3f]">
       <h2 className="text-2xl font-bold mb-4">User Management</h2>
 
-      <UserForm
-        formRef={formRef}
-        formData={formData}
-        handleInputChange={handleInputChange}
-        updateAddress={updateAddress}
-        handleSubmit={handleSubmit}
-        isEdit={isEdit}
-      />
+      <div className="mb-4">
+        <button
+          onClick={handleAddClick}
+          className="bg-[#34434F] text-white px-4 py-2 rounded"
+        >
+          Add User
+        </button>
+      </div>
 
       <UserTable
         users={users}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
       />
+
+      {showForm && (
+        <UserForm
+          formRef={formRef}
+          formData={formData}
+          handleInputChange={handleInputChange}
+          updateAddress={updateAddress}
+          handleSubmit={handleSubmit}
+          isEdit={isEdit}
+          setShowForm={setShowForm} 
+        />
+      )}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Header from './components/header';
 import Section1 from './components/section1';
 import SelectionsSection from './components/SelectionsSection';
+import Section2 from './components/section2';
 
 
 export default function Home() {
@@ -92,7 +93,8 @@ export default function Home() {
       {/* Section1 */}
       <Section1 className="-mt-[200px]" />
       {/* Selections Section */}
-      <SelectionsSection />
+      <SelectionsSection className="mb-64" />
+      <Section2 />
     </div>
   );
 }

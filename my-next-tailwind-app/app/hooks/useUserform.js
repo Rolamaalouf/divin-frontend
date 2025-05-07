@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef } from 'react'; 
 import { toast } from 'react-toastify';
 import { validateAddress } from '../components/validation';
 
@@ -22,11 +22,13 @@ export const useUserForm = ({ registerNewUser, updateUser }) => {
 
   const [formData, setFormData] = useState(defaultFormData);
   const [isEdit, setIsEdit] = useState(false);
+  const [showForm, setShowForm] = useState(false); // 👈 added
 
   const resetForm = () => {
     console.log('Resetting form'); // Debug
     setFormData(defaultFormData);
     setIsEdit(false);
+    setShowForm(false); // 👈 hide form after submit/reset
   };
 
   const handleInputChange = (e) => {
@@ -81,16 +83,26 @@ export const useUserForm = ({ registerNewUser, updateUser }) => {
       address: user.address || defaultFormData.address,
     });
     setIsEdit(true);
+    setShowForm(true); // 👈 show form on edit
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleAddClick = () => {
+    resetForm();         // resets formData and isEdit
+    setShowForm(true);   // 👈 show form on "Add User"
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return {
     formData,
     isEdit,
+    showForm,
+    setShowForm,
     handleInputChange,
     updateAddress,
     handleSubmit,
     handleEdit,
+    handleAddClick,
     formRef,
   };
 };

@@ -7,6 +7,7 @@ export const UserForm = ({
   updateAddress,
   handleSubmit,
   isEdit,
+  setShowForm
 }) => {
   console.log('Rendering UserForm, isEdit:', isEdit); // Debug
 
@@ -63,12 +64,21 @@ export const UserForm = ({
         </div>
       </div>
 
-      <button
-        type="submit"
-        className="bg-[#34434F] text-white px-4 py-2 rounded w-full md:w-auto"
-      >
-        {isEdit ? 'Update User' : 'Add User'}
-      </button>
+      <div className="flex space-x-2">
+        <button
+          type="submit"
+          className="bg-[#34434F] text-white px-4 py-2 rounded w-full md:w-auto"
+        >
+          {isEdit ? 'Update User' : 'Add User'}
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowForm(false)}
+          className="bg-gray-300 text-black px-4 py-2 rounded w-full md:w-auto"
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 };

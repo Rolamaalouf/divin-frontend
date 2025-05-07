@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import emailjs from "@emailjs/browser";
 import Header from "../components/header";
-import {motion} from "framer-motion"
+import {motion} from "framer-motion";
+import VisitUsSection from "../components/maps";
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -54,7 +55,7 @@ const Contact = () => {
       
       
     return (
-        <div className="bg-gray-100">
+        <div className="bg-white">
                <div className="bg-[#1B2930]">
         <Header />
       </div>
@@ -139,7 +140,7 @@ const Contact = () => {
                 </form>
             </div>
 
-
+<VisitUsSection />
                 </div>
     
     );

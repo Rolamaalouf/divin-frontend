@@ -52,8 +52,8 @@ export default function OrdersPage() {
   return (
     <div className="min-h-screen bg-white p-8">
       <h1 className="text-2xl font-bold mb-6">All Orders</h1>
-      <table className="min-w-full border border-gray-300 bg-white shadow-sm">
-        <thead className="bg-gray-100">
+      <table className="min-w-full border border-[#34434F] bg-white shadow-sm">
+        <thead className="bg-[#34434F] text-white">
           <tr>
             <th className="py-3 px-4 border-b">Order ID</th>
             <th className="py-3 px-4 border-b">Customer</th>
