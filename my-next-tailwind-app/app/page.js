@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Header from './components/header';
 import Section1 from './components/section1';
+import SelectionsSection from './components/SelectionsSection';
+
 
 export default function Home() {
   return (
@@ -89,7 +91,8 @@ export default function Home() {
 
       {/* Section1 */}
       <Section1 className="-mt-[200px]" />
-
+      {/* Selections Section */}
+      <SelectionsSection />
     </div>
   );
 }
