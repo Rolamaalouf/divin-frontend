@@ -37,7 +37,7 @@ export default function UsersPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]); // Added fetchUsers as a dependency
 
   return (
     <div className="p-4 md:p-6 text-[#001f3f]">
@@ -66,7 +66,7 @@ export default function UsersPage() {
           updateAddress={updateAddress}
           handleSubmit={handleSubmit}
           isEdit={isEdit}
-          setShowForm={setShowForm} 
+          setShowForm={setShowForm}
         />
       )}
     </div>

@@ -66,10 +66,9 @@ export default function OrdersPage() {
       const { region, phone } = address;
       const direction = address["address-direction"];
       const guestFilled = isGuest
-      ? Boolean(guestInfo.name && guestInfo.email && address.phone)
-      : true;
-    
-  
+        ? Boolean(guestInfo.name && guestInfo.email && address.phone)
+        : true;
+
       console.log("Debug Address Check:", {
         region,
         phone,
@@ -77,13 +76,13 @@ export default function OrdersPage() {
         guestFilled,
         isGuest,
       });
-  
+
       if (!region || !phone || !direction || !guestFilled) {
         toast.error("Please complete the address step first.");
         setStep(1);
       }
     }
-  
+
     if (step === 3 && paymentMethod === "card") {
       const { cardName, cardNumber, expDate, cvv } = payment;
       if (!cardName || !cardNumber || !expDate || !cvv) {
@@ -92,8 +91,6 @@ export default function OrdersPage() {
       }
     }
   }, [step, address, guestInfo, payment, paymentMethod, isGuest]);
-  
-  
 
   // Prevent going back after success and force redirection to wines page
   useEffect(() => {
@@ -137,9 +134,9 @@ export default function OrdersPage() {
         data.name = guestInfo.name;
         data.email = guestInfo.email;
       }
- // --- ADD THIS LOG ---
- console.log("Sending updateOrder:", { id: orderId, data });
- // --- END LOG ---
+      // --- ADD THIS LOG ---
+      console.log("Sending updateOrder:", { id: orderId, data });
+      // --- END LOG ---
       await updateOrderMutation.mutateAsync({ id: orderId, data });
       toast.success("Order placed successfully!");
       setStep(4);
@@ -231,4 +228,3 @@ export default function OrdersPage() {
     </>
   );
 }
-

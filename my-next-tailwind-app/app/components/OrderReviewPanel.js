@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import OrderItemList from "./OrderItemList";
 
 export default function OrderReviewPanel({ step, orderId, showShippingFee = false, shippingFee = 0 }) {
