@@ -37,7 +37,7 @@ export default function UsersPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]); // Added fetchUsers as a dependency
+  }, [fetchUsers]); 
 
   return (
     <div className="p-4 md:p-6 text-[#001f3f]">
