@@ -42,7 +42,7 @@ export default function Home() {
         <div className="absolute top-[300px] left-[820px] w-[734px] text-[#E2C269] text-center">
           <p className="text-[36px] font-bold leading-[44px]">
             Our wines reflect the unique terroir and the stories of the people behind them.
-            Whether you're seeking a bold red or a crisp white, discover the flavors
+            Whether you are seeking a bold red or a crisp white, discover the flavors
             that have been lovingly bottled just for you.
           </p>
         </div>
@@ -79,7 +79,7 @@ export default function Home() {
         </h1>
         <p className="text-lg font-medium leading-snug ">
           Our wines reflect the unique terroir and the stories of the people behind them.
-          Whether you're seeking a bold red or a crisp white, discover the flavors
+          Whether you are seeking a bold red or a crisp white, discover the flavors
           that have been lovingly bottled just for you.
         </p>
         <Link

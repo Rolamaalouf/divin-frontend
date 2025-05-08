@@ -22,7 +22,7 @@ export default function Section2() {
         </h2>
         <p className="text-[#34434F] text-lg sm:text-3xl font-semibold mb-6 max-w-xl leading-relaxed">
           From strolling through picturesque vineyards to exploring the intricate
-          process of crafting each bottle, you'll uncover the secrets behind
+          process of crafting each bottle, you will uncover the secrets behind
           every sip. Attending our events allows you to connect with fellow wine
           enthusiasts, savor exclusive tastings of rare vintages, and learn from
           expert sommeliers who will guide you through the nuances of flavor and

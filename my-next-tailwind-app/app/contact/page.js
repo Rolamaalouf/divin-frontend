@@ -74,13 +74,13 @@ const Contact = () => {
 
             <div className="max-w-4xl mx-auto -mt-20 bg-white rounded-lg shadow-lg p-8 relative z-10">
                 <p className="text-[#A68F7B] text-xl md:text-2xl text-center mb-8">
-                    Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                    Have questions? We would love to hear from you. Send us a message and we will respond as soon as possible.
                 </p>
 
                 {isSubmitted && (
                     <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-6">
                         <p className="font-medium">Your message was sent successfully!</p>
-                        <p>Thank you for reaching out. We'll get back to you soon.</p>
+                        <p>Thank you for reaching out. We will get back to you soon.</p>
                     </div>
                 )}
 
