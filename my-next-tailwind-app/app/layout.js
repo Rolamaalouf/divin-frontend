@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ReactQueryProvider
  from './components/ReactQueryProvider';
  import GuestIdProvider from './components/GuestIdProvider';
+ import LayoutWrapper from './components/LayoutWrapper';
 
 export const viewport = {
   width: 'device-width',
@@ -25,7 +26,9 @@ export default function RootLayout({ children }) {
       <ReactQueryProvider>
         <AuthClientWrapper>
           <GuestIdProvider>
+          <LayoutWrapper>
           <main>{children}</main>
+          </LayoutWrapper>
           <ToastContainer position="top-right" autoClose={3000} />
           </GuestIdProvider>
         </AuthClientWrapper>
