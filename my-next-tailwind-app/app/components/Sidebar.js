@@ -13,6 +13,7 @@ import {
   ClipboardList,
   LayoutDashboard,
   LogOut,
+  Heart
 } from "lucide-react";
 import { useAuth } from '../context/AuthContext';
 
@@ -69,7 +70,10 @@ const Sidebar = () => {
           <Link href="/admin/orders" onClick={handleLinkClick} className="flex items-center gap-3 hover:text-gray-300 transition">
             <ClipboardList className={iconClass} /> Orders
           </Link>
-          <button onClick={handleLogout} className="flex items-center gap-3 hover:text-gray-300 transition text-left">
+          <Link href="/admin/wishlist" onClick={handleLinkClick} className="flex items-center gap-3 hover:text-gray-300 transition">
+          <Heart className={iconClass} /> Wishlist
+          </Link>
+           <button onClick={handleLogout} className="flex items-center gap-3 hover:text-gray-300 transition text-left">
             <LogOut className={iconClass} /> Logout
           </button>
         </div>

@@ -183,12 +183,25 @@ const ProductForm = ({ selectedProduct, onSuccess }) => {
         ))}
       </div>
 
-      <button
-        type="submit"
-        className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded hover:brightness-105 w-full"
-      >
-        {selectedProduct ? 'Update' : 'Create'}
-      </button>
+      <div className="flex justify-end space-x-3 mt-4">
+  <button
+    type="submit"
+    className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded"
+  >
+    {selectedProduct ? 'Update' : 'Add'}
+  </button>
+  <button
+    type="button"
+    onClick={() => {
+      resetForm();
+      onSuccess?.();
+    }}
+    className="bg-gray-400 text-white px-4 py-2 rounded"
+  >
+    Cancel
+  </button>
+</div>
+
     </form>
   );
 };
