@@ -4,6 +4,44 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+.glitter-button {
+  background-color: #E2C269;
+  color: #1B2930;
+  border: 1px solid #E2C269;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  transition: all 0.3s ease;
+  box-shadow:
+    0 0 12px rgba(226, 194, 105, 0.7),
+    0 0 24px rgba(226, 194, 105, 0.5); /* stronger glow */
+}
+
+.glitter-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.25) 1px, transparent 1px);
+  background-size: 8px 8px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+.glitter-button:hover {
+  box-shadow:
+    0 0 16px rgba(226, 194, 105, 0.8),
+    0 0 32px rgba(226, 194, 105, 0.6),
+    0 0 48px rgba(226, 194, 105, 0.4);
+}
+
+.glitter-button:hover::before {
+  opacity: 0.5;
+}
 
 
 

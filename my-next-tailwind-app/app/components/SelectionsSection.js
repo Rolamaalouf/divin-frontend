@@ -4,9 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCategoryQuery } from '../hooks/useCategoryHooks';
-import {motion} from "framer-motion"
+import { motion } from 'framer-motion';
 
-// Map normalized category names to image paths
 const staticCategoryImages = {
   redwine: '/red.png',
   whitewine: '/white.png',
@@ -17,9 +16,9 @@ const normalizeCategoryName = (name) =>
   name
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // remove accents
-    .replace(/\s+/g, '') // remove spaces
-    .replace(/s$/, ''); // remove trailing 's'
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '')
+    .replace(/s$/, '');
 
 const SelectionsSection = ({ className = '' }) => {
   const router = useRouter();
@@ -32,27 +31,28 @@ const SelectionsSection = ({ className = '' }) => {
     router.push(`/wines?category=${encodeURIComponent(categoryName)}#categories`);
   };
 
-
   return (
     <section
-      className={`bg-[#1B2930] w-full py-16 px-4 md:px-20 flex flex-col items-center justify-center ${className}`}
+      className={`bg-[#1B2930] w-full py-32 px-4 md:px-20 flex flex-col items-center justify-center ${className}`}
     >
       {/* Animated Header */}
-      <div className="flex flex-col items-center mb-12 w-full">
+      <div className="flex flex-col items-center mb-20 w-full">
         <div className="flex items-center gap-4 justify-center">
           <motion.div
-            initial={{ x: -100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            initial={{ x: -80, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            viewport={{ once: true }}
           >
-            <Image src="/cork.png" alt="Corkscrew" width={100} height={100} />
+            <Image src="/cork.png" alt="Corkscrew" width={80} height={80} />
           </motion.div>
 
           <motion.h1
-            className="text-[#E2C269] text-6xl font-bold"
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="text-[#E2C269] text-5xl sm:text-6xl font-bold"
+            initial={{ x: 80, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            viewport={{ once: true }}
           >
             Selections
           </motion.h1>
@@ -60,8 +60,8 @@ const SelectionsSection = ({ className = '' }) => {
       </div>
 
       {/* Category Bottles */}
-      <div className="flex flex-row items-end justify-center gap-32 w-full max-w-5xl flex-wrap">
-        {categories.map((cat) => {
+      <div className="flex flex-wrap items-end justify-center gap-20 sm:gap-60 max-w-6xl w-full">
+        {categories.map((cat, index) => {
           const normalized = normalizeCategoryName(cat.name);
           const imageSrc = staticCategoryImages[normalized];
 
@@ -73,19 +73,20 @@ const SelectionsSection = ({ className = '' }) => {
           return (
             <motion.div
               key={cat.id}
-              className="flex flex-col items-center cursor-pointer hover:opacity-90 flex-1 max-w-[160px]"
+              className="flex flex-col items-center cursor-pointer hover:opacity-90 transition duration-300"
               onClick={() => handleCategoryClick(cat.name)}
               whileHover={{ scale: 1.05 }}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              viewport={{ once: true }}
             >
-              <div className="w-[160px] h-[420px] flex items-end justify-center">
+              <div className="w-[120px] h-[320px] sm:w-[140px] sm:h-[380px] flex items-end justify-center">
                 <Image
                   src={imageSrc}
                   alt={`${cat.name} Bottle`}
-                  width={140}
-                  height={340}
+                  width={120}
+                  height={360}
                   className="object-contain"
                   priority
                 />
