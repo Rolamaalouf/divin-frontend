@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className="relative w-full min-h-screen overflow-x-visible">
       {/* Background Image */}
-      <div className="absolute top-0 left-0 w-full h-[900px] overflow-hidden -z-10">
+      <div className="absolute top-0 left-0 w-full h-[110vh] overflow-hidden -z-10">
         <div className="relative w-full h-full">
           <Image
             src="/landingimage.png"
@@ -32,18 +32,19 @@ export default function Home() {
         {/* Hero Desktop */}
         <div className="hidden sm:flex flex-col lg:flex-row items-center justify-between min-h-screen lg:px-8 bg-cover bg-center">
           {/* Bottles */}
-          <div className="flex justify-center lg:justify-start w-full lg:w-1/2 lg:mt-30 ml-[-20]">
-            <Image
-              src="/threebottles.png"
-              alt="Wine Bottles"
-              width={700}
-              height={700}
-              className="object-contain"
-            />
+          <div className="flex justify-center lg:justify-start w-full lg:w-1/2  ml-[-20]">
+          <Image
+  src="/threebottles.png"
+  alt="Wine Bottles"
+  width={700}
+  height={700}
+  className="object-contain animate-drop-in"
+/>
+
           </div>
 
           {/* Text + Button */}
-          <div className="w-full lg:w-1/2 text-[#E2C269] text-center lg:text-cenyer space-y-8 max-w-[700px] ml-[-40] lg:transform lg:-translate-x-10">
+          <div className="w-full lg:w-1/2 text-[#E2C269] text-center lg:text-cenyer space-y-6 max-w-[700px] ml-[-40] lg:transform lg:-translate-x-10">
             <h1 className="text-xl md:text-3xl xl:text-[60px] leading-tight">
               Where every bottle tells a story
             </h1>
@@ -62,7 +63,7 @@ export default function Home() {
         </div>
 
         {/* Hero Mobile */}
-        <div className="sm:hidden flex flex-col items-center text-center text-[#E2C269] px-4 pt-24 space-y-8">
+        <div className="sm:hidden flex flex-col items-center text-center mt-[-90] text-[#E2C269] px-4 pt-24 space-y-8">
           <Image
             src="/threebottles.png"
             alt="Wine Bottles"

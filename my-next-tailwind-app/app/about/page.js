@@ -3,11 +3,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Header from '../components/header';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronUp, ChevronDown } from 'lucide-react'; 
 import CarouselSection from '../components/carousel';
 import LegacySection from '../components/sectionAbout';
-
-const NAVY = '#223049';
 
 const timelineData = [
   {
@@ -34,71 +33,78 @@ function Timeline() {
   const [activeIndex, setActiveIndex] = useState(0);
   const btnRefs = useRef([]);
 
-  // For indicator position
-  const [indicatorTop, setIndicatorTop] = useState(0);
-  const [indicatorHeight, setIndicatorHeight] = useState(0);
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev > 0 ? prev - 1 : timelineData.length - 1));
+  };
 
-  useEffect(() => {
-    if (btnRefs.current[activeIndex]) {
-      const btn = btnRefs.current[activeIndex];
-      setIndicatorTop(btn.offsetTop);
-      setIndicatorHeight(btn.offsetHeight);
-    }
-  }, [activeIndex]);
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev < timelineData.length - 1 ? prev + 1 : 0));
+  };
 
   return (
-        <section className="w-full max-w-10xl mx-auto px-12 mt-12 mb-10 ">
-          <h2 className="text-3xl md:text-5xl font-extrabold text-[#34434F] mb-12 -mt-3 tracking-tight text-center">
-            Sips of the past
-          </h2>
-      
-          <div className="flex flex-col md:grid md:grid-cols-3 md:gap-2 items-center justify-center w-full">
-            {/* Left: Image */}
-            <div className="w-full flex justify-center mb-8 md:mb-0">
-  <Image
-    src={timelineData[activeIndex].image}
-    alt={timelineData[activeIndex].year + ' Milestone'}
-    width={1000}
-    height={600}
-    className="rounded shadow w-full max-w-3xl object-cover h-auto"
-  />
-</div>
+    <section className="w-full max-w-10xl mx-auto px-8 sm:px-12 mt-20 mb-10">
+      <h2 className="text-4xl md:text-5xl font-bold text-[#34434F] mt-[-60] mb-10 text-center tracking-tight">
+        Sips of the Past
+      </h2>
 
-      
-            {/* Middle: Vertical Dates + Indicator */}
-            <div className="relative flex flex-col items-center justify-center h-full">
+      <div className="flex flex-col md:grid md:grid-cols-3 md:gap-8 items-center justify-center w-full">
+        {/* Left: Image */}
+        <div className="w-full flex justify-center mb-10 md:mb-0">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={timelineData[activeIndex].image}
+              src={timelineData[activeIndex].image}
+              alt={timelineData[activeIndex].year}
+              className="rounded shadow-lg w-full max-w-3xl object-cover h-auto"
+              initial={{ opacity: 0.3, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.6 }}
+            />
+          </AnimatePresence>
+        </div>
 
-              {/* Year buttons */}
-              {timelineData.map((item, idx) => (
-                <button
-                  key={item.year}
-                  ref={el => (btnRefs.current[idx] = el)}
-                  className={`relative z-10 px-4 py-3 text-lg md:text-xl font-bold transition-colors ${
-                    activeIndex === idx ? 'text-[#E2C269]' : 'text-[#34434F]'
-                  }`}
-                  onClick={() => setActiveIndex(idx)}
-                >
-                  {item.year}
-                </button>
-              ))}
-      
-            </div>
-      
-            {/* Right: Text Content */}
-            <div className="w-full flex flex-col justify-center items-start mt-8 md:mt-0">
-              <h3 className="text-[#E2C269] text-xl md:text-2xl font-semibold">
-                {timelineData[activeIndex].year}
-              </h3>
-              <h4 className="text-2xl md:text-4xl font-bold text-[#34434F] mt-2">
-                {timelineData[activeIndex].title}
-              </h4>
-              <p className="text-gray-700 mt-4 text-lg max-w-prose">
-                {timelineData[activeIndex].description}
-              </p>
-            </div>
-          </div>
-        </section>
-      );
+        {/* Middle: Year selector + arrows */}
+        <div className="relative flex flex-col items-center gap-2">
+          <button onClick={handlePrev} className="text-[#1B2930] hover:text-[#c9a849] mb-2">
+            <ChevronUp size={30} />
+          </button>
+
+          {timelineData.map((item, idx) => (
+            <button
+              key={item.year}
+              ref={(el) => (btnRefs.current[idx] = el)}
+              className={`px-4 py-2 text-lg md:text-xl font-semibold transition-all ${
+                activeIndex === idx
+                  ? 'text-[#E2C269] scale-110'
+                  : 'text-[#34434F] hover:text-[#E2C269]'
+              }`}
+              onClick={() => setActiveIndex(idx)}
+            >
+              {item.year}
+            </button>
+          ))}
+
+          <button onClick={handleNext} className="text-[#1B2930] hover:text-[#c9a849] mt-2">
+            <ChevronDown size={30} />
+          </button>
+        </div>
+
+        {/* Right: Content */}
+        <div className="w-full flex flex-col justify-center items-start text-left mt-10 md:mt-0">
+          <h3 className="text-[#E2C269] text-3xl md:text-4xl font-extrabold mb-2">
+            {timelineData[activeIndex].year}
+          </h3>
+          <h4 className="text-2xl md:text-3xl font-bold text-[#34434F] mb-4">
+            {timelineData[activeIndex].title}
+          </h4>
+          <p className="text-gray-700 text-lg max-w-prose leading-relaxed">
+            {timelineData[activeIndex].description}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export default function AboutPage() {
@@ -127,7 +133,10 @@ export default function AboutPage() {
           </h1>
         </motion.div>
       </div>
+
+      {/* Updated Timeline */}
       <Timeline />
+
       <CarouselSection />
       <LegacySection />
     </div>
