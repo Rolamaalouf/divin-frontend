@@ -18,7 +18,7 @@ export default function Home() {
             alt="Landing"
             width={1600}
             height={1054}
-            className="w-full h-full object-cover object-top translate-y-[-100px]"
+            className="w-full h-full object-cover object-top translate-y-[-100px] mb-[-40]"
             priority
           />
           <div className="absolute inset-0 bg-[#1B2930] object-top translate-y-[-100px] opacity-70" />
@@ -28,7 +28,7 @@ export default function Home() {
       {/* Sticky Header */}
       <Header />
 
-      <div className="mb-50">
+      <div className="mt-[-20] mb-50">
         {/* Hero Desktop */}
         <div className="hidden sm:flex flex-col lg:flex-row items-center justify-between min-h-screen lg:px-8 bg-cover bg-center">
           {/* Bottles */}
@@ -44,26 +44,28 @@ export default function Home() {
           </div>
 
           {/* Text + Button */}
-          <div className="w-full lg:w-1/2 text-[#E2C269] text-center lg:text-cenyer space-y-6 max-w-[700px] ml-[-40] lg:transform lg:-translate-x-10">
-            <h1 className="text-xl md:text-3xl xl:text-[60px] leading-tight">
+          <div className="w-full lg:w-1/2 mb-10 text-[#E2C269] text-left lg:text-left space-y-4 max-w-[700px] px-4 lg:transform lg:-translate-x-10 animate-fade-in-up">
+            <h1 className="text-2xl md:text-3xl xl:text-[65px] font-bold tracking-wide leading-tight drop-shadow-md">
               Where every bottle tells a story
             </h1>
-            <p className="text-lg md:text-xl xl:text-[26px] leading-snug xl:leading-[44px]">
-              Our wines reflect the unique terroir and the stories of the people behind them. Whether you are seeking a bold red or a crisp white, discover the flavors that have been lovingly bottled just for you.
+            <p className="text-base md:text-lg xl:text-[22px] xl:leading-[38px]">
+              Our wines reflect the unique terroir and the stories of the people behind them.
+              Whether you are seeking a bold red or a crisp white, discover the flavors that
+              have been lovingly bottled just for you.
             </p>
             <div className="pt-2">
               <Link
                 href="/wines"
-                className="glitter-button px-8 py-4 text-base lg:text-lg font-semibold rounded transition hover:brightness-110"
+                className="glitter-button inline-block px-8 py-4 text-base lg:text-lg font-semibold rounded focus:outline-none focus:ring-2 focus:ring-[#E2C269] transition hover:brightness-110"
               >
-                Shop our wines
+                Shop our wines →
               </Link>
             </div>
           </div>
         </div>
 
         {/* Hero Mobile */}
-        <div className="sm:hidden flex flex-col items-center text-center mt-[-90] text-[#E2C269] px-4 pt-24 space-y-8">
+        <div className="sm:hidden flex flex-col items-center text-center mt-[-80] text-[#E2C269] px-4 pt-20 space-y-8">
           <Image
             src="/threebottles.png"
             alt="Wine Bottles"
@@ -81,7 +83,7 @@ export default function Home() {
           </p>
           <Link
             href="/wines"
-            className="glitter-button w-[200px] h-[60px] flex items-center justify-center text-base font-semibold rounded transition hover:brightness-110"
+            className="glitter-button w-[200px] h-[60px] flex items-center justify-center text-base font-semibold rounded transition hover:brightness-110 z-1000"
           >
             Shop our wines
           </Link>
@@ -89,7 +91,7 @@ export default function Home() {
       </div>
 
       {/* Sections */}
-      <Section1 className="-mt-[200px]" />
+      <Section1 className="mt-[200px]" />
       <SelectionsSection className="mb-54" />
       <Section2 />
     </div>

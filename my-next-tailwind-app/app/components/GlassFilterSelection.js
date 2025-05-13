@@ -57,15 +57,15 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory, sortOrder, 
   if (isError) return <p>Error loading categories.</p>;
 
   return (
-    <div className="relative w-full md:w-[1540px] h-[300px] bg-[#1B2930] mb-10 mt-10 flex items-center px-4 md:px-10 box-border gap-6">
+    <div className="relative w-full max-w-full md:max-w-[1540px] h-auto md:h-[300px] bg-[#1B2930] mb-10 mt-10 flex flex-col md:flex-row items-center px-4 md:px-10 box-border gap-6">
       {/* Text on the left */}
-      <div className="text-[#E2C269] font-bold text-lg md:text-xl w-1/3 text-left">
+      <div className="text-[#E2C269] font-bold text-lg md:text-xl w-full md:w-1/3 text-center md:text-left mb-4 md:mb-0">
         {dynamicText}
       </div>
 
       {/* Glass image centered */}
-      <div className="flex justify-center flex-1">
-        <div className="w-[150px] h-[300px] md:w-[180px] md:h-[360px] flex items-center justify-center overflow-hidden">
+      <div className="flex justify-center flex-1 mb-4 md:mb-0">
+        <div className="w-[140px] h-[550px] md:w-[400px] md:h-[360px] flex items-center justify-center overflow-hidden">
           <img
             src={getGlassImage()}
             alt="Wine Glass"
@@ -75,7 +75,7 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory, sortOrder, 
       </div>
 
       {/* Buttons on the right */}
-      <div className="flex gap-4 w-1/3 justify-end flex-wrap">
+      <div className="flex gap-4 w-full md:w-1/3 justify-center md:justify-end flex-wrap">
         <select
           value={selectedCategory}
           onChange={handleCategoryChange}

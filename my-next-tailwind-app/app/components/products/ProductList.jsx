@@ -22,16 +22,19 @@ const ProductList = ({
   showDescription = true,
   showControls = true,
   showStock = true,
-  showPopupOnClick = false, 
+  showPopupOnClick = false,
 }) => {
   const { data: categories, isLoading: categoriesLoading, isError: categoriesError } = useCategoryQuery();
   const deleteProduct = useDeleteProduct();
   const queryClient = useQueryClient();
 
   const [previewImage, setPreviewImage] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null); 
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6; // Products per page
 
-  const router = useRouter (); 
+  const router = useRouter();
+
   const handleDelete = (id) => {
     confirmAlert({
       title: 'Confirm Deletion',
@@ -62,6 +65,14 @@ const ProductList = ({
   if (isLoading || categoriesLoading) return <p>Loading...</p>;
   if (categoriesError) return <p>Error loading categories.</p>;
 
+  // Pagination logic
+  const totalProducts = products ? products.length : 0;
+  const totalPages = Math.ceil(totalProducts / pageSize);
+
+  const paginatedProducts = products
+    ? products.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    : [];
+
   return (
     <>
       {/* Preview Modal */}
@@ -74,7 +85,7 @@ const ProductList = ({
             <img
               src={previewImage}
               alt="Preview"
-              className="max-w-[400px] max-h-[800px] w-auto h-auto rounded-lg shadow-lg object-contain"
+              className="max-w-[90vw] max-h-[90vh] w-auto h-auto rounded-lg shadow-lg object-contain"
             />
           </div>
         </div>
@@ -99,30 +110,26 @@ const ProductList = ({
       )}
 
       {/* Product Grid */}
-      {(!products || products.length === 0) ? (
+      {(!paginatedProducts || paginatedProducts.length === 0) ? (
         <p>No products found.</p>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {products.map((product) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {paginatedProducts.map((product) => (
             <div
-            key={product.id}
-            className="bg-white p-4 shadow rounded relative cursor-pointer"
-            onClick={() => showPopupOnClick && setSelectedProduct(product)}
-          >
+              key={product.id}
+              className="bg-white p-4 shadow rounded relative cursor-pointer flex flex-col"
+              onClick={() => showPopupOnClick && setSelectedProduct(product)}
+            >
               <div
-  className="w-[400px] h-[800px] flex items-center justify-center overflow-hidden bg-white cursor-pointer"
-  onClick={() => router.push(`/product/${product.id}`)}
->
-              <div className="w-full h-full px-0 py-26">
-
-    <img
-      src={Array.isArray(product.image) ? product.image[0] : product.image}
-      alt={product.name}
-      className="w-full h-full object-contain"
-      style={{ backgroundColor: 'transparent' }}
-    />
-  
-</div>
+                className="w-full h-[220px] sm:h-[260px] md:h-[300px] flex items-center justify-center overflow-hidden bg-white cursor-pointer"
+                onClick={() => router.push(`/product/${product.id}`)}
+              >
+                <img
+                  src={Array.isArray(product.image) ? product.image[0] : product.image}
+                  alt={product.name}
+                  className="w-full h-full object-contain"
+                  style={{ backgroundColor: 'transparent' }}
+                />
               </div>
 
               <h2 className="text-lg font-semibold mt-2 text-[#1B2930]">{product.name}</h2>
@@ -131,12 +138,12 @@ const ProductList = ({
               {showDescription && (
                 <p className="text-sm text-gray-600 mt-1">{product.description}</p>
               )}
-              
+
               {showStock && (
                 <p className="text-sm text-gray-600 mt-1">Stock: {product.stock}</p>
               )}
 
-              {showActions && <ProductActions product={product}  showStock={false}/>}
+              {showActions && <ProductActions product={product} showStock={false} />}
 
               {showControls && (
                 <div className="flex justify-end gap-4 mt-4">
@@ -160,9 +167,7 @@ const ProductList = ({
                     <button
                       onClick={() =>
                         setPreviewImage(
-                          Array.isArray(product.image)
-                            ? product.image[0]
-                            : product.image
+                          Array.isArray(product.image) ? product.image[0] : product.image
                         )
                       }
                       className="text-[#1B2930] hover:scale-110 transition"
@@ -175,6 +180,39 @@ const ProductList = ({
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 bg-[#E2C269] text-[#1B2930] rounded disabled:opacity-50"
+          >
+            Prev
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`px-3 py-1 rounded ${
+                currentPage === i + 1
+                  ? 'bg-[#1B2930] text-[#E2C269]'
+                  : 'bg-[#E2C269] text-[#1B2930]'
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 bg-[#E2C269] text-[#1B2930] rounded disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
       )}
     </>

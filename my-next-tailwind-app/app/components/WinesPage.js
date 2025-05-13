@@ -44,25 +44,34 @@ export default function WinesPage() {
   });
 
   return (
-    <div className="relative w-full min-h-screen text-gray-800 overflow-visible">
-      <Header className="bg-[#1B2930] bg-opacity-90 shadow-md" />
+    <div className="relative w-full min-h-screen text-gray-800 overflow-visible ">
+      <Header className="sticky top-0 z-50 bg-[#1B2930] bg-opacity-90 shadow-md" />
 
-      <div className="relative h-[100vh]">
-        <div className="absolute bottom-35 left-0 w-full h-full -z-10">
-          <Image src="/wines.png" alt="Wines Background" fill className="object-cover object-top" priority />
-        </div>
+<div className="relative h-[100vh]">
+  {/* Background image behind everything */}
+  <div className="absolute inset-0 -z-10 overflow-hidden mt-[-600]">
+    <Image
+      src="/wines3.png"
+      alt="Wines Background"
+      fill
+      className="object-contain"
+      priority
+    />
+  </div>
 
-        <motion.div
-          className="absolute top-[60%] right-[10%] transform -translate-y-1/2 text-right"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <h1 className="text-[#E2C269] text-[64px] font-bold leading-tight">Wines</h1>
-        </motion.div>
-      </div>
+  {/* Title on image */}
+  <motion.div
+    className="absolute top-[60%] right-[10%] transform -translate-y-1/2 text-right"
+    initial={{ opacity: 0, y: 40 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 1 }}
+  >
+    <h1 className="text-[#E2C269] text-[64px] font-bold leading-tight mt-[-350]">Wines</h1>
+  </motion.div>
+</div>
 
-      <div className="max-w-[1600px] mx-auto px-4 py-10">
+
+      <div className="max-w-[1600px] mx-auto px-4 py-10 mt-[-450]">
         <GlassFilterSection
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}

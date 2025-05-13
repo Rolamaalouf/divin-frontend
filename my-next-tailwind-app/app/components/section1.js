@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function Section1() {
   return (
-    <section className="relative w-full flex flex-col lg:flex-row items-center justify-between px-6 lg:pl-[120px] lg:pr-12 py-16 gap-10 z-10 bg-white -mt-[200px]">
+    <section className="relative w-full flex flex-col lg:flex-row items-center justify-between px-6 lg:pl-[120px] lg:pr-12 py-16 gap-10 -z-10 bg-white -mt-[250px]">
       {/* Left Image */}
       <div className="w-full lg:w-1/2 relative flex justify-center lg:justify-end">
         <Image
