@@ -47,28 +47,31 @@ export default function WinesPage() {
     <div className="relative w-full min-h-screen text-gray-800 overflow-visible ">
       <Header className="sticky top-0 z-50 bg-[#1B2930] bg-opacity-90 shadow-md" />
 
-<div className="relative h-[100vh]">
-  {/* Background image behind everything */}
-  <div className="absolute inset-0 -z-10 overflow-hidden mt-[-600]">
+      <div className="relative h-[100vh] sm:h-[100vh]">
+  
+  <div className="absolute inset-0 -z-10 overflow-hidden mt-[-680]">
     <Image
       src="/wines3.png"
       alt="Wines Background"
       fill
-      className="object-contain"
       priority
+      className="object-cover sm:object-contain w-full h-full max-h-[800px] sm:max-h-none"
     />
   </div>
 
   {/* Title on image */}
   <motion.div
-    className="absolute top-[60%] right-[10%] transform -translate-y-1/2 text-right"
+    className="absolute top-[50%] sm:top-[60%] right-[5%] sm:right-[10%] transform -translate-y-1/2 text-right"
     initial={{ opacity: 0, y: 40 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 1 }}
   >
-    <h1 className="text-[#E2C269] text-[64px] font-bold leading-tight mt-[-350]">Wines</h1>
+    <h1 className="text-[#E2C269] text-4xl sm:text-[64px] mt-[-350] font-bold leading-tight">
+      Wines
+    </h1>
   </motion.div>
 </div>
+
 
 
       <div className="max-w-[1600px] mx-auto px-4 py-10 mt-[-450]">
