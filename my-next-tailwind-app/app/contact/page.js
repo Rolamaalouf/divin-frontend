@@ -145,7 +145,7 @@ const Contact = () => {
           {/* Visit Us Section */}
           <div className="md:w-1/2 w-full flex flex-col items-center text-center space-y-6">
             <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">
-              Or come in person — we're just<br />15 mins from the center
+              Or come in person — we are just<br />15 mins from the center
             </h2>
 
             <div className="flex items-center space-x-2 text-gray-600 justify-center">
