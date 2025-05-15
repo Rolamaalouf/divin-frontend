@@ -77,7 +77,7 @@ const CartItemList = ({
           toast.error("Order creation failed. No order ID received.");
           return;
         }
-        toast.success("Order placed successfully!");
+        toast.success("Finalizing purchase!");
         handleClearCart();
         if (onCheckout) onCheckout(orderId);
         window.location.href = `/checkout?id=${orderId}`;
@@ -160,12 +160,12 @@ const CartItemList = ({
 
           <div className="mt-6 space-y-2">
             <p className="font-semibold">Total: ${totalPrice.toFixed(2)}</p>
-            <button
+           {/* <button
               className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-900 text-sm"
               onClick={() => (window.location.href = "/cart")}
             >
               View Cart
-            </button>
+            </button>*/}
             <button
               disabled={isLoading}
               className="w-full bg-[#E2C269] text-black py-2 rounded hover:bg-[#d1a72f] text-sm disabled:opacity-50"
