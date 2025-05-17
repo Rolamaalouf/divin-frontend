@@ -54,6 +54,16 @@ export default function OrdersPage() {
     if (!orderId) {
       toast.error("No order found. Redirecting...");
       router.push("/cart");
+      return;
+    }
+
+    // Redirect to wines page if the order is already completed
+    const isCompleted = localStorage.getItem(`order-${orderId}-completed`);
+    if (isCompleted === "true") {
+      toast.info("Order already placed. Redirecting...");
+      setTimeout(() => {
+        router.replace("/wines");
+      }, 1500);
     }
   }, [orderId, router]);
 
@@ -68,14 +78,6 @@ export default function OrdersPage() {
       const guestFilled = isGuest
         ? Boolean(guestInfo.name && guestInfo.email && address.phone)
         : true;
-
-      console.log("Debug Address Check:", {
-        region,
-        phone,
-        direction,
-        guestFilled,
-        isGuest,
-      });
 
       if (!region || !phone || !direction || !guestFilled) {
         toast.error("Please complete the address step first.");
@@ -97,11 +99,9 @@ export default function OrdersPage() {
     if (step === 4) {
       window.history.pushState(null, "", window.location.href); // Prevent back navigation
       const handlePopState = () => {
-        // Redirect to the wines page if back is pressed
         router.replace("/wines");
       };
       window.addEventListener("popstate", handlePopState);
-
       return () => window.removeEventListener("popstate", handlePopState);
     }
   }, [step, router]);
@@ -134,11 +134,15 @@ export default function OrdersPage() {
         data.name = guestInfo.name;
         data.email = guestInfo.email;
       }
-      // --- ADD THIS LOG ---
+
       console.log("Sending updateOrder:", { id: orderId, data });
-      // --- END LOG ---
+
       await updateOrderMutation.mutateAsync({ id: orderId, data });
       toast.success("Order placed successfully!");
+
+      // Save order completion status in localStorage
+      localStorage.setItem(`order-${orderId}-completed`, "true");
+
       setStep(4);
     } catch (err) {
       console.error(err);

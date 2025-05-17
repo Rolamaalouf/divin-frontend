@@ -23,7 +23,7 @@ const CartItemList = ({
   const { user } = useAuth();
   const guestId = useGuestId();
 
-  const [showGuestPrompt, setShowGuestPrompt] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleUpdateQuantity = (cartItemId, quantity) => {
     if (quantity < 1) return;
@@ -40,12 +40,7 @@ const CartItemList = ({
     if (cartId) clearCart(cartId);
   };
 
-  const handleCheckout = () => {
-    if (items.length === 0 || totalPrice === 0) {
-      toast.error("Your cart is empty. Cannot checkout.");
-      return;
-    }
-
+  const finalizeCheckout = () => {
     const mappedItems = items.map((item) => ({
       product_id: item.productId ?? null,
       quantity: item.quantity ?? 1,
@@ -90,6 +85,26 @@ const CartItemList = ({
         );
       },
     });
+  };
+
+  const handleCheckoutClick = () => {
+    if (items.length === 0 || totalPrice === 0) {
+      toast.error("Your cart is empty. Cannot checkout.");
+      return;
+    }
+
+    setShowModal(true);
+  };
+
+  const handleModalAction = (action) => {
+    setShowModal(false);
+    if (action === "guest") {
+      finalizeCheckout();
+    } else if (action === "login") {
+      window.location.href = "/login";
+    } else if (action === "confirm") {
+      finalizeCheckout();
+    }
   };
 
   return (
@@ -160,22 +175,10 @@ const CartItemList = ({
 
           <div className="mt-6 space-y-2">
             <p className="font-semibold">Total: ${totalPrice.toFixed(2)}</p>
-           {/* <button
-              className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-900 text-sm"
-              onClick={() => (window.location.href = "/cart")}
-            >
-              View Cart
-            </button>*/}
             <button
               disabled={isLoading}
               className="w-full bg-[#E2C269] text-black py-2 rounded hover:bg-[#d1a72f] text-sm disabled:opacity-50"
-              onClick={() => {
-                if (!user) {
-                  setShowGuestPrompt(true);
-                } else {
-                  handleCheckout();
-                }
-              }}
+              onClick={handleCheckoutClick}
             >
               {isLoading ? "Processing..." : "Checkout"}
             </button>
@@ -183,31 +186,61 @@ const CartItemList = ({
         </>
       )}
 
-      {showGuestPrompt && (
-        <div className="fixed inset-0  flex items-center justify-center z-50" style={{ backdropFilter: "blur(6px)" }}>
+      {/* Updated Modal */}
+      {showModal && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50"
+          style={{ backdropFilter: "blur(6px)" }}
+        >
           <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
-            <h3 className="text-lg font-semibold mb-4">Continue as Guest?</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              {user
+                ? "Proceed to Checkout?"
+                : "Are you sure you want to proceed to checkout?"}
+            </h3>
             <p className="text-sm mb-6">
-              Would you like to continue as a guest or log in to your account?
+              {user
+                ? "Do you want to confirm your order?"
+                : "Please choose an option below."}
             </p>
-            <div className="flex gap-4 justify-center">
-              <button
-                onClick={() => {
-                  setShowGuestPrompt(false);
-                  handleCheckout();
-                }}
-                className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm"
-              >
-                Continue as Guest
-              </button>
-              <button
-                onClick={() => {
-                  window.location.href = "/login";
-                }}
-                className="px-4 py-2 bg-[#E2C269] text-black rounded hover:bg-[#d1a72f] text-sm"
-              >
-                Login
-              </button>
+            <div className="flex gap-2 justify-center flex-wrap">
+              {user ? (
+                <>
+                  <button
+                    onClick={() => handleModalAction("confirm")}
+                    className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm"
+                  >
+                    ✅ Confirm
+                  </button>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="px-4 py-2 bg-[#1B2930] text-white rounded hover:bg-[#10181d] text-sm"
+                  >
+                    ❌ Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => handleModalAction("guest")}
+                    className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm"
+                  >
+                    ✅ Yes, continue as guest
+                  </button>
+                  <button
+                    onClick={() => handleModalAction("login")}
+                    className="px-4 py-2 bg-[#1B2930] text-white rounded hover:bg-[#10181d] text-sm"
+                  >
+                    🔐 Yes, Login
+                  </button>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="px-4 py-2 bg-[#1B2930] text-white rounded hover:bg-[#10181d] text-sm"
+                  >
+                    ❌ No, cancel
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
