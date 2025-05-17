@@ -51,13 +51,6 @@ export default function UsersPage() {
           Add User
         </button>
       </div>
-
-      <UserTable
-        users={users}
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
-      />
-
       {showForm && (
         <UserForm
           formRef={formRef}
@@ -69,6 +62,13 @@ export default function UsersPage() {
           setShowForm={setShowForm}
         />
       )}
+      <UserTable
+        users={users}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+      />
+
+
     </div>
   );
 }

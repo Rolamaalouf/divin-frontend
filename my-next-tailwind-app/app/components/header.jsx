@@ -25,11 +25,12 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [cartPopupOpen, setCartPopupOpen] = useState(false);
+  const [wishlistPopupOpen, setWishlistPopupOpen] = useState(false);
+
   const dropdownRef = useRef();
-  const popupRef = useRef();  
+  const popupRef = useRef();
   const wishlistPopupRef = useRef();
   const { user, logout } = useAuth();
-  const [wishlistPopupOpen, setWishlistPopupOpen] = useState(false);
 
   const {
     data: cartItems = [],
@@ -44,10 +45,46 @@ const Header = () => {
     error: wishlistError,
     refetch: refetchWishlist,
   } = useWishlist({ useMyEndpoint: true });
-  
 
   const removeCartItemMutation = useRemoveCartItem();
   const removeWishlistItemMutation = useRemoveFromWishlist();
+
+  // -- REMOVE TIMER LOGIC, ONLY OPEN ON NEW PRODUCT ADDED --
+  const prevCartCount = useRef(cartItems.length);
+
+  useEffect(() => {
+    if (cartItems.length > prevCartCount.current) {
+      setCartPopupOpen(true);
+    }
+    prevCartCount.current = cartItems.length;
+  }, [cartItems.length]);
+  // ---------------------------------------------------------
+
+  // Click outside logic for popups and dropdown
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
+        setCartPopupOpen(false);
+      }
+      if (wishlistPopupRef.current && !wishlistPopupRef.current.contains(e.target)) {
+        setWishlistPopupOpen(false);
+      }
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 0);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const totalCartQty = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalWishlist = wishlistItems.length;
 
   const handleRemoveCartItem = (id) => {
     removeCartItemMutation.mutate(id, {
@@ -80,50 +117,6 @@ const Header = () => {
       onError: () => toast.error("Failed to remove item"),
     });
   };
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (popupRef.current && !popupRef.current.contains(e.target)) {
-        setCartPopupOpen(false);
-      }
-      if (wishlistPopupRef.current && !wishlistPopupRef.current.contains(e.target)) {
-        setWishlistPopupOpen(false);
-      }
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 0);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const totalCartQty = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalWishlist = wishlistItems.length;
-
-  // Open the popup briefly when cartItems change
-  useEffect(() => {
-    if (cartItems.length > 0) {
-      setCartPopupOpen(true);
-      const timer = setTimeout(() => setCartPopupOpen(false), 60000); 
-      return () => clearTimeout(timer);
-    }
-  }, [cartItems]);
-
-  useEffect(() => {
-    if (cartItems.length === 0) {
-      const timer = setTimeout(() => {
-        setCartPopupOpen(false);
-      }, 1500); // 1.5 seconds delay
-      return () => clearTimeout(timer);
-    }
-  }, [cartItems]);
 
   return (
     <header
@@ -171,7 +164,7 @@ const Header = () => {
                 <User className="w-6 h-6  md:w-8 md:h-8 hover:text-white transition-colors" />
               </button>
               {dropdownOpen && (
-                <div className="absolute  bg-white right-0 mt-2 w-48 rounded-md  z-50 text-gray-800">
+                <div className="absolute bg-white right-0 mt-2 w-48 rounded-md z-50 text-gray-800">
                   <ul className="py-2 text-sm">
                     {user.role === "admin" && (
                       <li>
@@ -214,12 +207,13 @@ const Header = () => {
             </Link>
           )}
 
+          {/* Cart Popup */}
           <IconPopup
             icon={ShoppingCart}
             count={totalCartQty}
             open={cartPopupOpen}
             setOpen={setCartPopupOpen}
-            ref={popupRef} 
+            ref={popupRef}
           >
             {cartLoading && <p>Loading cart...</p>}
             {cartError && <p>Error loading cart</p>}
@@ -238,24 +232,23 @@ const Header = () => {
             )}
           </IconPopup>
 
-          {/* Wishlist */}
+          {/* Wishlist Popup */}
           <IconPopup
-  icon={Heart}
-  count={totalWishlist}
-  open={wishlistPopupOpen}
-  setOpen={setWishlistPopupOpen}
-  ref={wishlistPopupRef}
->
-  {wishlistLoading && <p>Loading wishlist...</p>}
-  {wishlistError && <p>Error loading wishlist</p>}
-  {!wishlistLoading && !wishlistError && (
-    <WishlistItemList
-      items={wishlistItems}
-      onDelete={handleRemoveWishlistItem}
-    />
-  )}
-</IconPopup>
-
+            icon={Heart}
+            count={totalWishlist}
+            open={wishlistPopupOpen}
+            setOpen={setWishlistPopupOpen}
+            ref={wishlistPopupRef}
+          >
+            {wishlistLoading && <p>Loading wishlist...</p>}
+            {wishlistError && <p>Error loading wishlist</p>}
+            {!wishlistLoading && !wishlistError && (
+              <WishlistItemList
+                items={wishlistItems}
+                onDelete={handleRemoveWishlistItem}
+              />
+            )}
+          </IconPopup>
         </div>
       </div>
 

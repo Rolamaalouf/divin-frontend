@@ -1,22 +1,34 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useAddToCart} from "../hooks/useCartHooks";
+import { useAddToCart } from "../hooks/useCartHooks";
 import { useAddToWishlist } from "../hooks/useWishlistHooks";
 
-
-const ProductActions = ({ product, currentUser , showStock = true, hideWishlist = false,  }) => {
+const ProductActions = ({
+  product,
+  currentUser,
+  showStock = true,
+  hideWishlist = false,
+  onAddedToCart,
+}) => {
   const [quantity, setQuantity] = useState(1);
   const { mutate: addToCart, isPending: addingToCart } = useAddToCart();
   const { mutate: addToWishlist, isPending: addingToWishlist } = useAddToWishlist();
-
-
 
   const handleAddToCart = () => {
     if (!product?.id) return toast.error("Invalid product data");
     if (quantity < 1) return toast.error("Select a valid quantity");
     if (product.stock < quantity) return toast.error(`Only ${product.stock} in stock`);
 
-    addToCart({ product_id: product.id, quantity });
+    addToCart(
+      { product_id: product.id, quantity },
+      {
+        onSuccess: () => {
+          if (onAddedToCart) onAddedToCart();
+        },
+        onError: (err) =>
+          toast.error(err.response?.data?.message || "Failed to add to cart"),
+      }
+    );
   };
 
   const handleAddToWishlist = () => {
@@ -33,7 +45,9 @@ const ProductActions = ({ product, currentUser , showStock = true, hideWishlist 
   return (
     <div className="flex flex-col gap-4 mt-4">
       <div className="flex items-center gap-2">
-        <label htmlFor="quantity" className="text-sm">Quantity:</label>
+        <label htmlFor="quantity" className="text-sm">
+          Quantity:
+        </label>
         <input
           id="quantity"
           type="number"
@@ -43,7 +57,6 @@ const ProductActions = ({ product, currentUser , showStock = true, hideWishlist 
           onChange={(e) => setQuantity(Number(e.target.value))}
           className="w-16 px-2 py-1 border rounded"
         />
-
       </div>
 
       <div className="flex gap-4">
@@ -52,17 +65,21 @@ const ProductActions = ({ product, currentUser , showStock = true, hideWishlist 
           disabled={addingToCart || product.stock < 1}
           className="bg-[#1B2930] text-white px-4 py-2 rounded hover:brightness-110 disabled:opacity-50"
         >
-          {addingToCart ? "Adding..." : product.stock < 1 ? "Out of Stock" : "Add to Cart"}
+          {addingToCart
+            ? "Adding..."
+            : product.stock < 1
+            ? "Out of Stock"
+            : "Add to Cart"}
         </button>
         {!hideWishlist && (
-  <button
-    onClick={handleAddToWishlist}
-    disabled={addingToWishlist}
-    className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded hover:brightness-110 disabled:opacity-50"
-  >
-    {addingToWishlist ? "Adding..." : "Add to Wishlist"}
-  </button>
-)}
+          <button
+            onClick={handleAddToWishlist}
+            disabled={addingToWishlist}
+            className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded hover:brightness-110 disabled:opacity-50"
+          >
+            {addingToWishlist ? "Adding..." : "Add to Wishlist"}
+          </button>
+        )}
       </div>
     </div>
   );

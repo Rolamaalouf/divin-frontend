@@ -41,7 +41,6 @@ export const UsersProvider = ({ children }) => {
   const removeUser = async (id) => {
     try {
       await deleteUser(id);
-      toast.success('User deleted');
       fetchUsers();
     } catch (error) {
       toast.error("Failed to delete user");

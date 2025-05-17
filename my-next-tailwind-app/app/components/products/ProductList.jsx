@@ -1,15 +1,13 @@
-'use client';
-
-import React, { useState } from 'react';
-import { useCategoryQuery } from '../../hooks/useCategoryHooks';
-import { useDeleteProduct } from '../../hooks/useProductHooks';
-import { toast } from 'react-toastify';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
-import { Eye, Pencil, Trash2 } from 'lucide-react';
-import { useQueryClient } from '@tanstack/react-query';
-import ProductActions from '../ProductActions';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { useCategoryQuery } from "../../hooks/useCategoryHooks";
+import { useDeleteProduct } from "../../hooks/useProductHooks";
+import { toast } from "react-toastify";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import ProductActions from "../ProductActions";
+import { useRouter } from "next/navigation";
 
 const ProductList = ({
   onEdit,
@@ -23,8 +21,10 @@ const ProductList = ({
   showControls = true,
   showStock = true,
   showPopupOnClick = false,
+  openCartPopup, // <-- Receive from Header
 }) => {
-  const { data: categories, isLoading: categoriesLoading, isError: categoriesError } = useCategoryQuery();
+  const { data: categories, isLoading: categoriesLoading, isError: categoriesError } =
+    useCategoryQuery();
   const deleteProduct = useDeleteProduct();
   const queryClient = useQueryClient();
 
@@ -37,29 +37,35 @@ const ProductList = ({
 
   const handleDelete = (id) => {
     confirmAlert({
-      title: 'Confirm Deletion',
-      message: 'Are you sure you want to delete this product?',
+      title: "Confirm Deletion",
+      message: "Are you sure you want to delete this product?",
       buttons: [
         {
-          label: 'Yes',
+          label: "Yes",
           onClick: async () => {
             try {
               await deleteProduct.mutateAsync(id);
-              toast.success('Product deleted');
-              queryClient.invalidateQueries(['products']);
+              toast.success("Product deleted");
+              queryClient.invalidateQueries(["products"]);
             } catch (error) {
-              toast.error('Delete failed');
+              toast.error("Delete failed");
             }
           },
         },
-        { label: 'Cancel' },
+        { label: "Cancel" },
       ],
     });
   };
 
   const handleEdit = (product) => {
     onEdit?.(product);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Callback to open cart popup and refetch cart after adding product
+  const handleAddedToCart = () => {
+    if (openCartPopup) openCartPopup();
+    queryClient.invalidateQueries(["cart"]);
   };
 
   if (isLoading || categoriesLoading) return <p>Loading...</p>;
@@ -128,7 +134,7 @@ const ProductList = ({
                   src={Array.isArray(product.image) ? product.image[0] : product.image}
                   alt={product.name}
                   className="w-full h-full object-contain"
-                  style={{ backgroundColor: 'transparent' }}
+                  style={{ backgroundColor: "transparent" }}
                 />
               </div>
 
@@ -139,11 +145,15 @@ const ProductList = ({
                 <p className="text-sm text-gray-600 mt-1">{product.description}</p>
               )}
 
-              {showStock && (
-                <p className="text-sm text-gray-600 mt-1">Stock: {product.stock}</p>
-              )}
+              {showStock && <p className="text-sm text-gray-600 mt-1">Stock: {product.stock}</p>}
 
-              {showActions && <ProductActions product={product} showStock={false} />}
+              {showActions && (
+                <ProductActions
+                  product={product}
+                  showStock={false}
+                  onAddedToCart={handleAddedToCart}
+                />
+              )}
 
               {showControls && (
                 <div className="flex justify-end gap-4 mt-4">
@@ -199,8 +209,8 @@ const ProductList = ({
               onClick={() => setCurrentPage(i + 1)}
               className={`px-3 py-1 rounded ${
                 currentPage === i + 1
-                  ? 'bg-[#1B2930] text-[#E2C269]'
-                  : 'bg-[#E2C269] text-[#1B2930]'
+                  ? "bg-[#1B2930] text-[#E2C269]"
+                  : "bg-[#E2C269] text-[#1B2930]"
               }`}
             >
               {i + 1}

@@ -42,7 +42,7 @@ export default function RegisterPage() {
     try {
       await register({ ...form, address });
       toast.success('Registered successfully!');
-      router.push('/login'); // 👈 Add this
+      router.push('/login'); 
     } catch (error) {
       console.error('Register error:', error);
       toast.error(error?.response?.data?.message || 'Registration failed');
@@ -63,8 +63,14 @@ export default function RegisterPage() {
         onSubmit={handleRegister}
         className="relative z-10 w-full max-w-lg bg-[#34434F]/10 backdrop-blur-md p-10 rounded-xl shadow-2xl text-[#E2C269] space-y-6"
       >
+        
         <h2 className="text-4xl font-extrabold text-center">Create Account</h2>
-
+        <p className="text-center text-sm text-white">
+          Already have an account?{' '}
+          <Link href="/login" className="text-[#E2C269] underline hover:text-yellow-300">
+            Login
+          </Link>
+        </p>
         <input
           name="name"
           placeholder="Full Name"
@@ -99,12 +105,7 @@ export default function RegisterPage() {
           Sign Up
         </button>
 
-        <p className="text-center text-sm text-white">
-          Already have an account?{' '}
-          <Link href="/login" className="text-[#E2C269] underline hover:text-yellow-300">
-            Login
-          </Link>
-        </p>
+
       </form>
     </div>
   );

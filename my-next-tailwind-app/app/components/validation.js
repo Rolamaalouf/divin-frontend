@@ -22,34 +22,40 @@ export const validateAddress = (address) => {
       key: "floor",
       label: "Floor number",
       regex: /^[0-9]{1,3}$/,
-      errorMessages: { empty: "Floor number is required", invalid: "Floor number must be a valid number (1-999)" },
+      errorMessages: {
+        empty: "Floor number is required",
+        invalid: "Floor number must be a valid number (1-999)",
+      },
     },
-  ]
+  ];
 
-  let isValid = true
-  let allEmpty = true
+  let isValid = true;
+  let allEmpty = true;
 
   for (const field of addressFields) {
-    if (!address[field.key]) {
-      allEmpty = allEmpty && true
-      isValid = false
-    } else {
-      allEmpty = false
+    const value = address[field.key];
+    if (!value || value.trim() === "") {
+      notify("error", field.errorMessages.empty);
+      isValid = false;
+      continue;
     }
 
-    if (field.regex && address[field.key] && !field.regex.test(address[field.key])) {
-      notify("error", field.errorMessages.invalid)
-      return false // Return early on first validation error for better UX
+    allEmpty = false;
+
+    if (field.regex && !field.regex.test(value)) {
+      notify("error", field.errorMessages.invalid);
+      return false;
     }
   }
 
   if (allEmpty) {
-    notify("error", "Please add your address details.")
-    return false
+    notify("error", "Please add your address details.");
+    return false;
   }
 
-  return isValid
-}
+  return isValid;
+};
+
 
 export const validatePayment = (payment) => {
   const paymentFields = [

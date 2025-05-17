@@ -13,72 +13,70 @@ export const UserForm = ({
 
   return (
     <form
-      ref={formRef}
-      onSubmit={(e) => {
-        console.log('Form submit triggered'); // Debug
-        handleSubmit(e);
-      }}
-      className="bg-white p-4 rounded shadow-md mb-6 space-y-4"
+  ref={formRef}
+  onSubmit={handleSubmit}
+  className="bg-white p-4 rounded shadow-md mb-6 space-y-4 max-w-lg mx-auto"
+>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <input
+      name="name"
+      value={formData.name}
+      onChange={handleInputChange}
+      placeholder="Name"
+      required
+      className="border p-2 rounded w-full"
+    />
+    <input
+      name="email"
+      type="email"
+      value={formData.email}
+      onChange={handleInputChange}
+      placeholder="Email"
+      required
+      className="border p-2 rounded w-full"
+    />
+    {!isEdit && (
+      <input
+        name="password"
+        type="password"
+        value={formData.password}
+        onChange={handleInputChange}
+        placeholder="Password"
+        required
+        className="border p-2 rounded w-full"
+      />
+    )}
+    <select
+      name="role"
+      value={formData.role}
+      onChange={handleInputChange}
+      className="border p-2 rounded w-full"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          name="name"
-          value={formData.name}
-          onChange={handleInputChange}
-          placeholder="Name"
-          required
-          className="border p-2 rounded w-full"
-        />
-        <input
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleInputChange}
-          placeholder="Email"
-          required
-          className="border p-2 rounded w-full"
-        />
-        {!isEdit && (
-          <input
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            placeholder="Password"
-            required
-            className="border p-2 rounded w-full"
-          />
-        )}
-        <select
-          name="role"
-          value={formData.role}
-          onChange={handleInputChange}
-          className="border p-2 rounded w-full"
-        >
-          <option value="customer">Customer</option>
-          <option value="admin">Admin</option>
-        </select>
+      <option value="customer">Customer</option>
+      <option value="admin">Admin</option>
+    </select>
 
-        <div className="col-span-1 md:col-span-2">
-          <AddressForm address={formData.address} updateAddress={updateAddress} />
-        </div>
-      </div>
+    <div className="col-span-1 md:col-span-2">
+      <AddressForm address={formData.address} updateAddress={updateAddress} />
+    </div>
+  </div>
 
-      <div className="flex space-x-2">
-        <button
-          type="submit"
-          className="bg-[#34434F] text-white px-4 py-2 rounded w-full md:w-auto"
-        >
-          {isEdit ? 'Update User' : 'Add User'}
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowForm(false)}
-          className="bg-gray-300 text-black px-4 py-2 rounded w-full md:w-auto"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
+  <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+    <button
+      type="submit"
+      className="bg-[#34434F] text-white px-4 py-2 rounded w-full md:w-auto"
+    >
+      {isEdit ? 'Update User' : 'Add User'}
+    </button>
+    <button
+      type="button"
+      onClick={() => setShowForm(false)}
+      className="bg-gray-300 text-black px-4 py-2 rounded w-full md:w-auto"
+    >
+      Cancel
+    </button>
+  </div>
+</form>
+
   );
 };

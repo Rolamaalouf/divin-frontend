@@ -1,11 +1,12 @@
-'use client';
-
 import { useState } from 'react';
 import { Pencil, Trash2, Eye } from 'lucide-react';
 
 export const UserTable = ({ users, handleEdit, handleDelete }) => {
   const [visibleDetails, setVisibleDetails] = useState({});
   const [selectedRole, setSelectedRole] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const usersPerPage = 5;
 
   const toggleDetails = (id) => {
     setVisibleDetails((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -17,6 +18,16 @@ export const UserTable = ({ users, handleEdit, handleDelete }) => {
       ? users
       : users.filter((user) => user.role === selectedRole);
 
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const startIndex = (currentPage - 1) * usersPerPage;
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + usersPerPage);
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
   return (
     <div className="overflow-x-auto space-y-4">
       {/* Filter by Role */}
@@ -27,7 +38,10 @@ export const UserTable = ({ users, handleEdit, handleDelete }) => {
         <select
           id="role-filter"
           value={selectedRole}
-          onChange={(e) => setSelectedRole(e.target.value)}
+          onChange={(e) => {
+            setSelectedRole(e.target.value);
+            setCurrentPage(1); // reset to first page on filter change
+          }}
           className="border border-gray-300 rounded px-3 py-1 text-sm"
         >
           {roles.map((role) => (
@@ -50,7 +64,7 @@ export const UserTable = ({ users, handleEdit, handleDelete }) => {
           </tr>
         </thead>
         <tbody>
-          {filteredUsers.map((user) => (
+          {paginatedUsers.map((user) => (
             <tr key={user.id} className="hover:bg-gray-100 text-sm md:text-base">
               <td className="p-2 border">{user.name}</td>
               <td className="p-2 border">{user.email}</td>
@@ -58,34 +72,33 @@ export const UserTable = ({ users, handleEdit, handleDelete }) => {
               <td className="p-2 border text-center">
                 <button
                   onClick={() => toggleDetails(user.id)}
-                  className="text-gray-600 hover:text-black"
+                  className="text-blue-600 hover:text-grey"
                   aria-label="Toggle Details"
                 >
                   <Eye size={18} />
                 </button>
               </td>
               <td className="p-2 border">
-  <div className="flex justify-center items-center gap-2">
-    <button
-      onClick={() => handleEdit(user)}
-      className="text-blue-600 hover:text-blue-800"
-      aria-label="Edit"
-    >
-      <Pencil size={18} />
-    </button>
-    <button
-      onClick={() => handleDelete(user.id)}
-      className="text-red-600 hover:text-red-800"
-      aria-label="Delete"
-    >
-      <Trash2 size={18} />
-    </button>
-  </div>
-</td>
-
+                <div className="flex justify-center items-center gap-2">
+                  <button
+                    onClick={() => handleEdit(user)}
+                    className="text-green-600 hover:text-green-800"
+                    aria-label="Edit"
+                  >
+                    <Pencil size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(user.id)}
+                    className="text-red-600 hover:text-red-800"
+                    aria-label="Delete"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </td>
             </tr>
           ))}
-          {filteredUsers.map(
+          {paginatedUsers.map(
             (user) =>
               visibleDetails[user.id] && (
                 <tr key={`${user.id}-details`} className="bg-gray-50 text-sm md:text-base">
@@ -98,6 +111,52 @@ export const UserTable = ({ users, handleEdit, handleDelete }) => {
           )}
         </tbody>
       </table>
+
+{/* Updated Pagination Controls - Matches Orders Style */}
+<div className="flex justify-center items-center space-x-1 mt-6">
+  <button
+    onClick={() => goToPage(currentPage - 1)}
+    disabled={currentPage === 1}
+    className={`px-3 py-1 rounded-md border text-sm ${
+      currentPage === 1
+        ? 'text-gray-400 border-gray-300 cursor-not-allowed'
+        : 'text-[#34434F] border-[#34434F] hover:bg-[#34434F] hover:text-white'
+    }`}
+  >
+    Prev
+  </button>
+
+  {[...Array(totalPages)].map((_, index) => {
+    const page = index + 1;
+    const isActive = currentPage === page;
+    return (
+      <button
+        key={page}
+        onClick={() => goToPage(page)}
+        className={`px-3 py-1 text-sm rounded-md border ${
+          isActive
+            ? 'bg-[#34434F] text-white border-[#34434F]'
+            : 'text-[#34434F] border-[#34434F] hover:bg-[#34434F] hover:text-white'
+        }`}
+      >
+        {page}
+      </button>
+    );
+  })}
+
+  <button
+    onClick={() => goToPage(currentPage + 1)}
+    disabled={currentPage === totalPages}
+    className={`px-3 py-1 rounded-md border text-sm ${
+      currentPage === totalPages
+        ? 'text-gray-400 border-gray-300 cursor-not-allowed'
+        : 'text-[#34434F] border-[#34434F] hover:bg-[#34434F] hover:text-white'
+    }`}
+  >
+    Next
+  </button>
+</div>
+
     </div>
   );
 };

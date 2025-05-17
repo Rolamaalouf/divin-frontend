@@ -15,7 +15,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await login({ email, password });
-      toast.success('Login successful!');
+
     } catch (error) {
       toast.error('Invalid email or password');
       console.error('Login failed:', error);
