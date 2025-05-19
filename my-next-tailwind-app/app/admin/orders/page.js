@@ -115,7 +115,7 @@ export default function OrdersPage() {
                     </select>
                     <button
                       onClick={() => handleStatusUpdate(order)}
-                      className="bg-[#1B2930] text-white px-2 py-1 rounded text-sm"
+                      className="bg-[#031B28] text-white px-2 py-1 rounded text-sm"
                     >
                       Save
                     </button>

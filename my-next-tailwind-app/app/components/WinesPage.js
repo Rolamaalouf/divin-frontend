@@ -45,7 +45,7 @@ export default function WinesPage() {
 
   return (
     <div className="relative w-full min-h-screen text-gray-800 overflow-visible ">
-      <Header className="sticky top-0 z-50 bg-[#1B2930] bg-opacity-90 shadow-md" />
+      <Header className="sticky top-0 z-50 bg-[#031B28] bg-opacity-90 shadow-md" />
 
       <div className="relative h-[100vh] sm:h-[100vh]">
   

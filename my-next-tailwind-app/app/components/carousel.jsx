@@ -40,7 +40,7 @@ export default function CarouselSection() {
   };
 
   return (
-    <section className="w-full py-16 bg-[#1B2930] flex flex-col items-center relative">
+    <section className="w-full py-16 bg-[#031B28] flex flex-col items-center relative">
       <h2 className="text-[#E2C269] text-3xl md:text-4xl font-bold text-center mb-8">
         Live the moment
       </h2>

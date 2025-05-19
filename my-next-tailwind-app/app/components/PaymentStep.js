@@ -17,7 +17,7 @@ export default function PaymentStep({
           <button
             key={method}
             className={`border px-4 py-2 rounded ${
-              paymentMethod === method ? "bg-[#A68F7B] text-white" : ""
+              paymentMethod === method ? "bg-[#031B28] text-white" : ""
             }`}
             onClick={() => setPaymentMethod(method)}
           >
@@ -69,18 +69,12 @@ export default function PaymentStep({
 
       {paymentMethod === "wish" && (
         <div className="mt-4 text-sm text-gray-600 space-y-2">
-          <input
-            type="tel"
-            placeholder="Phone number for Wish transfer"
-            value={guestInfo.phone}
-            onChange={(e) => updateGuestInfo({ phone: e.target.value })}
-            className="border p-2 rounded w-full"
-          />
-          <p>To link your Wish account, log in at <a href="/login" className="text-blue-600 underline">My Account</a>.</p>
+
+          <p>Amount to be transfered to +961376933662</p>
         </div>
       )}
 
-      <button onClick={onNext} className="mt-8 bg-[#A68F7B] text-white p-3 w-full rounded">
+      <button onClick={onNext} className="mt-8 bg-[#031B28] text-white p-3 w-full rounded">
         Review Order
       </button>
     </>

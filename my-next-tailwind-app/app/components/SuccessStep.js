@@ -64,7 +64,7 @@ export default function SuccessStep({ orderId, shippingFee = 0 }) {
       {/* 🎈 Return to Shopping Button */}
       <button
         onClick={() => router.push("/")}
-        className="mt-8 px-6 py-3 bg-[#1B2930] text-white rounded-full font-semibold flex items-center gap-2 hover:bg-red-900 transition-all duration-300 "
+        className="mt-8 px-6 py-3 bg-[#031B28] text-white rounded-full font-semibold flex items-center gap-2 hover:bg-red-900 transition-all duration-300 "
       >
         🍷 Return to Shopping
       </button>

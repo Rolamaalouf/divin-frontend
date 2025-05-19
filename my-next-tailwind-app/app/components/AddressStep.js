@@ -52,7 +52,7 @@ export default function AddressStep({
       <button
         suppressHydrationWarning
         onClick={onNext}
-        className="mt-8 bg-[#A68F7B] text-white p-3 w-full rounded"
+        className="mt-8 bg-[#031B28] text-white p-3 w-full rounded"
       >
         Continue to Payment
       </button>

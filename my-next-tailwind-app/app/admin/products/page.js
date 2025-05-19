@@ -41,7 +41,7 @@ const AdminItemsPage = () => {
 
   const tabButtonClass = (currentTab) =>
     `px-4 py-2 rounded ${
-      tab === currentTab ? "bg-[#E2C269] text-[#1B2930]" : "bg-gray-200 text-[#1B2930]"
+      tab === currentTab ? "bg-[#E2C269] text-[#031B28]" : "bg-gray-200 text-[#031B28]"
     }`;
 
   return (
@@ -60,7 +60,7 @@ const AdminItemsPage = () => {
           <div className="flex justify-between px-4">
             <button
               onClick={handleAddProduct}
-              className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded"
+              className="bg-[#E2C269] text-[#031B28] px-4 py-2 rounded"
             >
               Add Product
             </button>

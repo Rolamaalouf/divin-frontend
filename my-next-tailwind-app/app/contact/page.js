@@ -56,11 +56,11 @@ const Contact = () => {
 
   return (
     <div className="bg-white">
-      <div className="bg-[#1B2930]">
+      <div className="bg-[#031B28]  sticky top-0 z-50">
         <Header />
       </div>
 
-      <div className="bg-[#1B2930] h-[40vh] flex items-center justify-center mt-20">
+      <div className="bg-[#031B28] h-[40vh] flex items-center justify-center mt-20">
         <motion.h1
           className="text-[#E2C269] text-5xl sm:text-6xl font-bold text-center"
           initial={{ opacity: 0, y: -50 }}
@@ -135,7 +135,7 @@ const Contact = () => {
               </div>
               <button
                 type="submit"
-                className="w-full py-4 mt-4 bg-[#1B2930] text-white font-semibold rounded hover:bg-[#8a7665] transition-colors focus:outline-none focus:ring-2 focus:ring-[#A68F7B] focus:ring-offset-2"
+                className="w-full py-4 mt-4 bg-[#031B28] text-white font-semibold rounded hover:bg-[#2c445d] transition-colors focus:outline-none focus:ring-2 focus:ring-[#A68F7B] focus:ring-offset-2"
               >
                 Send Message
               </button>
@@ -157,7 +157,7 @@ const Contact = () => {
               href="https://maps.app.goo.gl/exxefbXhNCZXjzMX9?g_st=aw"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-[#1B2930] text-white px-6 py-2 rounded hover:bg-[#2c445d] transition"
+              className="inline-block bg-[#031B28] text-white px-6 py-2 rounded hover:bg-[#2c445d] transition"
             >
               View on Google Maps
             </a>

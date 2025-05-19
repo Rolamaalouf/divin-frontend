@@ -12,7 +12,7 @@ export default function Footer() {
   const { user } = useAuth();
 
   return (
-    <footer className="bg-[#1B2930] text-[#E2C269] py-6">
+    <footer className="bg-[#031B28] text-[#E2C269] py-6">
       <div className="flex justify-center space-x-6 text-2xl mb-4">
         <a
           href="https://wa.me/96176933662"

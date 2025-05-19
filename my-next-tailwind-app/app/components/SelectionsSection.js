@@ -33,7 +33,7 @@ const SelectionsSection = ({ className = '' }) => {
 
   return (
     <section
-      className={`bg-[#1B2930] w-full py-32 px-4 md:px-20 flex flex-col items-center justify-center ${className}`}
+      className={`bg-[#031B28] w-full py-32 px-4 md:px-20 flex flex-col items-center justify-center ${className}`}
     >
       {/* Animated Header */}
       <div className="flex flex-col items-center mb-20 w-full">

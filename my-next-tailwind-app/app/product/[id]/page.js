@@ -26,7 +26,7 @@ const ProductPage = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFFFF]">
-<div className="bg-[#1B2930] sticky top-0 z-50">
+<div className="bg-[#031B28] sticky top-0 z-50">
   <Header />
 </div>
       <div className="max-w-4xl mx-auto p-6 flex gap-8">

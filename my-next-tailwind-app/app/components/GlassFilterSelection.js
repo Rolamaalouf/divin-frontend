@@ -57,7 +57,7 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory, sortOrder, 
   if (isError) return <p>Error loading categories.</p>;
 
   return (
-    <div className="relative w-full max-w-full md:max-w-[1540px] h-auto md:h-[300px] bg-[#1B2930] mb-10 mt-10 flex flex-col md:flex-row items-center px-4 md:px-10 box-border gap-6">
+    <div className="relative w-full max-w-full md:max-w-[1540px] h-auto md:h-[300px] bg-[#031B28] mb-10 mt-10 flex flex-col md:flex-row items-center px-4 md:px-10 box-border gap-6">
       {/* Text on the left */}
       <div className="text-[#E2C269] font-bold text-lg md:text-xl w-full md:w-1/3 text-center md:text-left mb-4 md:mb-0">
         {dynamicText}
@@ -79,7 +79,7 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory, sortOrder, 
         <select
           value={selectedCategory}
           onChange={handleCategoryChange}
-          className="w-[150px] md:w-[203px] h-[56px] md:h-[76px] bg-[#1B2930] border border-[#E2C269] text-[#E2C269] px-4 py-2 text-sm md:text-base"
+          className="w-[150px] md:w-[203px] h-[56px] md:h-[76px] bg-[#031B28] border border-[#E2C269] text-[#E2C269] px-4 py-2 text-sm md:text-base"
         >
           <option value="">All Wines</option>
           {categories?.map((cat) => (
@@ -92,7 +92,7 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory, sortOrder, 
         <select
           value={sortOrder}
           onChange={handleSortChange}
-          className="w-[150px] md:w-[203px] h-[56px] md:h-[76px] bg-[#1B2930] border border-[#E2C269] text-[#E2C269] px-4 py-2 text-sm md:text-base"
+          className="w-[150px] md:w-[203px] h-[56px] md:h-[76px] bg-[#031B28] border border-[#E2C269] text-[#E2C269] px-4 py-2 text-sm md:text-base"
         >
           <option value="">Sort</option>
           <option value="low-to-high">Price: Low to High</option>

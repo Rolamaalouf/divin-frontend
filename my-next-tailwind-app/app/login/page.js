@@ -13,14 +13,9 @@ export default function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      await login({ email, password });
-
-    } catch (error) {
-      toast.error('Invalid email or password');
-      console.error('Login failed:', error);
-    }
+    await login({ email, password }); // ✅ no need for try/catch here
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen text-[#E2C269] bg-[#34434F] bg-[url('/flow.jpg')] bg-cover bg-center">

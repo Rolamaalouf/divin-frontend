@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { useGuestId } from "../utils/guestId";
 import { useUpdateOrder } from "../hooks/useOrderHooks";
+import { useDeleteCart } from "../hooks/useCartHooks";
 import Header from "../components/header";
 
 import AddressStep from "../components/AddressStep";
@@ -13,6 +14,8 @@ import PaymentStep from "../components/PaymentStep";
 import ReviewStep from "../components/ReviewStep";
 import SuccessStep from "../components/SuccessStep";
 import OrderReviewPanel from "../components/OrderReviewPanel";
+import Stepper from "../components/Stepper";
+
 
 export default function OrdersPage() {
   const [step, setStep] = useState(1);
@@ -49,7 +52,7 @@ export default function OrdersPage() {
 
   const [shippingFee, setShippingFee] = useState(5);
   const updateOrderMutation = useUpdateOrder();
-
+  const { mutate: clearCart } = useDeleteCart();
   useEffect(() => {
     if (!orderId) {
       toast.error("No order found. Redirecting...");
@@ -70,7 +73,19 @@ export default function OrdersPage() {
   useEffect(() => {
     if (user?.address) setAddress(user.address);
   }, [user]);
-
+  useEffect(() => {
+    if (step === 4) {
+      const cartId = localStorage.getItem('lastCartId');
+      if (cartId) {
+        clearCart(cartId);
+        localStorage.removeItem('lastCartId');
+      }
+      if (orderId) {
+        localStorage.setItem(`order-${orderId}-completed`, 'true');
+      }
+    }
+  }, [step, clearCart, orderId]);
+  
   useEffect(() => {
     if (step === 2) {
       const { region, phone } = address;
@@ -154,7 +169,7 @@ export default function OrdersPage() {
 
   return (
     <>
-      <div className="bg-[#1B2930]">
+      <div className="bg-[#031B28]">
         <Header />
       </div>
 
@@ -174,17 +189,17 @@ export default function OrdersPage() {
           {step !== 4 && <h2 className="text-2xl font-bold mb-6">Checkout</h2>}
 
           {step !== 4 && (
-            <div className="mb-6 flex justify-between">
-              {["Address", "Payment", "Confirm", "Success"].map((label, index) => (
-                <div
-                  key={index}
-                  className={`text-sm ${step === index + 1 ? "font-bold" : "text-gray-400"}`}
-                >
-                  {label}
-                </div>
-              ))}
-            </div>
-          )}
+  <Stepper
+    step={step}
+    setStep={setStep}
+    address={address}
+    payment={payment}
+    paymentMethod={paymentMethod}
+    guestInfo={guestInfo}
+    isGuest={isGuest}
+  />
+)}
+
 
           {step === 1 && (
             <AddressStep

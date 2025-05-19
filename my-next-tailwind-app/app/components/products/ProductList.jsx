@@ -101,7 +101,7 @@ const ProductList = ({
       {showCategoryFilter && (
         <div className="mb-6">
           <select
-            className="px-4 py-2 border rounded w-full max-w-xs text-[#1B2930] bg-white"
+            className="px-4 py-2 border rounded w-full max-w-xs text-[#031B28] bg-white"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
@@ -138,7 +138,7 @@ const ProductList = ({
                 />
               </div>
 
-              <h2 className="text-lg font-semibold mt-2 text-[#1B2930]">{product.name}</h2>
+              <h2 className="text-lg font-semibold mt-2 text-[#031B28]">{product.name}</h2>
               <p className="text-sm text-gray-600">${product.price}</p>
 
               {showDescription && (
@@ -159,7 +159,7 @@ const ProductList = ({
                 <div className="flex justify-end gap-4 mt-4">
                   <button
                     onClick={() => handleEdit(product)}
-                    className="text-[#1B2930] hover:scale-110 transition"
+                    className="text-[#031B28] hover:scale-110 transition"
                     title="Edit"
                   >
                     <Pencil size={20} />
@@ -167,7 +167,7 @@ const ProductList = ({
 
                   <button
                     onClick={() => handleDelete(product.id)}
-                    className="text-[#1B2930] hover:scale-110 transition"
+                    className="text-[#031B28] hover:scale-110 transition"
                     title="Delete"
                   >
                     <Trash2 size={20} />
@@ -180,7 +180,7 @@ const ProductList = ({
                           Array.isArray(product.image) ? product.image[0] : product.image
                         )
                       }
-                      className="text-[#1B2930] hover:scale-110 transition"
+                      className="text-[#031B28] hover:scale-110 transition"
                       title="Preview"
                     >
                       <Eye size={20} />
@@ -199,7 +199,7 @@ const ProductList = ({
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="px-3 py-1 bg-[#E2C269] text-[#1B2930] rounded disabled:opacity-50"
+            className="px-3 py-1 bg-[#E2C269] text-[#031B28] rounded disabled:opacity-50"
           >
             Prev
           </button>
@@ -209,8 +209,8 @@ const ProductList = ({
               onClick={() => setCurrentPage(i + 1)}
               className={`px-3 py-1 rounded ${
                 currentPage === i + 1
-                  ? "bg-[#1B2930] text-[#E2C269]"
-                  : "bg-[#E2C269] text-[#1B2930]"
+                  ? "bg-[#031B28] text-[#E2C269]"
+                  : "bg-[#E2C269] text-[#031B28]"
               }`}
             >
               {i + 1}
@@ -219,7 +219,7 @@ const ProductList = ({
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 bg-[#E2C269] text-[#1B2930] rounded disabled:opacity-50"
+            className="px-3 py-1 bg-[#E2C269] text-[#031B28] rounded disabled:opacity-50"
           >
             Next
           </button>

@@ -21,7 +21,7 @@ export default function Home() {
             className="w-full h-full object-cover object-top translate-y-[-100px] mb-[-40]"
             priority
           />
-          <div className="absolute inset-0 bg-[#1B2930] object-top translate-y-[-100px] opacity-70" />
+          <div className="absolute inset-0 bg-[#031B28] object-top translate-y-[-100px] opacity-70" />
         </div>
       </div>
 

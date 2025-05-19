@@ -186,7 +186,7 @@ const ProductForm = ({ selectedProduct, onSuccess }) => {
       <div className="flex justify-end space-x-3 mt-4">
   <button
     type="submit"
-    className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded"
+    className="bg-[#E2C269] text-[#031B28] px-4 py-2 rounded"
   >
     {selectedProduct ? 'Update' : 'Add'}
   </button>

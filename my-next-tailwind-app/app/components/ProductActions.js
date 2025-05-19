@@ -63,7 +63,7 @@ const ProductActions = ({
         <button
           onClick={handleAddToCart}
           disabled={addingToCart || product.stock < 1}
-          className="bg-[#1B2930] text-white px-4 py-2 rounded hover:brightness-110 disabled:opacity-50"
+          className="bg-[#031B28] text-white px-4 py-2 rounded hover:brightness-110 disabled:opacity-50"
         >
           {addingToCart
             ? "Adding..."
@@ -75,7 +75,7 @@ const ProductActions = ({
           <button
             onClick={handleAddToWishlist}
             disabled={addingToWishlist}
-            className="bg-[#E2C269] text-[#1B2930] px-4 py-2 rounded hover:brightness-110 disabled:opacity-50"
+            className="bg-[#E2C269] text-[#031B28] px-4 py-2 rounded hover:brightness-110 disabled:opacity-50"
           >
             {addingToWishlist ? "Adding..." : "Add to Wishlist"}
           </button>

@@ -7,6 +7,9 @@ import { Trash2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useGuestId } from "../utils/guestId";
 import { toast } from "react-toastify";
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import the CSS
+
 
 const CartItemList = ({
   items = [],
@@ -36,9 +39,28 @@ const CartItemList = ({
   );
 
   const handleClearCart = () => {
-    const cartId = items[0]?.cartId || null;
-    if (cartId) clearCart(cartId);
+    confirmAlert({
+      title: 'Confirm Deletion',
+      message: 'Are you sure you want to delete the entire cart?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            const cartId = items[0]?.cartId || null;
+            if (cartId) clearCart(cartId);
+            toast.success("Cart cleared successfully");
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => {} // Do nothing if they click No
+        }
+      ],
+      closeOnEscape: true,
+      closeOnClickOutside: true,
+    });
   };
+  
 
   const finalizeCheckout = () => {
     const mappedItems = items.map((item) => ({
@@ -68,12 +90,16 @@ const CartItemList = ({
     createOrder(orderData, {
       onSuccess: (response) => {
         const orderId = response?.order?.id;
+        const cartId = items[0]?.cartId;
+        if (cartId) {
+          localStorage.setItem("lastCartId", cartId);
+        }
         if (!orderId) {
           toast.error("Order creation failed. No order ID received.");
           return;
         }
         toast.success("Finalizing purchase!");
-        handleClearCart();
+        // handleClearCart();
         if (onCheckout) onCheckout(orderId);
         window.location.href = `/checkout?id=${orderId}`;
       },
@@ -93,7 +119,11 @@ const CartItemList = ({
       return;
     }
 
-    setShowModal(true);
+    if (user) {
+      finalizeCheckout(); // Authenticated users skip modal
+    } else {
+      setShowModal(true); // Show modal only if unauthenticated
+    }
   };
 
   const handleModalAction = (action) => {
@@ -102,20 +132,18 @@ const CartItemList = ({
       finalizeCheckout();
     } else if (action === "login") {
       window.location.href = "/login";
-    } else if (action === "confirm") {
-      finalizeCheckout();
     }
   };
 
   return (
-    <div className="relative">
+    <div className="relative px-2 sm:px-0">
       {items.length > 0 && (
         <button
           onClick={handleClearCart}
-          className="absolute top-2 right-2 text-red-600 hover:text-red-800"
+          className="absolute bottom-11 right-2  text-red-600 hover:text-red-800"
           aria-label="Clear Cart"
         >
-          <Trash2 className="w-5 h-5" />
+          <Trash2 className="w-5 h-5 mt-[-25]"/>
         </button>
       )}
 
@@ -129,9 +157,9 @@ const CartItemList = ({
               return (
                 <div
                   key={key}
-                  className="flex items-center gap-4 border-b pb-4"
+                  className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 border-b pb-4"
                 >
-                  <div className="w-[80px] h-[80px] flex items-center justify-center overflow-hidden bg-transparent rounded border">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center overflow-hidden bg-transparent rounded border">
                     <div className="w-full h-full p-2">
                       <img
                         src={item.image?.[0] || "/placeholder.jpg"}
@@ -142,10 +170,10 @@ const CartItemList = ({
                   </div>
 
                   <div className="flex-1 flex flex-col justify-center">
-                    <p className="font-medium mb-1">
+                    <p className="font-medium mb-1 text-sm sm:text-base break-words">
                       {item.name || "Unnamed Product"}
                     </p>
-                    <p className="text-sm text-gray-600 mb-1">
+                    <p className="text-gray-600 mb-1 text-xs sm:text-sm">
                       ${item.price?.toFixed(2) || "0.00"} × {item.quantity}
                     </p>
                     <input
@@ -158,13 +186,14 @@ const CartItemList = ({
                           Number(e.target.value)
                         )
                       }
-                      className="w-16 mt-1 px-2 py-1 border rounded text-sm"
+                      className="w-12 sm:w-16 mt-1 px-2 py-1 border rounded text-xs sm:text-sm"
+                      aria-label={`Quantity for ${item.name || "product"}`}
                     />
                   </div>
 
                   <button
                     onClick={() => onDelete(item.cartItemId)}
-                    className="text-gray-800 text-sm hover:underline ml-auto"
+                    className="text-gray-800 text-xs sm:text-sm hover:underline ml-auto sm:ml-0 sm:self-start"
                   >
                     Remove
                   </button>
@@ -174,7 +203,9 @@ const CartItemList = ({
           </div>
 
           <div className="mt-6 space-y-2">
-            <p className="font-semibold">Total: ${totalPrice.toFixed(2)}</p>
+            <p className="font-semibold text-sm sm:text-base">
+              Total: ${totalPrice.toFixed(2)}
+            </p>
             <button
               disabled={isLoading}
               className="w-full bg-[#E2C269] text-black py-2 rounded hover:bg-[#d1a72f] text-sm disabled:opacity-50"
@@ -186,61 +217,42 @@ const CartItemList = ({
         </>
       )}
 
-      {/* Updated Modal */}
+      {/* Modal for unauthenticated users only */}
       {showModal && (
         <div
           className="fixed inset-0 flex items-center justify-center z-50"
           style={{ backdropFilter: "blur(6px)" }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="checkout-modal-title"
         >
-          <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
-            <h3 className="text-lg font-semibold mb-4">
-              {user
-                ? "Proceed to Checkout?"
-                : "Are you sure you want to proceed to checkout?"}
+          <div className="bg-white rounded-lg shadow-lg p-6 w-72 sm:w-80 text-center mx-2">
+            <h3
+              id="checkout-modal-title"
+              className="text-lg font-semibold mb-4"
+            >
+              Proceed to checkout
             </h3>
-            <p className="text-sm mb-6">
-              {user
-                ? "Do you want to confirm your order?"
-                : "Please choose an option below."}
-            </p>
+            <p className="text-sm mb-6">Choose how you want to continue</p>
             <div className="flex gap-2 justify-center flex-wrap">
-              {user ? (
-                <>
-                  <button
-                    onClick={() => handleModalAction("confirm")}
-                    className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm"
-                  >
-                    ✅ Confirm
-                  </button>
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="px-4 py-2 bg-[#1B2930] text-white rounded hover:bg-[#10181d] text-sm"
-                  >
-                    ❌ Cancel
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => handleModalAction("guest")}
-                    className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm"
-                  >
-                    ✅ Yes, continue as guest
-                  </button>
-                  <button
-                    onClick={() => handleModalAction("login")}
-                    className="px-4 py-2 bg-[#1B2930] text-white rounded hover:bg-[#10181d] text-sm"
-                  >
-                    🔐 Yes, Login
-                  </button>
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="px-4 py-2 bg-[#1B2930] text-white rounded hover:bg-[#10181d] text-sm"
-                  >
-                    ❌ No, cancel
-                  </button>
-                </>
-              )}
+              <button
+                onClick={() => handleModalAction("guest")}
+                className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm"
+              >
+                ✅ Continue as Guest
+              </button>
+              <button
+                onClick={() => handleModalAction("login")}
+                className="px-4 py-2 bg-[#1B2930] text-white rounded hover:bg-[#10181d] text-sm"
+              >
+                🔐 Login
+              </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-[#1B2930] text-white rounded hover:bg-[#10181d] text-sm"
+              >
+                ❌ Cancel
+              </button>
             </div>
           </div>
         </div>

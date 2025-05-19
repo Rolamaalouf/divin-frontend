@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import Header from '../components/header';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronUp, ChevronDown } from 'lucide-react'; 
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import CarouselSection from '../components/carousel';
 import LegacySection from '../components/sectionAbout';
 
@@ -12,19 +12,22 @@ const timelineData = [
   {
     year: '2013',
     title: 'Signature Collection Launch',
-    description: 'Launched our signature collection, celebrated for its innovative blends and authentic character.',
+    description:
+      'Launched our signature collection, celebrated for its innovative blends and authentic character.',
     image: '/imageone.jpeg',
   },
   {
     year: '2018',
     title: 'Sustainability Initiatives',
-    description: 'Committed to sustainability, implementing eco-friendly practices across our vineyards and production processes.',
+    description:
+      'Committed to sustainability, implementing eco-friendly practices across our vineyards and production processes.',
     image: '/imagetwo.jpg',
   },
   {
     year: '2022 - Present',
     title: 'Global Expansion',
-    description: 'Expanded our global presence, bringing our distinct wine selections to new markets and connoisseurs worldwide.',
+    description:
+      'Expanded our global presence, bringing our distinct wine selections to new markets and connoisseurs worldwide.',
     image: '/imagethree.jpg',
   },
 ];
@@ -41,30 +44,38 @@ function Timeline() {
     setActiveIndex((prev) => (prev < timelineData.length - 1 ? prev + 1 : 0));
   };
 
+  const { image, year, title, description } = timelineData[activeIndex];
+
   return (
-    <section className="w-full max-w-10xl mx-auto px-8 sm:px-12 mt-20 mb-10">
-      <h2 className="text-4xl md:text-5xl font-bold text-[#34434F] mt-[-60] mb-10 text-center tracking-tight">
+    <section className="w-full max-w-7xl mx-auto px-6 sm:px-10 mt-20 mb-20">
+      <h2 className="text-4xl md:text-5xl font-bold text-[#34434F] mt-[-187] mb-12 text-center tracking-tight">
         Sips of the Past
       </h2>
 
-      <div className="flex flex-col md:grid md:grid-cols-3 md:gap-8 items-center justify-center w-full">
+      <div className="flex flex-col md:grid md:grid-cols-3 md:gap-10 items-center justify-center w-full">
         {/* Left: Image */}
         <div className="w-full flex justify-center mb-10 md:mb-0">
           <AnimatePresence mode="wait">
-            <motion.img
-              key={timelineData[activeIndex].image}
-              src={timelineData[activeIndex].image}
-              alt={timelineData[activeIndex].year}
-              className="rounded shadow-lg w-full max-w-3xl object-cover h-auto"
+            <motion.div
+              key={image}
+              className="w-full max-w-xl h-[300px] sm:h-[400px] relative rounded shadow-lg overflow-hidden"
               initial={{ opacity: 0.3, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.6 }}
-            />
+            >
+              <Image
+                src={image}
+                alt={`Timeline image for ${year}`}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+            </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Middle: Year selector + arrows */}
+        {/* Middle: Year Selector */}
         <div className="relative flex flex-col items-center gap-2">
           <button onClick={handlePrev} className="text-[#1B2930] hover:text-[#c9a849] mb-2">
             <ChevronUp size={30} />
@@ -90,17 +101,11 @@ function Timeline() {
           </button>
         </div>
 
-        {/* Right: Content */}
-        <div className="w-full flex flex-col justify-center items-start text-left mt-10 md:mt-0">
-          <h3 className="text-[#E2C269] text-3xl md:text-4xl font-extrabold mb-2">
-            {timelineData[activeIndex].year}
-          </h3>
-          <h4 className="text-2xl md:text-3xl font-bold text-[#34434F] mb-4">
-            {timelineData[activeIndex].title}
-          </h4>
-          <p className="text-gray-700 text-lg max-w-prose leading-relaxed">
-            {timelineData[activeIndex].description}
-          </p>
+        {/* Right: Description */}
+        <div className="w-full flex flex-col justify-center items-start mt-10 md:mt-0 text-left">
+          <h3 className="text-[#E2C269] text-3xl md:text-4xl font-extrabold mb-2">{year}</h3>
+          <h4 className="text-2xl md:text-3xl font-bold text-[#34434F] mb-4">{title}</h4>
+          <p className="text-gray-700 text-lg leading-relaxed">{description}</p>
         </div>
       </div>
     </section>
@@ -110,9 +115,11 @@ function Timeline() {
 export default function AboutPage() {
   return (
     <div className="relative w-full min-h-screen text-gray-800 overflow-visible">
+      <Header className="bg-[#031B28] bg-opacity-90 shadow-md " />
       {/* HERO SECTION */}
-      <div className="relative h-[90vh]">
-        <div className="absolute top-0 left-0 w-full h-full -z-10">
+      <div className="relative h-[90vh] ">
+      
+        <div className="absolute top-0 left-0 w-full h-full -z-10 mt-[-150]">
           <Image
             src="/aboutimage.png"
             alt="About Background"
@@ -121,7 +128,7 @@ export default function AboutPage() {
             priority
           />
         </div>
-        <Header className="bg-[#1B2930] bg-opacity-90 shadow-md" />
+        
         <motion.div
           className="absolute top-[60%] right-[10%] transform -translate-y-1/2 text-right"
           initial={{ opacity: 0, y: 40 }}
@@ -129,14 +136,17 @@ export default function AboutPage() {
           transition={{ duration: 1 }}
         >
           <h1 className="text-[#E2C269] text-[64px] font-bold leading-tight">
-            About<br />Us
+            About
+            <br />
+            Us
           </h1>
         </motion.div>
       </div>
 
-      {/* Updated Timeline */}
+      {/* Timeline Section */}
       <Timeline />
 
+      {/* Additional Sections */}
       <CarouselSection />
       <LegacySection />
     </div>

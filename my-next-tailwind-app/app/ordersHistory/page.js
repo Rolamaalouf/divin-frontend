@@ -25,7 +25,7 @@ const OrdersHistoryPage = () => {
 
   return (
       <>
-<div className="bg-[#1B2930] sticky top-0 z-50">
+<div className="bg-[#031B28] sticky top-0 z-50">
   <Header />
 </div>
     <div className="p-6 max-w-4xl mx-auto">

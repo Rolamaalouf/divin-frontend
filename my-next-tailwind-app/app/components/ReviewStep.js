@@ -15,7 +15,7 @@ export default function ReviewStep({ address, shippingFee, paymentMethod, orderI
       <button
         onClick={onPlaceOrder}
         disabled={loading}
-        className="mt-8 w-full bg-[#A68F7B] text-white p-3 rounded hover:opacity-90 disabled:opacity-50"
+        className="mt-8 w-full bg-[#031B28] text-white p-3 rounded hover:opacity-90 disabled:opacity-50"
       >
         {loading ? "Placing Order..." : "Place Order"}
       </button>
