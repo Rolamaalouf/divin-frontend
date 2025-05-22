@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -10,6 +10,16 @@ const ITEMS_PER_PAGE = 5;
 const ProductTable = ({ products = [], onEdit, onDelete }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [viewProduct, setViewProduct] = useState(null);
+
+  const descRef = useRef(null);
+  const imgRef = useRef(null);
+
+  useEffect(() => {
+    if (descRef.current && imgRef.current) {
+      const descHeight = descRef.current.offsetHeight;
+      imgRef.current.style.maxHeight = `${descHeight}px`;
+    }
+  }, [viewProduct]);
 
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -97,31 +107,42 @@ const ProductTable = ({ products = [], onEdit, onDelete }) => {
       </div>
 
       {viewProduct && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded-lg w-[600px] max-w-full relative shadow-lg flex">
-      <button
-        className="absolute top-2 right-2 text-gray-600 text-xl"
-        onClick={() => setViewProduct(null)}
-      >
-        ×
-      </button>
-      <div className="w-1/2 pr-4 flex flex-col justify-center">
-        <h3 className="text-xl font-semibold mb-2">{viewProduct.name}</h3>
-        <p className="mb-2 flex-grow">{viewProduct.description}</p>
-      </div>
-      <div className="w-1/2 flex items-center justify-center">
-        {Array.isArray(viewProduct.image)
-          ? viewProduct.image.map((img, i) => (
-              <img key={i} src={img} alt="product" className="max-w-full max-h-full rounded" />
-            ))
-          : viewProduct.image && (
-              <img src={viewProduct.image} alt="product" className="max-w-full max-h-full rounded" />
-            )}
-      </div>
-    </div>
-  </div>
-)}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-[600px] max-w-full relative shadow-lg flex">
+            <button
+              className="absolute top-2 right-2 text-gray-600 text-xl"
+              onClick={() => setViewProduct(null)}
+            >
+              ×
+            </button>
+            <div className="w-1/2 pr-4 flex flex-col justify-center" ref={descRef}>
+              <h3 className="text-xl font-semibold mb-2">{viewProduct.name}</h3>
+              <p className="mb-2 flex-grow">{viewProduct.description}</p>
+            </div>
+            <div className="w-1/2 flex items-center justify-center" ref={imgRef}>
+{Array.isArray(viewProduct.image)
+  ? viewProduct.image.map((img, i) => (
+      <img
+        key={i} 
+        src={img} 
+        alt="product"
+        className="max-w-full rounded object-contain"
+        style={{ maxHeight: `${descRef.current?.offsetHeight || 300}px` }}
+      />
+    ))
 
+
+                : viewProduct.image && (
+                    <img
+                      src={viewProduct.image}
+                      alt="product"
+                      className="max-w-full h-auto rounded object-contain"
+                    />
+                  )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

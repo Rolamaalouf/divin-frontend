@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useOrders, useDeleteOrder, useUpdateOrder } from '@/app/hooks/useOrderHooks';
-import { Pencil, Trash2, Eye } from 'lucide-react';
+import { Eye, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -33,9 +33,7 @@ export default function OrdersPage() {
             });
           },
         },
-        {
-          label: 'No',
-        },
+        { label: 'No' },
       ],
     });
   };
@@ -63,14 +61,15 @@ export default function OrdersPage() {
   if (isLoading) return <div className="p-6 text-gray-600">Loading orders...</div>;
   if (isError || !orders) return <div className="p-6 text-red-600">Failed to load orders.</div>;
 
-  const paginatedOrders = orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const totalPages = Math.ceil(orders.length / itemsPerPage);
+const filteredOrders = orders.filter((order) => order.status.toLowerCase() !== 'pending');
+const paginatedOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+
 
   return (
     <div className="min-h-screen bg-white p-4 sm:p-8">
       <h1 className="text-xl sm:text-2xl font-bold mb-6 text-center sm:text-left">All Orders</h1>
 
-      {/* Scrollable table container */}
       <div className="overflow-x-auto">
         <table className="w-full min-w-[600px] border border-[#34434F] bg-white shadow-sm">
           <thead className="bg-[#34434F] text-white">
@@ -99,7 +98,6 @@ export default function OrdersPage() {
                     </>
                   )}
                 </td>
-
                 <td className="py-3 px-4 border-b">
                   <div className="flex flex-col sm:flex-row justify-center items-center gap-2">
                     <select
@@ -107,11 +105,11 @@ export default function OrdersPage() {
                       onChange={(e) => handleStatusChange(order.id, e.target.value)}
                       className="border px-2 py-1 rounded text-sm"
                     >
-                      <option value="pending">Placed</option>
-                      <option value="processing">Processing</option>
-                      <option value="shipped">Shipped</option>
-                      <option value="completed">Completed</option>
-                      <option value="cancelled">Cancelled</option>
+                      {['placed', 'processing', 'shipped', 'completed', 'cancelled'].map((status) => (
+                        <option key={status} value={status}>
+                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                        </option>
+                      ))}
                     </select>
                     <button
                       onClick={() => handleStatusUpdate(order)}
@@ -121,9 +119,9 @@ export default function OrdersPage() {
                     </button>
                   </div>
                 </td>
-
-                <td className="py-3 px-4 border-b">${order.shipping_fees?.toFixed(2)}</td>
-
+                <td className="py-3 px-4 border-b">
+                  ${order.shipping_fees ? order.shipping_fees.toFixed(2) : '0.00'}
+                </td>
                 <td className="py-3 px-4 border-b">
                   <div className="flex justify-center items-center gap-2">
                     <Link href={`/admin/orders/${order.id}`}>
@@ -140,7 +138,7 @@ export default function OrdersPage() {
         </table>
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -149,15 +147,15 @@ export default function OrdersPage() {
         >
           Prev
         </button>
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        {Array.from({ length: totalPages }, (_, i) => (
           <button
-            key={page}
-            onClick={() => setCurrentPage(page)}
+            key={i + 1}
+            onClick={() => setCurrentPage(i + 1)}
             className={`px-3 py-1 border rounded ${
-              currentPage === page ? 'bg-[#34434F] text-white' : 'bg-white'
+              currentPage === i + 1 ? 'bg-[#34434F] text-white' : ''
             }`}
           >
-            {page}
+            {i + 1}
           </button>
         ))}
         <button

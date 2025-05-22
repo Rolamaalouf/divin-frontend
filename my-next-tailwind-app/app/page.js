@@ -44,11 +44,11 @@ export default function Home() {
           </div>
 
           {/* Text + Button */}
-          <div className="w-full lg:w-1/2 mb-10 text-[#E2C269] text-left lg:text-left space-y-4 max-w-[700px] px-4 lg:transform lg:-translate-x-10 animate-fade-in-up">
-            <h1 className="text-2xl md:text-3xl xl:text-[65px] font-bold tracking-wide leading-tight drop-shadow-md">
+          <div className="w-full lg:w-1/2 mb-10  text-left lg:text-left space-y-4 max-w-[650px] px-4 lg:transform lg:-translate-x-10 animate-fade-in-up">
+            <h1 className="text-2xl md:text-3xl xl:text-[60px] font-bold tracking-wide leading-tight drop-shadow-md text-[#FFFFE4]">
               Where every bottle tells a story
             </h1>
-            <p className="text-base md:text-lg xl:text-[22px] xl:leading-[38px]">
+            <p className="text-base md:text-lg xl:text-[22px] xl:leading-[38px] text-[#FFFFE4]">
               Our wines reflect the unique terroir and the stories of the people behind them.
               Whether you are seeking a bold red or a crisp white, discover the flavors that
               have been lovingly bottled just for you.

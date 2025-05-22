@@ -7,7 +7,6 @@ import { useAuth } from "../context/AuthContext";
 import { useGuestId } from "../utils/guestId";
 import { useUpdateOrder } from "../hooks/useOrderHooks";
 import { useDeleteCart } from "../hooks/useCartHooks";
-import Header from "../components/header";
 
 import AddressStep from "../components/AddressStep";
 import PaymentStep from "../components/PaymentStep";
@@ -169,9 +168,7 @@ export default function OrdersPage() {
 
   return (
     <>
-      <div className="bg-[#031B28]">
-        <Header />
-      </div>
+    
 
       <div className="max-w-5xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Panel - Order Review */}

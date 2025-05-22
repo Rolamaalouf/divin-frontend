@@ -60,7 +60,7 @@ const SelectionsSection = ({ className = '' }) => {
       </div>
 
       {/* Category Bottles */}
-      <div className="flex flex-wrap items-end justify-center gap-20 sm:gap-60 max-w-6xl w-full">
+      <div className="flex flex-wrap items-end justify-center gap-20 sm:gap-60 max-w-7xl w-full">
         {categories.map((cat, index) => {
           const normalized = normalizeCategoryName(cat.name);
           const imageSrc = staticCategoryImages[normalized];
@@ -81,17 +81,19 @@ const SelectionsSection = ({ className = '' }) => {
               transition={{ duration: 0.6, delay: index * 0.2 }}
               viewport={{ once: true }}
             >
-              <div className="w-[120px] h-[320px] sm:w-[140px] sm:h-[380px] flex items-end justify-center">
+              <div className="w-[140px] h-[380px] sm:w-[180px] sm:h-[480px] flex items-end justify-center">
                 <Image
                   src={imageSrc}
                   alt={`${cat.name} Bottle`}
-                  width={120}
-                  height={360}
-                  className="object-contain"
+                  width={160}
+                  height={400}
+                  className="object-contain drop-shadow-xl"
                   priority
                 />
               </div>
-              <p className="text-[#E2C269] font-bold text-lg mt-6 text-center">{cat.name}</p>
+              <p className="text-[#E2C269] font-serif font-semibold text-xl sm:text-2xl mt-6 tracking-wide text-center">
+                {cat.name}
+              </p>
             </motion.div>
           );
         })}

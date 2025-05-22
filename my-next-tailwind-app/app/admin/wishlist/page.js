@@ -1,9 +1,13 @@
 'use client';
+import { useQuery } from '@tanstack/react-query';
+import { getWishlist } from '../../lib/api';
 
-import { useWishlist } from '../../hooks/useWishlistHooks';
 
 export default function AdminWishlistPage() {
-  const { data: wishlists, isLoading, error } = useWishlist({ useMyEndpoint: true });
+  const { data: wishlists, isLoading, error } = useQuery({
+    queryKey: ['wishlist', 'all'],
+    queryFn: () => getWishlist(), // no user_id or guest_id
+  });
 
   if (isLoading) return <p className="p-4">Loading wishlists...</p>;
   if (error) return <p className="p-4 text-red-500">Error loading wishlists</p>;

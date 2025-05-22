@@ -1,5 +1,6 @@
 'use client';
 import AddressForm from "./AddressForm";
+import { useState } from "react";
 
 export default function AddressStep({
   address,
@@ -11,28 +12,53 @@ export default function AddressStep({
   updateGuestInfo,
   onNext,
 }) {
+  const [emailError, setEmailError] = useState("");
+
+  // Simple email regex for demonstration
+  const validateEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const handleContinue = () => {
+    if (isGuest) {
+      if (!guestInfo.email) {
+        setEmailError("Email is required.");
+        return;
+      }
+      if (!validateEmail(guestInfo.email)) {
+        setEmailError("Please enter a valid email address.");
+        return;
+      }
+      setEmailError("");
+    }
+    onNext();
+  };
   return (
     <>
-      {isGuest && (
-        <div className="grid gap-4 mb-4">
-          <input
-            suppressHydrationWarning
-            type="text"
-            placeholder="Name"
-            value={guestInfo.name}
-            onChange={(e) => updateGuestInfo({ name: e.target.value })}
-            className="border p-2 rounded"
-          />
-          <input
-            suppressHydrationWarning
-            type="email"
-            placeholder="Email"
-            value={guestInfo.email}
-            onChange={(e) => updateGuestInfo({ email: e.target.value })}
-            className="border p-2 rounded"
-          />
-        </div>
-      )}
+{isGuest && (
+  <div className="grid gap-4 mb-4">
+    <input
+      suppressHydrationWarning
+      type="text"
+      placeholder="Name"
+      value={guestInfo.name}
+      onChange={(e) => updateGuestInfo({ name: e.target.value })}
+      className="border p-2 rounded"
+    />
+    <input
+      suppressHydrationWarning
+      type="email"
+      placeholder="Email"
+      value={guestInfo.email}
+      onChange={(e) => updateGuestInfo({ email: e.target.value })}
+      className="border p-2 rounded"
+    />
+    {/* Display email error message */}
+    {emailError && (
+      <p className="text-red-600 text-sm mt-1">{emailError}</p>
+    )}
+  </div>
+)}
+
 
       <AddressForm address={address} updateAddress={updateAddress} />
 
@@ -51,7 +77,7 @@ export default function AddressStep({
 
       <button
         suppressHydrationWarning
-        onClick={onNext}
+        onClick={handleContinue}
         className="mt-8 bg-[#031B28] text-white p-3 w-full rounded"
       >
         Continue to Payment

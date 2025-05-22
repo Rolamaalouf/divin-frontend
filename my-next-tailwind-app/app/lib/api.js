@@ -96,15 +96,21 @@ export const createWishlistItem = async (data) => {
   console.log('[Wishlist] Response:', res.data);
   return res.data;
 };
-
-export const getWishlist = async (user_id = null, guest_id = null) => {
+export const getWishlist = async (user_id, guest_id) => {
   const params = {};
-  if (user_id) params.user_id = user_id;
-  if (guest_id) params.guest_id = guest_id;
+
+  // Only include them if they are not null/undefined
+  if (user_id != null) params.user_id = user_id;
+  if (guest_id != null) params.guest_id = guest_id;
 
   const res = await API.get("/api/wishlists", { params });
+  console.log("Wishlist API response:", res.data);
   return res.data;
 };
+
+
+
+
 
 export const getWishlistItemById = (id) => API.get(`/api/wishlists/${id}`).then((res) => res.data);
 export const updateWishlistItem = (id, data) => API.put(`/api/wishlists/${id}`, data);
