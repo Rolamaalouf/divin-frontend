@@ -6,6 +6,7 @@ import ReactQueryProvider
  from './components/ReactQueryProvider';
  import GuestIdProvider from './components/GuestIdProvider';
  import LayoutWrapper from './components/LayoutWrapper';
+ import { CartPopupProvider } from './context/CartPopupContext';
 
 export const viewport = {
   width: 'device-width',
@@ -26,8 +27,10 @@ export default function RootLayout({ children }) {
       <ReactQueryProvider>
         <AuthClientWrapper>
           <GuestIdProvider>
-          <LayoutWrapper>
+            <LayoutWrapper>
+             <CartPopupProvider>
           <main>{children}</main>
+          </CartPopupProvider>
           </LayoutWrapper>
           <ToastContainer position="top-right" autoClose={3000} />
           </GuestIdProvider>

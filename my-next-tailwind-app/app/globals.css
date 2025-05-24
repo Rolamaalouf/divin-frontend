@@ -5,10 +5,10 @@
   --foreground: #171717;
 }
 .glitter-button {
-  background: rgba(226, 194, 105, 0.75); /* More translucent for deeper glass feel */
+  background: rgba(226, 194, 105, 0.75); 
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(12px); /* Stronger blur */
+  backdrop-filter: blur(12px); 
   -webkit-backdrop-filter: blur(20px);
   border-radius: 2px;
   padding: 12px 28px;
@@ -23,7 +23,7 @@
     0 0 20px rgba(226, 194, 105, 0.4),
     inset 0 0 10px rgba(255, 255, 255, 0.1);
 }
-
+ /* creates a layer */
 .glitter-button::before {
   content: "";
   position: absolute;
@@ -48,9 +48,15 @@
 .glitter-button:hover::before {
   opacity: 1;
 }
+/* medium screen */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .glitter-button {
+    color: #031B28 !important;
+  }
+}
 
 /* Mobile screen: change text color */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 639px) {
   .glitter-button {
     color: #E2C269;
     background: #031B28;
@@ -85,3 +91,5 @@ body {
 .animate-drop-in {
   animation: drop-in 1s ease-out forwards;
 }
+
+

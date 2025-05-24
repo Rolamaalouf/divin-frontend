@@ -45,18 +45,29 @@ export default function Home() {
 
           {/* Text + Button */}
           <div className="w-full lg:w-1/2 mb-10  text-left lg:text-left space-y-4 max-w-[650px] px-4 lg:transform lg:-translate-x-10 animate-fade-in-up">
-            <h1 className="text-2xl md:text-3xl xl:text-[60px] font-bold tracking-wide leading-tight drop-shadow-md text-[#FFFFE4]">
-              Where every bottle tells a story
-            </h1>
-            <p className="text-base md:text-lg xl:text-[22px] xl:leading-[38px] text-[#FFFFE4]">
-              Our wines reflect the unique terroir and the stories of the people behind them.
-              Whether you are seeking a bold red or a crisp white, discover the flavors that
-              have been lovingly bottled just for you.
-            </p>
+<h1 className="
+    text-2xl md:text-3xl xl:text-[50px] font-semibold tracking-wide leading-tight drop-shadow-md
+  text-[#E2C269]
+  sm:text-[#031B28]
+  lg:text-[#FFF4C2]
+">
+  Where every bottle tells a story
+</h1>
+<p className="
+  text-base md:text-lg xl:text-[22px] xl:leading-[38px]
+  text-[#E2C269]
+  sm:text-[#031B28]
+  lg:text-[#FFF4C2]
+">
+  Our wines reflect the unique terroir and the stories of the people behind them.
+  Whether you are seeking a bold red or a crisp white, discover the flavors that
+  have been lovingly bottled just for you.
+</p>
+
             <div className="pt-2">
               <Link
                 href="/wines"
-                className="glitter-button inline-block px-8 py-4 text-base lg:text-lg font-semibold rounded focus:outline-none focus:ring-2 focus:ring-[#E2C269] transition hover:brightness-110"
+                className="glitter-button inline-block px-8 py-4 text-base lg:text-lg font-bold rounded focus:outline-none focus:ring-2 focus:ring-[#E2C269] transition hover:brightness-110"
               >
                 Shop our wines →
               </Link>

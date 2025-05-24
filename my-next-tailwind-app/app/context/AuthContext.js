@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     if (!guestId) return;
   
     try {
-      await transferGuestCartToUser(guestId);
+      await transferGuestCartToUser({ guest_id: guestId });;
     } catch (err) {
       if (err.response?.status === 404) {
         console.warn('No guest cart to transfer (likely empty).');
@@ -80,31 +80,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (formData) => {
-    setLoading(true);
-    try {
-      const res = await registerUser(formData);
-      toast.success('Registered successfully!');
+const register = async (formData) => {
+  setLoading(true);
+  try {
+    const res = await registerUser(formData);
 
-      // Auto login after registration
-      const loginRes = await loginUser({ email: formData.email, password: formData.password });
-      const loggedUser = loginRes.data?.user;
-      setUser(loggedUser);
+    toast.success('Registered successfully!');
+    router.push('/login'); // Redirect to login page after registration
 
-      await handleCartTransfer(); // ⬅️ Transfer guest cart on register
+  } catch (error) {
+    toast.error(error?.response?.data?.message || 'Registration failed');
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+};
 
-      if (loggedUser?.role === 'admin') {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message || 'Registration or login failed');
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout, register, loading }}>

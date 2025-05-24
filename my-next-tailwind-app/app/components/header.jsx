@@ -12,6 +12,7 @@ import { useCartItems, useRemoveCartItem } from "../hooks/useCartHooks";
 import { useWishlist, useRemoveFromWishlist } from "../hooks/useWishlistHooks";
 import { deleteCart } from "../lib/api";
 import { toast } from "react-toastify";
+import { useCartPopup } from "../context/CartPopupContext"
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -24,13 +25,15 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [cartPopupOpen, setCartPopupOpen] = useState(false);
   const [wishlistPopupOpen, setWishlistPopupOpen] = useState(false);
 
   const dropdownRef = useRef();
   const popupRef = useRef();
   const wishlistPopupRef = useRef();
   const { user, logout } = useAuth();
+
+  // Use the global cart popup state from context
+  const { cartPopupOpen, setCartPopupOpen } = useCartPopup();
 
   const {
     data: cartItems = [],
@@ -49,16 +52,7 @@ const Header = () => {
   const removeCartItemMutation = useRemoveCartItem();
   const removeWishlistItemMutation = useRemoveFromWishlist();
 
-  // -- REMOVE TIMER LOGIC, ONLY OPEN ON NEW PRODUCT ADDED --
-  const prevCartCount = useRef(cartItems.length);
-
-  useEffect(() => {
-    if (cartItems.length > prevCartCount.current) {
-      setCartPopupOpen(true);
-    }
-    prevCartCount.current = cartItems.length;
-  }, [cartItems.length]);
-  // ---------------------------------------------------------
+  
 
   // Click outside logic for popups and dropdown
   useEffect(() => {
@@ -75,7 +69,7 @@ const Header = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [setCartPopupOpen]);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 0);
@@ -138,14 +132,13 @@ const Header = () => {
             {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
-
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-10">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
-              className="text-[#E2C269] font-semibold text-[24px] md:text-[32px] hover:underline"
+              className="text-[#E2C269]  text-[24px] hover:underline"
             >
               {link.name}
             </Link>
@@ -251,7 +244,6 @@ const Header = () => {
           </IconPopup>
         </div>
       </div>
-
       {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden mt-2 flex flex-col gap-4">

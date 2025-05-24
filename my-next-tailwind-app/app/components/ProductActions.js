@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useAddToCart } from "../hooks/useCartHooks";
 import { useAddToWishlist } from "../hooks/useWishlistHooks";
+import { useCartPopup } from "../context/CartPopupContext"; 
 
 const ProductActions = ({
   product,
@@ -13,6 +14,7 @@ const ProductActions = ({
   const [quantity, setQuantity] = useState(1);
   const { mutate: addToCart, isPending: addingToCart } = useAddToCart();
   const { mutate: addToWishlist, isPending: addingToWishlist } = useAddToWishlist();
+  const { setCartPopupOpen } = useCartPopup(); // Access context
 
   const handleAddToCart = () => {
     if (!product?.id) return toast.error("Invalid product data");
@@ -24,6 +26,7 @@ const ProductActions = ({
       {
         onSuccess: () => {
           if (onAddedToCart) onAddedToCart();
+          setCartPopupOpen(true); // Open cart popup
         },
         onError: (err) =>
           toast.error(err.response?.data?.message || "Failed to add to cart"),
@@ -44,7 +47,7 @@ const ProductActions = ({
 
   return (
     <div className="flex flex-col gap-4 mt-4">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-center gap-2">
         <label htmlFor="quantity" className="text-sm">
           Quantity:
         </label>
@@ -59,7 +62,7 @@ const ProductActions = ({
         />
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center justify-center">
         <button
           onClick={handleAddToCart}
           disabled={addingToCart || product.stock < 1}

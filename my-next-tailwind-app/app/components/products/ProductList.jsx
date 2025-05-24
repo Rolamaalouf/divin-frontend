@@ -138,8 +138,8 @@ const ProductList = ({
                 />
               </div>
 
-              <h2 className="text-lg font-semibold mt-2 text-[#031B28]">{product.name}</h2>
-              <p className="text-sm text-gray-600">${product.price}</p>
+              <h2 className="text-lg font-semibold mt-2 text-[#031B28] text-center">{product.name}</h2>
+              <p className="text-sm text-gray-600 text-center">${product.price}</p>
 
               {showDescription && (
                 <p className="text-sm text-gray-600 mt-1">{product.description}</p>
