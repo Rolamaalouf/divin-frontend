@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function Section1() {
   return (
-    <section className="relative w-full flex flex-col lg:flex-row items-center justify-between px-6 lg:pl-[120px] lg:pr-12 py-16 gap-10 -z-10 bg-white -mt-[250px]">
+    <section className="relative w-full flex flex-col lg:flex-row items-center justify-between px-6 lg:pl-[120px] lg:pr-12 py-16 gap-10  bg-white -mt-[250px]">
       {/* Left Image */}
       <div className="w-full lg:w-1/2 relative flex justify-center lg:justify-end">
         <Image
@@ -38,7 +38,7 @@ export default function Section1() {
         </p>
         <Link
           href="/about"
-          className="bg-[#E2C269] text-[#34434F] font-bold px-6 py-3 rounded hover:opacity-90 transition"
+          className="relative  bg-[#E2C269] text-[#34434F] font-bold px-6 py-3 rounded hover:opacity-90 transition"
         >
           See more
         </Link>

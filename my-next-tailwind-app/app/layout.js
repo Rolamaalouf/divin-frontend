@@ -1,12 +1,12 @@
+// app/layout.js (or wherever your RootLayout lives)
 import './globals.css';
 import AuthClientWrapper from './components/AuthClientWrapper';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ReactQueryProvider
- from './components/ReactQueryProvider';
- import GuestIdProvider from './components/GuestIdProvider';
- import LayoutWrapper from './components/LayoutWrapper';
- import { CartPopupProvider } from './context/CartPopupContext';
+import ReactQueryProvider from './components/ReactQueryProvider';
+import GuestIdProvider from './components/GuestIdProvider';
+import LayoutWrapper from './components/LayoutWrapper';
+import { CartPopupProvider } from './context/CartPopupContext';
 
 export const viewport = {
   width: 'device-width',
@@ -23,18 +23,25 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>
-      <ReactQueryProvider>
-        <AuthClientWrapper>
-          <GuestIdProvider>
-            <LayoutWrapper>
-             <CartPopupProvider>
-          <main>{children}</main>
-          </CartPopupProvider>
-          </LayoutWrapper>
-          <ToastContainer position="top-right" autoClose={3000} />
-          </GuestIdProvider>
-        </AuthClientWrapper>
+     
+      <body className="min-h-screen flex flex-col">
+        <ReactQueryProvider>
+          <AuthClientWrapper>
+            <GuestIdProvider>
+    
+              <LayoutWrapper>
+                <CartPopupProvider>
+                
+                  <main className="flex-1">
+                    {children}
+                  </main>
+                </CartPopupProvider>
+              </LayoutWrapper>
+
+              
+              <ToastContainer position="top-right" autoClose={3000} />
+            </GuestIdProvider>
+          </AuthClientWrapper>
         </ReactQueryProvider>
       </body>
     </html>

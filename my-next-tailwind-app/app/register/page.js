@@ -38,7 +38,6 @@ export default function RegisterPage() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
 
-    // Clear specific field errors when changed
     if (e.target.name === 'name') setNameError('');
     if (e.target.name === 'email') setEmailError('');
     if (e.target.name === 'password') setPasswordError('');
@@ -51,13 +50,10 @@ export default function RegisterPage() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Name validation
     if (!form.name.trim()) {
       setNameError('Full name is required.');
       return;
     }
-
-    // Email validation
     if (!form.email.trim()) {
       setEmailError('Email is required.');
       return;
@@ -66,8 +62,6 @@ export default function RegisterPage() {
       setEmailError('Please enter a valid email address.');
       return;
     }
-
-    // Password validation
     if (!form.password) {
       setPasswordError('Password is required.');
       return;
@@ -79,7 +73,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // === Manual Address validation ===
     if (
       !address.region.trim() ||
       !address['address-direction'].trim() ||
@@ -94,7 +87,7 @@ export default function RegisterPage() {
     try {
       await register({ ...form, address });
       setSubmittedAddress(address);
-      // router.push('/login'); // Uncomment if you want to redirect immediately
+      router.push('/login'); 
     } catch (error) {
       console.error('Register error:', error);
       toast.error(error?.response?.data?.message || 'Registration failed');
@@ -118,7 +111,7 @@ export default function RegisterPage() {
         <h2 className="text-4xl font-extrabold text-center">Create Account</h2>
         <p className="text-center text-sm text-white">
           Already have an account?{' '}
-          <Link href="/login" className="text-[#E2C269] underline hover:text-yellow-300">
+          <Link href="/login" className="text-[#E2C269] underline hover:text-white">
             Login
           </Link>
         </p>
@@ -147,27 +140,28 @@ export default function RegisterPage() {
         />
         {emailError && <p className="text-red-600 text-sm mt-1">{emailError}</p>}
 
-<div className="relative w-full">
-  <input
-    name="password"
-    type={showPassword ? 'text' : 'password'}
-    placeholder="Password"
-    value={form.password}
-    onChange={handleChange}
-    className={`w-full p-3 pr-10 rounded bg-transparent border placeholder-[#bbb] text-white ${
-      passwordError ? 'border-red-400' : 'border-[#E2C269]'
-    }`}
-  />
-  {form.password && (
-    <span
-      className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/80 cursor-pointer"
-      onClick={() => setShowPassword(!showPassword)}
-    >
-      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-    </span>
-  )}
-</div>
-{passwordError && <p className="text-red-400 text-sm mt-1">{passwordError}</p>}
+        {/* Password with Lucide eye only */}
+        <div className="relative w-full">
+          <input
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className={`w-full p-3 pr-10 rounded bg-transparent border placeholder-[#bbb] text-white ${
+              passwordError ? 'border-red-400' : 'border-[#E2C269]'
+            }`}
+          />
+          {form.password && (
+            <span
+              className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white/80 cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </span>
+          )}
+        </div>
+        {passwordError && <p className="text-red-400 text-sm mt-1">{passwordError}</p>}
 
         {/* Address Form (unchanged) */}
         <AddressForm address={address} updateAddress={updateAddress} />

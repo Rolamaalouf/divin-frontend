@@ -103,7 +103,7 @@ export default function Home() {
 
       {/* Sections */}
       <Section1 className="mt-[200px]" />
-      <SelectionsSection className="mb-54" />
+      <SelectionsSection id="selections"  className="mb-54" />
       <Section2 />
     </div>
   );

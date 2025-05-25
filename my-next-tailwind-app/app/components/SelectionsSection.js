@@ -20,7 +20,7 @@ const normalizeCategoryName = (name) =>
     .replace(/\s+/g, '')
     .replace(/s$/, '');
 
-const SelectionsSection = ({ className = '' }) => {
+const SelectionsSection = ({  className = '' }) => {
   const router = useRouter();
   const { data: categories, isLoading, isError } = useCategoryQuery();
 
@@ -33,6 +33,7 @@ const SelectionsSection = ({ className = '' }) => {
 
   return (
     <section
+    id="selections"
       className={`bg-[#031B28] w-full py-32 px-4 md:px-20 flex flex-col items-center justify-center ${className}`}
     >
       {/* Animated Header */}
