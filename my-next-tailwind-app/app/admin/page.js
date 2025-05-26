@@ -30,7 +30,7 @@ export default function AdminPage() {
 
     const itemsWithOrders = orderItems.map(item => {
       const order = orders.find(o => o.id === item.order_id);
-      return { ...item, order };
+      return { ...item, order }; //spreading all properties of item and adding a new property order 
     }).filter(entry => entry.order);
 
     const productSalesMap = {};
@@ -116,9 +116,11 @@ export default function AdminPage() {
         <SparklinesBars style={{ fill: "#E2C269" }} />
       </Sparklines>
       <div className="absolute bottom-0 left-0 right-0 flex justify-between mt-2">
-        {Array.from({ length: 12 }, (_, idx) => (
-          <span key={idx} className="text-xs text-center">{idx + 1}</span>
-        ))}
+{Array.from({ length: 12 }, (_, idx) => ( //create an array with 12 undefined values index 0 to 11
+  <span key={idx} className="text-xs text-center w-[calc(50%/12)]">
+    {dayjs().month(idx).format('MMM')}
+  </span>
+))}
       </div>
     </div>
   </div>
@@ -130,7 +132,7 @@ export default function AdminPage() {
 <div className="mb-10">
   <h2 className="text-xl font-semibold mb-2">Monthly Sales Table ({filterYear})</h2>
   <div className="overflow-x-auto">
-    <table className="min-w-full border-collapse border">
+    <table className="min-w-full border-collapse border"> 
       <thead style={{ backgroundColor: '#34434F', color: 'white' }}>
         <tr>
           <th className="border px-4 py-2 text-left">Month</th>

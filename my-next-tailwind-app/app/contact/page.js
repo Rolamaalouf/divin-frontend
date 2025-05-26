@@ -71,7 +71,7 @@ const Contact = () => {
         </motion.h1>
       </div>
 
-      <div className="max-w-6xl mx-auto -mt-20 bg-white rounded-lg shadow-lg p-8 relative z-10">
+      <div className="max-w-6xl mx-auto -mt-20 bg-white rounded shadow-lg p-8 relative z-10">
         <div className="flex flex-col md:flex-row gap-12">
           {/* Contact Form */}
           <div className="md:w-1/2 w-full">

@@ -34,12 +34,13 @@ export default function Section2() {
           Explore picturesque vineyards and discover the story behind every sip.
           At our exclusive events, enjoy rare vintages, learn from sommeliers, and connect with fellow wine lovers for an unforgettable experience.
         </p>
-        <Link
-          href="/contact"
-          className="bg-[#E2C269] text-[#34434F] font-bold px-6 py-3 rounded hover:opacity-90 transition"
-        >
-          Contact us
-        </Link>
+<Link
+  href="/contact"
+  className="inline-block bg-[#E2C269] text-[#34434F] text-lg font-semibold px-6 py-3 rounded shadow-md hover:shadow-lg hover:from-[#D4B55A] hover:to-[#C6A84B] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02]  active:scale-[0.98]"
+>
+  Contact Us
+</Link>
+
       </div>
     </section>
   );

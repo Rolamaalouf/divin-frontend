@@ -40,7 +40,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
           {/* Company Info */}
-          <div className="space-y-4">
+          <div className="space-y-4 py-2">
             <Image
               src="/logo.png"
               alt="Divinlb Logo"
@@ -49,7 +49,7 @@ export default function Footer() {
               className="object-contain"
               priority
             />
-            <p className="text-xs text-gray-500">© {currentYear} Rola Maalouf. All rights reserved.</p>
+          
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-gray-300">
                 <Mail className="h-4 w-4" />
@@ -71,7 +71,7 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
+          <div className="space-y-4 py-4">
             <h4 className="text-lg font-semibold text-[#E2C269]">Quick Links</h4>
             <nav aria-label="Footer navigation">
               <ul className="space-y-2">
@@ -94,7 +94,7 @@ export default function Footer() {
           </div>
 
           {/* Social Media */}
-          <div className="space-y-4">
+          <div className="space-y-4 py-4">
             <h4 className="text-lg font-semibold text-[#E2C269]">Stay Connected</h4>
             <div className="space-y-3">
               <h5 className="text-sm font-medium text-gray-300">Follow Us</h5>
@@ -131,7 +131,7 @@ export default function Footer() {
           </div>
 
           {/* Subscribe Form */}
-          <div className="space-y-4">
+          <div className="space-y-4 py-4">
             <h4 className="text-lg font-semibold text-[#E2C269]">Subscribe</h4>
             <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
               <input
@@ -144,7 +144,7 @@ export default function Footer() {
               />
               <button
                 type="submit"
-                className="bg-[#E2C269] text-slate-900 py-2 px-4 rounded hover:bg-white transition-colors"
+                className="bg-[#E2C269]/80 text-slate-900 py-2 px-4 rounded hover:bg-white transition-colors"
               >
                 Subscribe
               </button>
@@ -184,6 +184,8 @@ export default function Footer() {
           }),
         }}
       />
+      
+        <p className="text-xs text-center text-gray-200 pb-6">© {currentYear} Rola Maalouf. All rights reserved.</p>
     </footer>
   );
 }

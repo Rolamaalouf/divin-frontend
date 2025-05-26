@@ -192,38 +192,40 @@ const ProductList = ({
           ))}
         </div>
       )}
+{/* Pagination Controls */}
+{totalPages > 1 && (
+  <div className="flex justify-center items-center gap-3 mt-4 mb-5 flex-wrap">
+    <button
+      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+      disabled={currentPage === 1}
+      className="px-4 py-2 rounded border border-[#E2C269] bg-[#E2C269]/30 text-[#031B28] backdrop-blur-sm transition disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#E2C269]/50"
+    >
+      Prev
+    </button>
 
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            className="px-3 py-1 bg-[#E2C269] text-[#031B28] rounded disabled:opacity-50"
-          >
-            Prev
-          </button>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i + 1}
-              onClick={() => setCurrentPage(i + 1)}
-              className={`px-3 py-1 rounded ${
-                currentPage === i + 1
-                  ? "bg-[#031B28] text-[#E2C269]"
-                  : "bg-[#E2C269] text-[#031B28]"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-            className="px-3 py-1 bg-[#E2C269] text-[#031B28] rounded disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
+    {Array.from({ length: totalPages }, (_, i) => (
+      <button
+        key={i + 1}
+        onClick={() => setCurrentPage(i + 1)}
+        className={`px-4 py-2 rounded border transition backdrop-blur-sm ${
+          currentPage === i + 1
+            ? "bg-[#031B28]/20 text-[#031B28] border-[#031B28]"
+            : "bg-[#E2C269]/30 text-[#031B28] border-[#E2C269] hover:bg-[#E2C269]/50"
+        }`}
+      >
+        {i + 1}
+      </button>
+    ))}
+
+    <button
+      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+      disabled={currentPage === totalPages}
+      className="px-4 py-2 rounded border border-[#E2C269] bg-[#E2C269]/10 text-[#031B28] backdrop-blur-sm transition disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#E2C269]/50"
+    >
+      Next
+    </button>
+  </div>
+
       )}
     </>
   );

@@ -3,9 +3,7 @@
 import Link from 'next/link';
 import { useOrders, useDeleteOrder, useUpdateOrder } from '@/app/hooks/useOrderHooks';
 import { Eye, Trash2 } from 'lucide-react';
-import { toast } from 'react-toastify';
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
@@ -13,7 +11,6 @@ export default function OrdersPage() {
   const { data: orders, isLoading, isError } = useOrders();
   const deleteOrder = useDeleteOrder();
   const updateOrder = useUpdateOrder();
-  const queryClient = useQueryClient();
 
   const [editingStatus, setEditingStatus] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,10 +24,7 @@ export default function OrdersPage() {
         {
           label: 'Yes',
           onClick: () => {
-            deleteOrder.mutate(id, {
-              onSuccess: () => toast.success('Order deleted successfully'),
-              onError: () => toast.error('Failed to delete order'),
-            });
+            deleteOrder.mutate(id);
           },
         },
         { label: 'No' },
@@ -46,25 +40,18 @@ export default function OrdersPage() {
     const newStatus = editingStatus[order.id];
     if (!newStatus || newStatus === order.status) return;
 
-    updateOrder.mutate(
-      { id: order.id, data: { status: newStatus } },
-      {
-        onSuccess: () => {
-          toast.success(`Order #${order.id} updated to ${newStatus}`);
-          queryClient.invalidateQueries(['orders']);
-        },
-        onError: () => toast.error('Failed to update order'),
-      }
-    );
+    updateOrder.mutate({ id: order.id, data: { status: newStatus } });
   };
 
   if (isLoading) return <div className="p-6 text-gray-600">Loading orders...</div>;
   if (isError || !orders) return <div className="p-6 text-red-600">Failed to load orders.</div>;
 
-const filteredOrders = orders.filter((order) => order.status.toLowerCase() !== 'pending');
-const paginatedOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const filteredOrders = orders
+    .filter((order) => order.status.toLowerCase() !== 'pending')
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // newest first
 
+  const paginatedOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
   return (
     <div className="min-h-screen bg-white p-4 sm:p-8">

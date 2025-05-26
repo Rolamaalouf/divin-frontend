@@ -36,12 +36,13 @@ export default function Section1() {
           <br /><br />
           Located just 15 minutes from Beirut, we invite both locals and travelers to experience the spirit of our wines.
         </p>
-        <Link
-          href="/about"
-          className="relative  bg-[#E2C269] text-[#34434F] font-bold px-6 py-3 rounded hover:opacity-90 transition"
-        >
-          See more
-        </Link>
+<Link
+  href="/about"
+  className="inline-block bg-[#E2C269] text-[#34434F] text-lg font-semibold px-6 py-3 rounded shadow-md hover:shadow-lg  hover:from-[#D4B55A] hover:to-[#C6A84B] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02]  active:scale-[0.98]"
+>
+  See More
+</Link>
+
       </div>
     </section>
   );

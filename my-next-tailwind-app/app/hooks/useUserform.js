@@ -83,13 +83,13 @@ export const useUserForm = ({ registerNewUser, updateUser }) => {
       address: user.address || defaultFormData.address,
     });
     setIsEdit(true);
-    setShowForm(true); // 👈 show form on edit
+    setShowForm(true); // show form on edit
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleAddClick = () => {
     resetForm();         // resets formData and isEdit
-    setShowForm(true);   // 👈 show form on "Add User"
+    setShowForm(true);  
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 

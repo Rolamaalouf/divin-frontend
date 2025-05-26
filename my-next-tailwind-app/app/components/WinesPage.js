@@ -49,9 +49,9 @@ export default function WinesPage() {
 
       <div className="relative h-[100vh] sm:h-[100vh]">
   
-  <div className="absolute inset-0 -z-10 overflow-hidden mt-[-680]">
+  <div className="absolute inset-0 -z-10 overflow-hidden mt-[-800]">
     <Image
-      src="/wines3.png"
+      src="/wines4.png"
       alt="Wines Background"
       fill
       priority
@@ -66,7 +66,7 @@ export default function WinesPage() {
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 1 }}
   >
-    <h1 className="text-[#E2C269] text-4xl sm:text-[64px] mt-[-350] font-bold leading-tight">
+    <h1 className="text-[#E2C269] text-5xl sm:text-[-64px] mt-[-350] font-bold leading-tight">
       Wines
     </h1>
   </motion.div>
@@ -74,7 +74,7 @@ export default function WinesPage() {
 
 
 
-      <div className="max-w-[1600px] mx-auto px-4 py-10 mt-[-450]">
+      <div className="max-w-[1600px] mx-auto px-4 py-10 mt-[-500] ">
         <GlassFilterSection
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}

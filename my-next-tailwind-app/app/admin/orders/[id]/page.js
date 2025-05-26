@@ -17,7 +17,6 @@ export default function OrderDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 max-w-4xl mx-auto">
       <hr className="my-6" />
-     {/* Optionally still show details below */}
       <OrderDetail order={order} />
     </div>
   );
