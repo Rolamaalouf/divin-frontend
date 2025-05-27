@@ -28,17 +28,13 @@ export default function RootLayout({ children }) {
         <ReactQueryProvider>
           <AuthClientWrapper>
             <GuestIdProvider>
-    
               <LayoutWrapper>
                 <CartPopupProvider>
-                
                   <main className="flex-1">
                     {children}
                   </main>
                 </CartPopupProvider>
               </LayoutWrapper>
-
-              
               <ToastContainer position="top-right" autoClose={3000} />
             </GuestIdProvider>
           </AuthClientWrapper>
