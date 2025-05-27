@@ -7,9 +7,8 @@ import { Trash2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useGuestId } from "../utils/guestId";
 import { toast } from "react-toastify";
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css'; // Import the CSS
-
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 const CartItemList = ({
   items = [],
@@ -40,27 +39,25 @@ const CartItemList = ({
 
   const handleClearCart = () => {
     confirmAlert({
-      title: 'Confirm Deletion',
-      message: 'Are you sure you want to delete the entire cart?',
+      title: "Confirm Deletion",
+      message: "Are you sure you want to delete the entire cart?",
       buttons: [
         {
-          label: 'Yes',
+          label: "Yes",
           onClick: () => {
             const cartId = items[0]?.cartId || null;
             if (cartId) clearCart(cartId);
             toast.success("Cart cleared successfully");
-          }
+          },
         },
         {
-          label: 'No',
-          onClick: () => {} // Do nothing if they click No
-        }
+          label: "No",
+        },
       ],
       closeOnEscape: true,
       closeOnClickOutside: true,
     });
   };
-  
 
   const finalizeCheckout = () => {
     const mappedItems = items.map((item) => ({
@@ -99,7 +96,6 @@ const CartItemList = ({
           return;
         }
         toast.success("Finalizing purchase!");
-        // handleClearCart();
         if (onCheckout) onCheckout(orderId);
         window.location.href = `/checkout?id=${orderId}`;
       },
@@ -120,9 +116,9 @@ const CartItemList = ({
     }
 
     if (user) {
-      finalizeCheckout(); // Authenticated users skip modal
+      finalizeCheckout();
     } else {
-      setShowModal(true); // Show modal only if unauthenticated
+      setShowModal(true);
     }
   };
 
@@ -136,73 +132,75 @@ const CartItemList = ({
   };
 
   return (
-    <div className="relative px-2 sm:px-0">
+    <div className="relative px-4 sm:px-0 flex flex-col h-[120vh] bg-white">
       {items.length > 0 && (
         <button
           onClick={handleClearCart}
-          className="absolute bottom-11 right-2  text-red-600 hover:text-red-800"
+          className="absolute -top-1 right-1 text-red-600 hover:text-red-800"
           aria-label="Clear Cart"
         >
-          <Trash2 className="w-5 h-5 mt-[-25]"/>
+          <Trash2 className="w-5 h-5" />
         </button>
       )}
 
       {items.length === 0 ? (
-        <p className="text-sm text-gray-600">Cart is empty.</p>
+        <p className="text-sm text-gray-600 text-center mt-8">Start shopping.</p>
       ) : (
         <>
-          <div className="space-y-4">
+          <div className="flex-1 overflow-y-auto space-y-4 scrollbar-hide">
             {items.map((item, index) => {
               const key = item.cartItemId ?? `cart-item-${index}`;
               return (
                 <div
                   key={key}
-                  className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 border-b pb-4"
+                  className="flex flex-col sm:flex-row items-center gap-4 border-b pb-4"
                 >
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center overflow-hidden bg-transparent rounded border">
-                    <div className="w-full h-full p-2">
-                      <img
-                        src={item.image?.[0] || "/placeholder.jpg"}
-                        alt={item.name || "Product image"}
-                        className="w-full h-full object-contain"
+                  <div className="w-20 h-20 flex items-center justify-center overflow-hidden bg-white border rounded">
+                    <img
+                      src={item.image?.[0] || "/placeholder.jpg"}
+                      alt={item.name || "Product image"}
+                      className="object-contain w-full h-full p-1"
+                    />
+                  </div>
+                  <div className="flex-1 w-full flex flex-col justify-center text-center sm:text-left">
+                    <p className="font-medium text-sm sm:text-base break-words">
+                      {item.name || "Unnamed Product"}
+                    </p>
+                    <p className="text-gray-600 text-xs sm:text-sm mt-1">
+                      ${item.price?.toFixed(2) || "0.00"} × {item.quantity}
+                    </p>
+                    <div className="flex justify-center sm:justify-start mt-2">
+                      <input
+                        type="number"
+                        min={1}
+                        value={item.quantity}
+                        onChange={(e) =>
+                          handleUpdateQuantity(
+                            item.cartItemId,
+                            Number(e.target.value)
+                          )
+                        }
+                        className="w-16 px-2 py-1 border rounded text-xs sm:text-sm"
+                        aria-label={`Quantity for ${item.name || "product"}`}
                       />
                     </div>
                   </div>
 
-                  <div className="flex-1 flex flex-col justify-center">
-                    <p className="font-medium mb-1 text-sm sm:text-base break-words">
-                      {item.name || "Unnamed Product"}
-                    </p>
-                    <p className="text-gray-600 mb-1 text-xs sm:text-sm">
-                      ${item.price?.toFixed(2) || "0.00"} × {item.quantity}
-                    </p>
-                    <input
-                      type="number"
-                      value={item.quantity}
-                      min={1}
-                      onChange={(e) =>
-                        handleUpdateQuantity(
-                          item.cartItemId,
-                          Number(e.target.value)
-                        )
-                      }
-                      className="w-12 sm:w-16 mt-1 px-2 py-1 border rounded text-xs sm:text-sm"
-                      aria-label={`Quantity for ${item.name || "product"}`}
-                    />
+                  <div className="flex justify-end sm:justify-start sm:items-start w-full sm:w-auto">
+                    <button
+                      onClick={() => onDelete(item.cartItemId)}
+                      className="text-gray-800 text-xs sm:text-sm hover:underline"
+                    >
+                      Remove
+                    </button>
                   </div>
-
-                  <button
-                    onClick={() => onDelete(item.cartItemId)}
-                    className="text-gray-800 text-xs sm:text-sm hover:underline ml-auto sm:ml-0 sm:self-start"
-                  >
-                    Remove
-                  </button>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-6 space-y-2">
+          {/* STICKY CHECKOUT FOOTER */}
+          <div className="sticky bottom-0 left-0 right-0 bg-white pt-4 pb-2 mt- border-t space-y-2 text-center sm:text-left z-10">
             <p className="font-semibold text-sm sm:text-base">
               Total: ${totalPrice.toFixed(2)}
             </p>
@@ -217,24 +215,20 @@ const CartItemList = ({
         </>
       )}
 
-      {/* Modal for unauthenticated users only */}
+      {/* Modal */}
       {showModal && (
         <div
-          className="fixed inset-0 flex items-center justify-center z-50"
-          style={{ backdropFilter: "blur(6px)" }}
+          className="fixed inset-0 flex items-center justify-center z-50 bg-[#FFFFFF]/70 bg-opacity-10"
           role="dialog"
           aria-modal="true"
           aria-labelledby="checkout-modal-title"
         >
-          <div className="bg-white rounded-lg shadow-lg p-6 w-72 sm:w-80 text-center mx-2">
-            <h3
-              id="checkout-modal-title"
-              className="text-lg font-semibold mb-4"
-            >
+          <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-sm mx-auto text-center">
+            <h3 id="checkout-modal-title" className="text-lg font-semibold mb-4">
               Proceed to checkout
             </h3>
             <p className="text-sm mb-6">Choose how you want to continue</p>
-            <div className="flex gap-2 justify-center flex-wrap">
+            <div className="flex flex-col gap-2">
               <button
                 onClick={() => handleModalAction("guest")}
                 className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm"

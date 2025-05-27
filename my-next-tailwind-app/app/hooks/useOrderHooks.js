@@ -27,7 +27,7 @@ export const useCreateOrder = () => {
     mutationFn: createOrder,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
-      toast.success('Order created successfully');
+
     },
     onError: () => {
       toast.error('Failed to create order');

@@ -67,6 +67,7 @@ const ProductTable = ({ products = [], onEdit, onDelete }) => {
             <th className="p-3 text-left">ID</th>
             <th className="p-3 text-left">Name</th>
             <th className="p-3 text-left">Price</th>
+              <th className="p-3 text-left">Stock</th>
             <th className="p-3 text-left">Actions</th>
           </tr>
         </thead>
@@ -76,7 +77,8 @@ const ProductTable = ({ products = [], onEdit, onDelete }) => {
               <td className="p-3">{product.id}</td>
               <td className="p-3">{product.name}</td>
               <td className="p-3">${product.price}</td>
-              <td className="p-3 flex space-x-2">
+              <td className="p-3">{product.stock}</td>
+<td className="p-3 flex space-x-2">
                 <button onClick={() => setViewProduct(product)}>
                   <Eye className="text-blue-600" />
                 </button>

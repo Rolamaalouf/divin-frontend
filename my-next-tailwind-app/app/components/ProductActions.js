@@ -10,7 +10,7 @@ import { useCartPopup } from "../context/CartPopupContext"
 const ProductActions = ({
   product,
   currentUser,
-  showStock = true,
+  showStock = false,
   hideWishlist = false,
   onAddedToCart,
   variant = "default", // default, compact, minimal
@@ -55,7 +55,6 @@ const ProductActions = ({
     setQuantity((prev) => Math.max(prev - 1, 1))
   }
 
-  // Allow manual input and validation
   const handleInputChange = (e) => {
     let value = e.target.value
     if (value === "") {
@@ -77,11 +76,24 @@ const ProductActions = ({
 
   const isOutOfStock = product.stock < 1
 
-  // ... (compact and minimal variants unchanged)
-
-  // Default variant
   return (
-    <div className="space-y-6">
+    <div className="relative space-y-6">
+      {/* Wishlist Floating Button */}
+      {!hideWishlist && (
+        <button
+          onClick={handleAddToWishlist}
+          disabled={addingToWishlist}
+          className="absolute top-[-338] right-0 z-10 m-2 p-2 bg-white rounded-full shadow-md text-[#031B28] hover:text-[#E2C269] transition-colors duration-200 disabled:opacity-50"
+          aria-label="Add to wishlist"
+        >
+          {addingToWishlist ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <Heart className="h-5 w-5" />
+          )}
+        </button>
+      )}
+
       {/* Stock Information */}
       {showStock && (
         <div className="flex items-center justify-between text-sm">
@@ -145,27 +157,6 @@ const ProductActions = ({
             </>
           )}
         </button>
-
-        {!hideWishlist && (
-          <button
-            onClick={handleAddToWishlist}
-            disabled={addingToWishlist}
-            className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-[#E2C269] to-[#D4B55A] text-[#031B28] py-4 px-6 rounded font-semibold text-lg hover:from-[#D4B55A] hover:to-[#C6A84B] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
-          >
-            {addingToWishlist ? (
-              <>
-                <Loader2 className="h-5 w-5 animate-spin" />
-                <span className="hidden xs:inline">Adding to Wishlist...</span>
-              </>
-            ) : (
-              <>
-                <Heart className="h-5 w-5" />
-                <span className="hidden xs:inline">Add to Wishlist</span>
-                <span className="xs:hidden">Add</span>
-              </>
-            )}
-          </button>
-        )}
       </div>
     </div>
   )

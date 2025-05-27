@@ -19,7 +19,7 @@ const ProductList = ({
   showActions = false,
   showDescription = true,
   showControls = true,
-  showStock = true,
+  showStock = false,
   showPopupOnClick = false,
   openCartPopup, // <-- Receive from Header
 }) => {
@@ -145,7 +145,6 @@ const ProductList = ({
                 <p className="text-sm text-gray-600 mt-1">{product.description}</p>
               )}
 
-              {showStock && <p className="text-sm text-gray-600 mt-1">Stock: {product.stock}</p>}
 
               {showActions && (
                 <ProductActions
