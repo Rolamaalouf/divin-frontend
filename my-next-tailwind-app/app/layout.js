@@ -26,8 +26,8 @@ export default function RootLayout({ children }) {
      
       <body className="min-h-screen flex flex-col">
         <ReactQueryProvider>
+          <AuthClientWrapper>
             <GuestIdProvider>
-            <AuthClientWrapper>
               <LayoutWrapper>
                 <CartPopupProvider>
                   <main className="flex-1">
@@ -36,8 +36,8 @@ export default function RootLayout({ children }) {
                 </CartPopupProvider>
               </LayoutWrapper>
               <ToastContainer position="top-right" autoClose={3000} />
+            </GuestIdProvider>
           </AuthClientWrapper>
-              </GuestIdProvider>
         </ReactQueryProvider>
       </body>
     </html>
