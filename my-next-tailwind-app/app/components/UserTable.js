@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Pencil, Trash2, Eye } from 'lucide-react';
 
 export const UserTable = ({ users, handleEdit, handleDelete }) => {
@@ -13,10 +13,17 @@ export const UserTable = ({ users, handleEdit, handleDelete }) => {
   };
 
   const roles = ['all', ...new Set(users.map((user) => user.role))];
-  const filteredUsers =
-    selectedRole === 'all'
-      ? users
-      : users.filter((user) => user.role === selectedRole);
+
+  // Memoize filtered and sorted users
+  const filteredUsers = useMemo(() => {
+    const sortedUsers = [...users].sort((a, b) =>
+      new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    return selectedRole === 'all'
+      ? sortedUsers
+      : sortedUsers.filter((user) => user.role === selectedRole);
+  }, [users, selectedRole]);
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
@@ -40,7 +47,7 @@ export const UserTable = ({ users, handleEdit, handleDelete }) => {
           value={selectedRole}
           onChange={(e) => {
             setSelectedRole(e.target.value);
-            setCurrentPage(1); // reset to first page on filter change
+            setCurrentPage(1);
           }}
           className="border border-gray-300 rounded px-3 py-1 text-sm"
         >
@@ -112,51 +119,50 @@ export const UserTable = ({ users, handleEdit, handleDelete }) => {
         </tbody>
       </table>
 
-{/* Updated Pagination Controls - Matches Orders Style */}
-<div className="flex justify-center items-center space-x-1 mt-6">
-  <button
-    onClick={() => goToPage(currentPage - 1)}
-    disabled={currentPage === 1}
-    className={`px-3 py-1 rounded-md border text-sm ${
-      currentPage === 1
-        ? 'text-gray-400 border-gray-300 cursor-not-allowed'
-        : 'text-[#34434F] border-[#34434F] hover:bg-[#34434F] hover:text-white'
-    }`}
-  >
-    Prev
-  </button>
+      {/* Pagination */}
+      <div className="flex justify-center items-center space-x-1 mt-6">
+        <button
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`px-3 py-1 rounded-md border text-sm ${
+            currentPage === 1
+              ? 'text-gray-400 border-gray-300 cursor-not-allowed'
+              : 'text-[#34434F] border-[#34434F] hover:bg-[#34434F] hover:text-white'
+          }`}
+        >
+          Prev
+        </button>
 
-  {[...Array(totalPages)].map((_, index) => {
-    const page = index + 1;
-    const isActive = currentPage === page;
-    return (
-      <button
-        key={page}
-        onClick={() => goToPage(page)}
-        className={`px-3 py-1 text-sm rounded-md border ${
-          isActive
-            ? 'bg-[#34434F] text-white border-[#34434F]'
-            : 'text-[#34434F] border-[#34434F] hover:bg-[#34434F] hover:text-white'
-        }`}
-      >
-        {page}
-      </button>
-    );
-  })}
+        {[...Array(totalPages)].map((_, index) => {
+          const page = index + 1;
+          const isActive = currentPage === page;
+          return (
+            <button
+              key={page}
+              onClick={() => goToPage(page)}
+              className={`px-3 py-1 text-sm rounded-md border ${
+                isActive
+                  ? 'bg-[#34434F] text-white border-[#34434F]'
+                  : 'text-[#34434F] border-[#34434F] hover:bg-[#34434F] hover:text-white'
+              }`}
+            >
+              {page}
+            </button>
+          );
+        })}
 
-  <button
-    onClick={() => goToPage(currentPage + 1)}
-    disabled={currentPage === totalPages}
-    className={`px-3 py-1 rounded-md border text-sm ${
-      currentPage === totalPages
-        ? 'text-gray-400 border-gray-300 cursor-not-allowed'
-        : 'text-[#34434F] border-[#34434F] hover:bg-[#34434F] hover:text-white'
-    }`}
-  >
-    Next
-  </button>
-</div>
-
+        <button
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`px-3 py-1 rounded-md border text-sm ${
+            currentPage === totalPages
+              ? 'text-gray-400 border-gray-300 cursor-not-allowed'
+              : 'text-[#34434F] border-[#34434F] hover:bg-[#34434F] hover:text-white'
+          }`}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

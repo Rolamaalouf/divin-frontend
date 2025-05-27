@@ -22,8 +22,14 @@ const ProductTable = ({ products = [], onEdit, onDelete }) => {
   }, [viewProduct]);
 
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+
+  // Sort products alphabetically by name
+  const sortedProducts = [...products].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginated = products.slice(start, start + ITEMS_PER_PAGE);
+  const paginated = sortedProducts.slice(start, start + ITEMS_PER_PAGE);
 
   const handleDelete = (id) => {
     confirmAlert({
@@ -67,7 +73,7 @@ const ProductTable = ({ products = [], onEdit, onDelete }) => {
             <th className="p-3 text-left">ID</th>
             <th className="p-3 text-left">Name</th>
             <th className="p-3 text-left">Price</th>
-              <th className="p-3 text-left">Stock</th>
+            <th className="p-3 text-left">Stock</th>
             <th className="p-3 text-left">Actions</th>
           </tr>
         </thead>
@@ -78,7 +84,7 @@ const ProductTable = ({ products = [], onEdit, onDelete }) => {
               <td className="p-3">{product.name}</td>
               <td className="p-3">${product.price}</td>
               <td className="p-3">{product.stock}</td>
-<td className="p-3 flex space-x-2">
+              <td className="p-3 flex space-x-2">
                 <button onClick={() => setViewProduct(product)}>
                   <Eye className="text-blue-600" />
                 </button>
@@ -122,18 +128,16 @@ const ProductTable = ({ products = [], onEdit, onDelete }) => {
               <p className="mb-2 flex-grow">{viewProduct.description}</p>
             </div>
             <div className="w-1/2 flex items-center justify-center" ref={imgRef}>
-{Array.isArray(viewProduct.image)
-  ? viewProduct.image.map((img, i) => (
-      <img
-        key={i} 
-        src={img} 
-        alt="product"
-        className="max-w-full rounded object-contain"
-        style={{ maxHeight: `${descRef.current?.offsetHeight || 300}px` }}
-      />
-    ))
-
-
+              {Array.isArray(viewProduct.image)
+                ? viewProduct.image.map((img, i) => (
+                    <img
+                      key={i}
+                      src={img}
+                      alt="product"
+                      className="max-w-full rounded object-contain"
+                      style={{ maxHeight: `${descRef.current?.offsetHeight || 300}px` }}
+                    />
+                  ))
                 : viewProduct.image && (
                     <img
                       src={viewProduct.image}
