@@ -94,7 +94,7 @@ export default function Home() {
           </p>
           <Link
             href="/wines"
-            className="glitter-button w-[200px] h-[60px] flex items-center justify-center text-base font-semibold rounded transition hover:brightness-110 z-1000"
+            className="glitter-button mb-20 w-[200px] h-[60px] flex items-center justify-center text-base font-semibold rounded transition hover:brightness-110 z-1000"
           >
             Shop our wines
           </Link>

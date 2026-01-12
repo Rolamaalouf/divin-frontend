@@ -21,7 +21,7 @@ const AdminItemsPage = () => {
     ? products?.filter((p) => String(p.category_id) === String(selectedCategory))
     : products;
 
-  const handleEdit = useCallback((product) => {
+  const handleEdit = useCallback((product) => { /* only changes when the dependencies change , since empty arrays function will change once not on every re render */
     setEditingProduct(product);
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: "smooth" });

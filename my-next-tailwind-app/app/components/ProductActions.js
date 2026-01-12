@@ -83,7 +83,7 @@ const ProductActions = ({
         <button
           onClick={handleAddToWishlist}
           disabled={addingToWishlist}
-          className="absolute top-[-338] right-0 z-10 m-2 p-2 bg-white rounded-full shadow-md text-[#031B28] hover:text-[#E2C269] transition-colors duration-200 disabled:opacity-50"
+          className="absolute top-[-300] right-0 z-10 m-2 p-2 bg-white rounded-full shadow-md text-[#031B28] hover:text-[#E2C269] transition-colors duration-200 disabled:opacity-50"
           aria-label="Add to wishlist"
         >
           {addingToWishlist ? (
