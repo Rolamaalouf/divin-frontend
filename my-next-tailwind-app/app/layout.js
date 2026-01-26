@@ -16,7 +16,7 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'Wine Store',
+  title: 'Best lebanese wine',
   description: 'Premium wine selection',
 };
 
