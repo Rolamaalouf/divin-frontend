@@ -11,9 +11,9 @@ import LegacySection from '../components/sectionAbout';
 const timelineData = [
   {
     year: '2013',
-    title: 'Signature Collection Launch',
+    title: 'Roots of tradition in hadath baalbeck',
     description:
-      'Launched our signature collection, celebrated for its innovative blends and authentic character.',
+      'Launched our vineyard , growing more than 7 varieties of red and white grapes.',
     image: '/imageone.jpeg',
   },
   {
