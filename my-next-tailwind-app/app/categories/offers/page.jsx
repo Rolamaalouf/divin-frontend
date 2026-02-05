@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useProducts } from '@/hooks/useProductHooks';
+import { useProducts } from '../../hooks/useProductHooks';
 
 const OffersPage = () => {
   const { data: products, isLoading, isError } = useProducts();
