@@ -1,11 +1,19 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useCategoryQuery } from '../hooks/useCategoryHooks';
 
-const GlassFilterSection = ({ selectedCategory, setSelectedCategory, sortOrder, setSortOrder }) => {
+const GlassFilterSection = ({
+  selectedCategory,
+  setSelectedCategory,
+  sortOrder,
+  setSortOrder,
+}) => {
   const { data: categories, isLoading, isError } = useCategoryQuery();
-  const [dynamicText, setDynamicText] = useState('All our wines will leave you craving for more.');
+  const [dynamicText, setDynamicText] = useState(
+    'All our wines will leave you craving for more.'
+  );
 
   useEffect(() => {
     updateDynamicText(selectedCategory);
@@ -15,13 +23,15 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory, sortOrder, 
     let text;
     switch (category) {
       case '1':
-        text = 'Our white wines promise to delight your senses and leave you wanting more.';
+        text =
+          'Our white wines promise to delight your senses and leave you wanting more.';
         break;
       case '2':
         text = 'Our red wines are bold, rich, and full of flavor.';
         break;
       case '3':
-        text = 'Our rosé wines are the perfect balance of flavor and finesse.';
+        text =
+          'Our rosé wines are the perfect balance of flavor and finesse.';
         break;
       default:
         text = 'All our wines will leave you craving for more.';
@@ -53,11 +63,28 @@ const GlassFilterSection = ({ selectedCategory, setSelectedCategory, sortOrder, 
     }
   };
 
+  // 🔥 Detect offers category with items
+  const offersCategory = categories?.find(
+    (cat) => cat.slug === 'offers' && (cat.products ?? 0) > 0
+  );
+
   if (isLoading) return <p>Loading categories...</p>;
   if (isError) return <p>Error loading categories.</p>;
 
   return (
-    <div className="relative w-full max-w-full md:max-w-[1540px] h-auto md:h-[300px] bg-[#031B28] mb-25 flex flex-col md:flex-row items-center px-4 -py-2 md:px-10 box-border ">
+    <div className="relative w-full max-w-full md:max-w-[1540px] h-auto md:h-[300px] bg-[#031B28] mb-25 flex flex-col md:flex-row items-center px-4 -py-2 md:px-10 box-border">
+      
+      {/* 🔥 Offers Badge */}
+      {offersCategory && (
+        <Link href="/categories/offers">
+          <div className="absolute top-4 left-4 z-20 cursor-pointer">
+            <span className="bg-[#E2C269] text-[#031B28] text-sm font-bold px-4 py-2 rounded-full shadow-lg hover:scale-105 transition-transform">
+              🔥 Offers
+            </span>
+          </div>
+        </Link>
+      )}
+
       <div className="text-[#E2C269] font-bold text-lg md:text-xl w-full md:w-1/3 text-center md:text-left mb-4 mt-5 md:mb-0">
         {dynamicText}
       </div>
