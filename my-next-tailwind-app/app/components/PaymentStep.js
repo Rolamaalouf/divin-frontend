@@ -1,49 +1,29 @@
 'use client';
 
-export default function PaymentStep({
-  paymentMethod,
-  setPaymentMethod,
-  onNext,
-}) {
+import { useEffect } from 'react';
+
+export default function PaymentStep({ setPaymentMethod, onNext }) {
+  // Force Cash on Delivery
+  useEffect(() => {
+    setPaymentMethod('cod');
+  }, [setPaymentMethod]);
+
   return (
     <>
-      <h3 className="text-lg font-semibold">Choose Payment Method</h3>
+      <h3 className="text-lg font-semibold mb-4">Payment Method</h3>
 
-      <div className="flex gap-4 my-4">
-        {["cod", "wish"].map((method) => (
-          <button
-            key={method}
-            type="button"
-            className={`border px-4 py-2 rounded transition ${
-              paymentMethod === method
-                ? "bg-[#031B28] text-white"
-                : "hover:bg-gray-100"
-            }`}
-            onClick={() => setPaymentMethod(method)}
-          >
-            {method === "cod" && "Cash on Delivery"}
-            {method === "wish" && "Wish Money"}
-          </button>
-        ))}
+      <div className="border border-[#031B28] rounded p-4 bg-gray-50">
+        <p className="font-medium text-[#031B28]">
+          Cash on Delivery
+        </p>
+        <p className="text-sm text-gray-600 mt-1">
+          You will pay in cash when your order is delivered.
+        </p>
       </div>
-
-      {paymentMethod === "whish" && (
-        <div className="mt-4 text-sm text-gray-600 space-y-2">
-          <p>
-            Please transfer the amount to:
-          </p>
-          <p className="font-medium text-black">
-            +961 76 933 662
-          </p>
-          <p>
-            After completing the transfer, your order will be confirmed.
-          </p>
-        </div>
-      )}
 
       <button
         onClick={onNext}
-        className="mt-8 bg-[#031B28] text-white p-3 w-full rounded"
+        className="mt-8 bg-[#031B28] text-white p-3 w-full rounded hover:opacity-90 transition"
       >
         Review Order
       </button>

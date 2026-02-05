@@ -71,7 +71,7 @@ export default function AddressStep({
           value={selectedShippingFee}
         >
           <option value={5}>Standard ($5)</option>
-          <option value={10}>Express ($10)</option>
+          <option value={10}>Express (same day delivery) ($10)</option>
         </select>
       </div>
 

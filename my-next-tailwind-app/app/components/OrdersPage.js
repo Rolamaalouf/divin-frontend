@@ -15,11 +15,12 @@ import SuccessStep from "../components/SuccessStep";
 import OrderReviewPanel from "../components/OrderReviewPanel";
 import Stepper from "../components/Stepper";
 
-
 export default function OrdersPage() {
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [loading, setLoading] = useState(false);
+  const [orderNumber, setOrderNumber] = useState(null);
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("id");
@@ -50,8 +51,12 @@ export default function OrdersPage() {
   });
 
   const [shippingFee, setShippingFee] = useState(5);
+
   const updateOrderMutation = useUpdateOrder();
   const { mutate: clearCart } = useDeleteCart();
+
+  /* ---------------------------------- effects ---------------------------------- */
+
   useEffect(() => {
     if (!orderId) {
       toast.error("No order found. Redirecting...");
@@ -59,38 +64,47 @@ export default function OrdersPage() {
       return;
     }
 
-    // Redirect to wines page if the order is already completed
     const isCompleted = localStorage.getItem(`order-${orderId}-completed`);
     if (isCompleted === "true") {
       toast.info("Order already placed. Redirecting...");
-      setTimeout(() => {
-        router.replace("/wines");
-      }, 1500);
+      setTimeout(() => router.replace("/wines"), 1500);
     }
   }, [orderId, router]);
 
   useEffect(() => {
     if (user?.address) setAddress(user.address);
   }, [user]);
+
+  useEffect(() => {
+    if (orderId) {
+      const savedOrderNumber = localStorage.getItem(
+        `order-${orderId}-number`
+      );
+      if (savedOrderNumber) {
+        setOrderNumber(savedOrderNumber);
+      }
+    }
+  }, [orderId]);
+
   useEffect(() => {
     if (step === 4) {
-      const cartId = localStorage.getItem('lastCartId');
+      const cartId = localStorage.getItem("lastCartId");
       if (cartId) {
         clearCart(cartId);
-        localStorage.removeItem('lastCartId');
+        localStorage.removeItem("lastCartId");
       }
       if (orderId) {
-        localStorage.setItem(`order-${orderId}-completed`, 'true');
+        localStorage.setItem(`order-${orderId}-completed`, "true");
       }
     }
   }, [step, clearCart, orderId]);
-  
+
   useEffect(() => {
     if (step === 2) {
       const { region, phone } = address;
       const direction = address["address-direction"];
       const guestFilled = isGuest
-        ? Boolean(guestInfo.name && guestInfo.email && address.phone)
+        ? Boolean(guestInfo.name && guestInfo.email && phone)
         : true;
 
       if (!region || !phone || !direction || !guestFilled) {
@@ -108,21 +122,25 @@ export default function OrdersPage() {
     }
   }, [step, address, guestInfo, payment, paymentMethod, isGuest]);
 
-  // Prevent going back after success and force redirection to wines page
   useEffect(() => {
     if (step === 4) {
-      window.history.pushState(null, "", window.location.href); // Prevent back navigation
-      const handlePopState = () => {
-        router.replace("/wines");
-      };
+      window.history.pushState(null, "", window.location.href);
+      const handlePopState = () => router.replace("/wines");
       window.addEventListener("popstate", handlePopState);
       return () => window.removeEventListener("popstate", handlePopState);
     }
   }, [step, router]);
 
-  const updateAddress = (field) => setAddress((prev) => ({ ...prev, ...field }));
-  const updatePayment = (field) => setPayment((prev) => ({ ...prev, ...field }));
-  const updateGuestInfo = (field) => setGuestInfo((prev) => ({ ...prev, ...field }));
+  /* -------------------------------- handlers -------------------------------- */
+
+  const updateAddress = (field) =>
+    setAddress((prev) => ({ ...prev, ...field }));
+
+  const updatePayment = (field) =>
+    setPayment((prev) => ({ ...prev, ...field }));
+
+  const updateGuestInfo = (field) =>
+    setGuestInfo((prev) => ({ ...prev, ...field }));
 
   const handleNext = () => setStep((prev) => prev + 1);
 
@@ -149,14 +167,24 @@ export default function OrdersPage() {
         data.email = guestInfo.email;
       }
 
-      console.log("Sending updateOrder:", { id: orderId, data });
+      const response = await updateOrderMutation.mutateAsync({
+        id: orderId,
+        data,
+      });
 
-      await updateOrderMutation.mutateAsync({ id: orderId, data });
+      const dynamicOrderNumber =
+        response?.order_number || response?.data?.order_number;
+
+      if (dynamicOrderNumber) {
+        setOrderNumber(dynamicOrderNumber);
+        localStorage.setItem(
+          `order-${orderId}-number`,
+          dynamicOrderNumber
+        );
+      }
+
       toast.success("Order placed successfully!");
-
-      // Save order completion status in localStorage
       localStorage.setItem(`order-${orderId}-completed`, "true");
-
       setStep(4);
     } catch (err) {
       console.error(err);
@@ -166,81 +194,80 @@ export default function OrdersPage() {
     }
   };
 
+  /* ---------------------------------- UI ---------------------------------- */
+
   return (
-    <>
-    
-
-      <div className="max-w-5xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Left Panel - Order Review */}
-        <div className="md:col-span-1">
-          <OrderReviewPanel
-            step={step}
-            orderId={orderId}
-            showShippingFee={step === 3}
-            shippingFee={shippingFee}
-          />
-        </div>
-
-        {/* Right Panel - Checkout Steps */}
-        <div className={`md:col-span-${step === 4 ? 3 : 2}`}>
-          {step !== 4 && <h2 className="text-2xl font-bold mb-6">Checkout</h2>}
-
-          {step !== 4 && (
-  <Stepper
-    step={step}
-    setStep={setStep}
-    address={address}
-    payment={payment}
-    paymentMethod={paymentMethod}
-    guestInfo={guestInfo}
-    isGuest={isGuest}
-  />
-)}
-
-
-          {step === 1 && (
-            <AddressStep
-              address={address}
-              updateAddress={updateAddress}
-              selectedShippingFee={shippingFee}
-              setSelectedShippingFee={setShippingFee}
-              isGuest={isGuest}
-              guestInfo={guestInfo}
-              updateGuestInfo={updateGuestInfo}
-              onNext={handleNext}
-            />
-          )}
-
-          {step === 2 && (
-            <PaymentStep
-              paymentMethod={paymentMethod}
-              setPaymentMethod={setPaymentMethod}
-              payment={payment}
-              updatePayment={updatePayment}
-              guestInfo={guestInfo}
-              updateGuestInfo={updateGuestInfo}
-              onNext={handleNext}
-            />
-          )}
-
-          {step === 3 && (
-            <ReviewStep
-              address={address}
-              shippingFee={shippingFee}
-              paymentMethod={paymentMethod}
-              orderId={orderId}
-              onPlaceOrder={handleSubmitOrder}
-              loading={loading}
-            />
-          )}
-
-          {step === 4 && (
-            <div className="md:col-span-3 flex justify-center">
-              <SuccessStep orderId={orderId} shippingFee={shippingFee} />
-            </div>
-          )}
-        </div>
+    <div className="max-w-5xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="md:col-span-1">
+        <OrderReviewPanel
+          step={step}
+          orderId={orderId}
+          showShippingFee={step === 3}
+          shippingFee={shippingFee}
+        />
       </div>
-    </>
+
+      <div className={`md:col-span-${step === 4 ? 3 : 2}`}>
+        {step !== 4 && <h2 className="text-2xl font-bold mb-6">Checkout</h2>}
+
+        {step !== 4 && (
+          <Stepper
+            step={step}
+            setStep={setStep}
+            address={address}
+            payment={payment}
+            paymentMethod={paymentMethod}
+            guestInfo={guestInfo}
+            isGuest={isGuest}
+          />
+        )}
+
+        {step === 1 && (
+          <AddressStep
+            address={address}
+            updateAddress={updateAddress}
+            selectedShippingFee={shippingFee}
+            setSelectedShippingFee={setShippingFee}
+            isGuest={isGuest}
+            guestInfo={guestInfo}
+            updateGuestInfo={updateGuestInfo}
+            onNext={handleNext}
+          />
+        )}
+
+        {step === 2 && (
+          <PaymentStep
+            paymentMethod={paymentMethod}
+            setPaymentMethod={setPaymentMethod}
+            payment={payment}
+            updatePayment={updatePayment}
+            guestInfo={guestInfo}
+            updateGuestInfo={updateGuestInfo}
+            onNext={handleNext}
+          />
+        )}
+
+        {step === 3 && (
+          <ReviewStep
+            address={address}
+            shippingFee={shippingFee}
+            paymentMethod={paymentMethod}
+            orderId={orderId}
+            onPlaceOrder={handleSubmitOrder}
+            loading={loading}
+          />
+        )}
+
+        {step === 4 && (
+          <div className="md:col-span-3 flex justify-center">
+            <SuccessStep
+              orderId={orderId}
+              orderNumber={orderNumber}
+              shippingFee={shippingFee}
+            />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

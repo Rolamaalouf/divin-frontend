@@ -4,7 +4,8 @@ import { useOrderItemsByOrderId } from "../hooks/useOrderItemHooks";
 import { useRouter } from "next/navigation";
 
 export default function SuccessStep({ orderId, shippingFee = 0 }) {
-  const { data: orderItems, isLoading, isError } = useOrderItemsByOrderId(orderId);
+  const { data: orderItems, isLoading, isError } =
+    useOrderItemsByOrderId(orderId);
   const router = useRouter();
 
   if (isLoading) return <p>Loading order summary...</p>;
@@ -19,13 +20,23 @@ export default function SuccessStep({ orderId, shippingFee = 0 }) {
 
   return (
     <div className="flex flex-col items-center justify-center text-center py-16">
-      <h2 className="text-3xl font-bold text-green-600 mb-4">
+      <h2 className="text-3xl font-bold text-green-600 mb-2">
         🎉 Order Placed Successfully!
       </h2>
-      <p className="text-lg mb-6">Thank you for your purchase.</p>
+
+      <p className="text-lg mb-2">Thank you for your purchase.</p>
+
+      {/* ✅ ORDER NUMBER */}
+      <p className="text-xl font-semibold mb-6">
+        Order Number:{" "}
+        <span className="text-green-700">
+          #{orderId}
+        </span>
+      </p>
 
       <div className="bg-gray-50 border rounded-lg p-6 shadow w-full max-w-md text-left">
         <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
+
         <ul className="divide-y">
           {orderItems.map((item) => (
             <li key={item.id} className="py-4 flex items-center gap-4">
@@ -45,6 +56,7 @@ export default function SuccessStep({ orderId, shippingFee = 0 }) {
             </li>
           ))}
         </ul>
+
         <div className="pt-4 mt-4 border-t space-y-1 text-sm">
           <div className="flex justify-between">
             <span>Subtotal</span>
@@ -61,10 +73,9 @@ export default function SuccessStep({ orderId, shippingFee = 0 }) {
         </div>
       </div>
 
-      {/* 🎈 Return to Shopping Button */}
       <button
         onClick={() => router.push("/")}
-        className="mt-8 px-6 py-3 bg-[#031B28] text-white rounded-full font-semibold flex items-center gap-2 hover:bg-red-900 transition-all duration-300 "
+        className="mt-8 px-6 py-3 bg-[#031B28] text-white rounded-full font-semibold flex items-center gap-2 hover:bg-red-900 transition-all duration-300"
       >
         🍷 Return to Shopping
       </button>
