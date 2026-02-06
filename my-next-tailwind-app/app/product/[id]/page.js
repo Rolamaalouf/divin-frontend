@@ -2,7 +2,8 @@
 
 import { useParams } from 'next/navigation';
 import { useProduct, useProducts } from '../../hooks/useProductHooks';
-import ProductActions from '../../components/ProductActions'; 
+import ProductActions from '../../components/ProductActions';
+import ProductSkeleton from '@/app/components/products/ProductSkeleton'; 
 import Header from '../../components/header';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
@@ -15,7 +16,7 @@ const ProductPage = () => {
   const { data: product, isLoading, error } = useProduct(productId);
   const { data: products } = useProducts(); // Fetch all products to filter by category
 
-  if (isLoading) return <p>Loading product...</p>;
+  if (isLoading) return <ProductSkeleton />;
   if (error) return <p>Error loading product.</p>;
   if (!product) return <p>Product not found.</p>;
 
